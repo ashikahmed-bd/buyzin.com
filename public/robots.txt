@@ -1,0 +1,22 @@
+# robots.txt for buyzin.com (Development / Staging)
+# Block all crawlers during development
+# Professional SEO-friendly configuration
+
+# Block all crawlers from sensitive areas
+User-agent: *
+Disallow: /
+Disallow: /auth
+Disallow: /checkout
+Disallow: /cart
+
+# Allow public content
+#Allow: /shop
+#Allow: /products
+#Allow: /categories
+#Allow: /blog
+
+# Crawl-delay (optional, to reduce server load)
+Crawl-delay: 5
+
+# Sitemap location
+#Sitemap: https://www.buyzin.com/sitemap.xml
