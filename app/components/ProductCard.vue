@@ -20,86 +20,55 @@ const addToWishlist = async (product) => {
 </script>
 
 <template>
-  <article
-    class="bg-white border border-border rounded-lg overflow-hidden relative"
-  >
-    <div class="absolute top-2 right-2 z-20">
-      <span
-        v-if="product.price && product.base_price > product.price"
-        class="inline-flex items-center text-xs font-semibold px-2 py-1 rounded-l-full bg-red-100 text-red-600 shadow-sm"
-      >
-        {{ product.base_price - product.price }} Off
+  <article class="group relative bg-white border border-border rounded overflow-hidden">
+    <div class="absolute top-2 left-2 right-2 z-10 flex justify-between items-start">
+      <span v-if="product.price && product.base_price > product.price"
+        class="text-[11px] font-semibold px-2 py-1 bg-danger text-white rounded-full">
+        -{{ product.discount_percentage_formatted }} OFF
       </span>
+      <button type="button">
+        <UIcon name="i-lucide-heart" class="size-5 hover:text-primary" />
+      </button>
     </div>
 
-    <a :href="`/product/${product.slug}/${product.id}`" :title="product.name">
-      <div class="shine__img__wrapper">
-        <NuxtImg
-          :src="product.media?.cover_url"
-          :alt="product.name"
-          loading="lazy"
-          class="bg-white w-full h-full object-contain transition-transform duration-300 ease-in-out shine__img"
-        />
+    <NuxtLink :to="`/product/${product.slug}/${product.id}`">
+      <div
+        class="relative shine__img__wrapper aspect-square bg-gray-50 overflow-hidden flex items-center justify-center">
+        <NuxtImg :src="product.media?.cover_url" :alt="product.name"
+          class="w-full h-full object-contain shine__img group-hover:scale-105 transition-transform duration-300"
+          loading="lazy" />
       </div>
-    </a>
+    </NuxtLink>
 
-    <div class="px-2.5 py-2">
-      <a :href="`/product/${product.slug}/${product.id}`">
-        <h3
-          class="text-xl line-clamp-2 font-semibold hover:text-primary transition duration-150"
-        >
+    <div class="p-2.5">
+      <NuxtLink :to="`/product/${product.slug}/${product.id}`">
+        <h3 class="text-sm font-semibold text-heading line-clamp-2 group-hover:text-primary transition">
           {{ product.name }}
         </h3>
-      </a>
+      </NuxtLink>
 
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 py-2">
         <div class="flex items-center gap-0.5">
-          <div v-for="i in 5" :key="i">
-            <IconsIconStar
-              v-if="(product.review_count ?? 0) === 0"
-              class="size-4 text-gray-400"
-            />
-            <template v-else>
-              <IconsIconStarFill
-                v-if="i <= Math.floor(product.rating ?? 0)"
-                class="size-4 text-yellow-400"
-              />
-              <IconsIconStar v-else class="size-4 text-gray-400" />
-            </template>
-          </div>
+          <UIcon v-for="i in 5" :key="i" :name="i <= Math.round(product.rating_avg ?? 0)
+            ? 'uil:star'
+            : 'uil:star'" class="size-4" :class="i <= Math.round(product.rating_avg ?? 0)
+      ? 'text-yellow-400'
+      : 'text-gray-300'" />
         </div>
-        <span>({{ product.review_count ?? 0 }})</span>
+
+        <span class="text-xs text-black">
+          ({{ product.review_count }})
+        </span>
       </div>
 
-      <div class="flex items-center justify-between w-full">
-        <div class="flex items-center gap-2">
-          <template v-if="product.price">
-            <span class="text-primary text-base font-sans font-medium">
-              {{ product.price_formatted }}
-            </span>
-            <del class="text-sm line-through font-sans">
-              {{ product.base_price_formatted }}
-            </del>
-          </template>
+      <div class="flex items-center gap-2">
+        <span class="text-base font-semibold text-black">
+          {{ product.price_formatted }}
+        </span>
 
-          <template v-else>
-            <span class="text-primary text-base font-medium">
-              {{ product.base_price_formatted }}
-            </span>
-          </template>
-        </div>
-
-        <div class="block">
-          <button
-            type="button"
-            @click="addToWishlist(product)"
-            class="flex items-end hover:text-primary focus:text-primary transition duration-150"
-          >
-            <IconsIconHeart
-              class="bg-white rounded-full p-1.5 border border-border size-8"
-            />
-          </button>
-        </div>
+        <span v-if="product.price" class="text-xs text-muted line-through">
+          {{ product.base_price_formatted }}
+        </span>
       </div>
     </div>
   </article>
@@ -132,12 +101,10 @@ const addToWishlist = async (product) => {
   left: -75%;
   width: 50%;
   height: 100%;
-  background: linear-gradient(
-    120deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.4) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(120deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0) 100%);
   transform: skewX(-25deg);
   z-index: 10;
   pointer-events: none;

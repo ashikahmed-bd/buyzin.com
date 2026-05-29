@@ -1,4 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 @import "tailwindcss";
 @import "@nuxt/ui";
@@ -20,15 +21,16 @@
   --color-danger: #ef4444;
   --color-info: #3b82f6;
 
-  --color-title: #0f172a;
+  --color-heading: #2a2c2d;
   --color-body: #334155;
   --color-muted: #64748b;
 
-  --color-black: #000000;
+  --color-black: #141414;
   --color-dark: #0f172b;
   --color-white: #ffffff;
 
-  --font-display: "Noto Sans Bengali", sans-serif;
+  --font-sans: "Inter", sans-serif;
+  --font-bangla: "Baloo Da 2", sans-serif;
 }
 
 @layer base {

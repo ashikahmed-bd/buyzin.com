@@ -51,7 +51,7 @@ export default defineNuxtConfig({
       ],
 
       bodyAttrs: {
-        class: 'antialiased min-h-screen',
+        class: 'antialiased min-h-screen font-sans',
       },
     },
   },

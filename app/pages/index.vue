@@ -25,7 +25,7 @@ useSchemaOrg([
 </script>
 
 <template>
-  <main class="px-4 space-y-6">
+  <main class="space-y-6">
 
     <SeoMeta title="Buyzin | Simplify Your Shopping. | Best Deals on Fashion, Gadgets & Lifestyle in Bangladesh"
       description="Buyzin is Bangladesh’s trusted online shopping platform offering authentic fashion, electronics, gadgets, and lifestyle products with fast delivery and secure payments."
@@ -94,6 +94,58 @@ useSchemaOrg([
         <div class="flex items-center justify-between mb-5">
           <div class="block">
             <h2 class="text-2xl font-bold text-gray-900">
+              {{ data?.promotions?.title }}
+            </h2>
+            <p class="text-sm text-gray-500 mt-1">
+              {{ data?.promotions?.subtitle }}
+            </p>
+          </div>
+
+          <NuxtLink to="/flash-deals" class="text-primary font-medium text-sm hover:underline">
+            View All
+          </NuxtLink>
+        </div>
+
+        <UCarousel v-slot="{ item }" loop :autoplay="{ delay: 3000 }" :items="data?.promotions?.items" :ui="{
+          item: 'basis-1/2 sm:basis-1/2 md:basis-1/4 lg:basis-1/5'
+        }">
+          <CycloneProductCard :product="item" />
+        </UCarousel>
+      </div>
+    </section>
+
+
+    <section class="py-4">
+      <div class="container mx-auto">
+        <div class="flex flex-wrap items-center justify-between mb-4">
+          <div class="block">
+            <h2 class="text-2xl font-bold text-gray-800">
+              {{ data.top_sales?.title }}
+            </h2>
+            <span class="text-gray-600 text-sm mt-1">
+              {{ data.top_sales?.subtitle }}</span>
+          </div>
+          <NuxtLink :to="{
+            path: `/shop`,
+            query: {
+              min_price: '',
+              max_price: '',
+              rating: '',
+              sort: 'default',
+            },
+          }" class="text-primary hover:underline text-sm">See all</NuxtLink>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          <ProductCard v-for="(product, index) in data.top_sales?.items" :key="index" :product="product" />
+        </div>
+      </div>
+    </section>
+
+    <section class="py-6 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between mb-5">
+          <div class="block">
+            <h2 class="text-2xl font-bold text-gray-900">
               Featured Collections
             </h2>
             <p class="text-sm text-gray-500 mt-1">
@@ -113,16 +165,12 @@ useSchemaOrg([
             class="group relative overflow-hidden rounded-2xl bg-white transition-all duration-300">
             <div class="relative overflow-hidden">
               <NuxtImg :src="item.banner_url" :alt="item.name"
-                class="w-full h-full object-cover rounded transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                class="w-full h-full object-cover rounded transition-transform duration-500 group-hover:scale-105"
+                loading="lazy" />
 
               <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
               <div class="absolute bottom-0 left-0 right-0 p-4 text-white">
-                <span
-                  class="inline-flex items-center rounded-full bg-white/20 backdrop-blur px-3 py-1 text-xs font-medium mb-2">
-                  Collection
-                </span>
-
                 <h3 class="text-lg font-bold line-clamp-1">
                   {{ item.name }}
                 </h3>
@@ -134,6 +182,96 @@ useSchemaOrg([
             </div>
           </NuxtLink>
         </UCarousel>
+      </div>
+    </section>
+
+    <section class="py-4">
+      <div class="container mx-auto">
+        <div class="flex flex-wrap items-center justify-between mb-4">
+          <div class="block">
+            <h2 class="text-2xl font-bold text-gray-800">
+              {{ data.brands?.title }}
+            </h2>
+            <span class="text-gray-600 text-sm mt-1">
+              {{ data.brands?.subtitle }}</span>
+          </div>
+          <NuxtLink :to="{
+            path: `/shop`,
+            query: {
+              min_price: '',
+              max_price: '',
+              rating: '',
+              sort: 'default',
+            },
+          }" class="text-primary hover:underline text-sm">See all</NuxtLink>
+        </div>
+
+        <UCarousel v-slot="{ item }" loop :autoplay="{ delay: 2000 }" :items="data.brands?.items"
+          :ui="{ item: 'basis-1/3 md:basis-1/10' }">
+          <NuxtLink :to="{
+            path: `/brand/${item.slug}/products`,
+            query: {
+              sort: 'default',
+            },
+          }"
+            class="bg-white flex flex-col items-center text-center border border-border hover:border-primary rounded p-2 transition">
+            <NuxtImg :src="item.logo_url" :alt="item.name" loading="lazy" class="w-20 h-20 object-contain mb-2" />
+            <span class="text-sm font-medium line-clamp-1">{{
+              item.name
+            }}</span>
+          </NuxtLink>
+        </UCarousel>
+      </div>
+    </section>
+
+    <section class="py-4">
+      <div class="container mx-auto">
+        <div class="flex items-center justify-between gap-4 py-6">
+          <div class="max-w-2xl">
+            <div
+              class="mb-2 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+              <span class="h-2 w-2 rounded-full bg-primary"></span>
+              Trending Now
+            </div>
+
+            <h2 class="text-2xl font-bold tracking-tight text-gray-900 md:text-3xl">
+              {{ data.trending?.title }}
+            </h2>
+
+            <p class="mt-2 text-sm leading-6 text-gray-600 md:text-base">
+              {{ data.trending?.subtitle }}
+            </p>
+          </div>
+
+          <NuxtLink :to="{
+            path: '/shop',
+            query: {
+              min_price: '',
+              max_price: '',
+              rating: '',
+              sort: 'default',
+            },
+          }" class="text-primary whitespace-nowrap">
+            See All
+          </NuxtLink>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 py-6">
+          <ProductCard v-for="(product, index) in data.trending?.items" :key="index" :product="product" />
+        </div>
+
+        <div class="flex items-center justify-center py-6">
+          <NuxtLink :to="{
+            path: `/shop`,
+            query: {
+              min_price: '',
+              max_price: '',
+              rating: '',
+              sort: 'default',
+            },
+          }"
+            class="px-4 py-2.5 text-sm font-medium text-white bg-primary rounded hover:bg-primary focus:outline-none transition">
+            Load more</NuxtLink>
+        </div>
       </div>
     </section>
 
