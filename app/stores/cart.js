@@ -15,12 +15,25 @@ export const useCartStore = defineStore("cart", {
   getters: {},
 
   actions: {
+
+    async getItems() {
+      try {
+        const response = await apiClient.get("/api/cart");
+        if (response.status === 200) {
+          this.items = response.data.data.items;
+          return Promise.resolve(response.data.data);
+        }
+      } catch (error) {
+        console.log(error?.response?.data);
+        toast.error(error?.response?.data.message);
+      }
+    },
+
     async store(payload) {
       this.loading = true;
       try {
         const response = await apiClient.post("/api/cart/items", payload);
         if (response.status === 201) {
-          console.log(response.data);
           this.cart_token = response.data.cart_token;
           this.dialog = true;
           toast.success(response?.data.message);
@@ -37,17 +50,17 @@ export const useCartStore = defineStore("cart", {
     /**
      * Increase item quantity
      */
-    increase(item) {},
+    increase(item) { },
 
     /**
      * Decrease item quantity
      */
-    decrease(item) {},
+    decrease(item) { },
 
     /**
      * Remove item
      */
-    remove(item) {},
+    remove(item) { },
 
     /**
      * Clear cart
@@ -64,12 +77,10 @@ export const useCartStore = defineStore("cart", {
 
       try {
         const response = await apiClient.post("/api/coupon/apply", {
-          code,
-          cart: this.items,
+          code: code
         });
 
         if (response.status === 200) {
-          this.coupon = response.data.data;
           toast.success(response.data.message);
         }
       } catch (error) {

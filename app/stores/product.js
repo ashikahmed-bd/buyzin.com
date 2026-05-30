@@ -33,9 +33,7 @@ export const useProductStore = defineStore("product", {
       try {
         const response = await apiClient.get(`/api/products/${slug}/${sku}`);
         if (response.status === 200) {
-          this.product = response.data.data;
-          this.related = response.data.related;
-          return Promise.resolve(response);
+          return Promise.resolve(response.data.data);
         }
       } catch (error) {
         if (error.response) {

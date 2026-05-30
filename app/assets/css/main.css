@@ -34,6 +34,7 @@
 }
 
 @layer base {
+
   *,
   ::after,
   ::before,
@@ -55,57 +56,58 @@
   dialog {
     margin: auto;
   }
+
+  input::placeholder {
+    @apply text-muted text-sm;
+  }
 }
 
 @layer components {
   .scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0, 211, 243, 0.7) transparent;
-}
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 211, 243, 0.7) transparent;
+  }
 
-/* Chrome, Edge, Safari */
-.scrollbar::-webkit-scrollbar {
-  width: 0px;
-  height: 0px;
-  transition: all 0.3s ease;
-}
+  /* Chrome, Edge, Safari */
+  .scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
 
-.scrollbar:hover::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
+  /* default hidden look */
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    transition: background 0.25s ease;
+  }
 
-.scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 999px;
-  margin: 4px;
-}
+  /* hover হলে show */
+  .scrollbar:hover::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg,
+        rgba(0, 211, 243, 0.9),
+        rgba(0, 140, 255, 0.9));
+  }
 
-.scrollbar::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    180deg,
-    rgba(0, 211, 243, 0.9),
-    rgba(0, 140, 255, 0.9)
-  );
-  border-radius: 999px;
-  border: 2px solid transparent;
-  background-clip: padding-box;
-  transition:
-    background 0.3s ease,
-    opacity 0.3s ease;
-}
+  /* track */
+  .scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 999px;
+    margin: 4px;
+  }
 
-.scrollbar::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    180deg,
-    rgba(0, 255, 221, 1),
-    rgba(0, 140, 255, 1)
-  );
-}
+  /* hover effect */
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg,
+        rgba(0, 255, 221, 1),
+        rgba(0, 140, 255, 1));
+  }
 
-.scrollbar::-webkit-scrollbar-corner {
-  background: transparent;
-}
+  /* corner */
+  .scrollbar::-webkit-scrollbar-corner {
+    background: transparent;
+  }
 
   .router-link-active,
   .router-link-exact-active {
@@ -155,6 +157,7 @@
   .card {
     @apply bg-white rounded-xl;
   }
+
   .card__header {
     @apply px-4 py-3 border-b border-border flex items-center justify-between;
   }

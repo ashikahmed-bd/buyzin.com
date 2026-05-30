@@ -15,11 +15,12 @@ useSchemaOrg([
     email: "support@buyzin.com",
     telephone: "+880-9649-492233",
     sameAs: [
-      "https://www.facebook.com/BuyzinLimited",
-      "https://x.com/buyzin",
-      "https://www.instagram.com/buyzin",
-      "https://www.pinterest.com/buyzin",
-      "https://www.linkedin.com/company/buyzin",
+      "https://www.facebook.com/BuyzinOfficial",  
+      "https://www.instagram.com/BuyzinOfficial",
+      "https://www.threads.com/@buyzinofficial",
+      "https://www.youtube.com/@BuyzinOfficial",
+      "https://www.pinterest.com/BuyzinOfficial",
+      "https://www.linkedin.com/company/buyzinofficial",
     ],
     contactPoint: [
       {

@@ -59,7 +59,7 @@ const { data: categories, pending } = await useAsyncData("categories", async () 
         <div class="hidden lg:block grow max-w-2xl mx-12">
           <div class="relative w-full mx-auto">
             <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <icons-icon-search class="size-5 text-gray-400" />
+              <LazyUIcon name="i-lucide-search" class="size-5 text-muted" />
             </div>
 
             <input type="search" placeholder="Enter search keywords..."
@@ -72,13 +72,17 @@ const { data: categories, pending } = await useAsyncData("categories", async () 
           </div>
         </div>
 
-        <div class="flex items-center space-x-3">
-          <NuxtLink to="/cart"
-            class="bg-white border border-border text-primary p-2 rounded-full hover:text-primary/80 relative">
-            <IconsIconCart class="size-5" />
-            <span
-              class="absolute top-0 right-0 inline-flex items-center justify-center px-1 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-primary rounded-full">
-              {{ cartStore.itemCount ?? 0 }}
+        <div class="flex items-center space-x-2.5">
+          <NuxtLink to="/cart" class="relative inline-flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-200 text-primary
+         hover:bg-gray-50 hover:text-primary/80
+         transition-colors duration-200
+         focus:outline-none focus:ring-2 focus:ring-primary/30">
+            <UIcon name="i-lucide-shopping-cart" class="w-5 h-5" />
+            <span class="absolute -top-1 -right-1 min-w-5 h-5 px-1
+           flex items-center justify-center
+           text-xs font-semibold text-white
+           bg-primary rounded-full">
+              {{ cartStore.items?.length ?? 0 }}
             </span>
           </NuxtLink>
 
@@ -86,7 +90,7 @@ const { data: categories, pending } = await useAsyncData("categories", async () 
             <div ref="profileRef" class="relative">
               <div @click="toggleProfileDropdown" class="flex items-center gap-2 cursor-pointer">
                 <div class="bg-white border border-border text-primary p-2 rounded-full hover:text-primary/80">
-                  <IconsIconUser class="size-5" />
+                  <UIcon name="i-lucide-user-round" class="size-5" />
                 </div>
 
                 <div class="hidden md:flex flex-col text-left">
@@ -121,32 +125,27 @@ const { data: categories, pending } = await useAsyncData("categories", async () 
                   <ul class="space-y-1 text-sm text-gray-700 px-2 py-4">
                     <li
                       class="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 hover:text-primary cursor-pointer rounded transition">
-                      <IconsIconProfile class="size-5" />
+                      <LazyUIcon name="i-lucide-user-pen" class="size-5" />
                       <NuxtLink to="/profile">My Profile</NuxtLink>
                     </li>
 
                     <li
                       class="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 hover:text-primary cursor-pointer rounded transition">
-                      <IconsIconList class="size-5" />
+                      <LazyUIcon name="i-lucide-search" class="size-5" />
                       <NuxtLink to="/profile/orders">Orders</NuxtLink>
                     </li>
 
+                   
                     <li
                       class="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 hover:text-primary cursor-pointer rounded transition">
-                      <IconsIconLocation class="size-5" />
-                      <NuxtLink to="/profile/address">Address</NuxtLink>
-                    </li>
-
-                    <li
-                      class="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 hover:text-primary cursor-pointer rounded transition">
-                      <IconsIconHeart class="size-5" />
+                      <LazyUIcon name="i-lucide-heart" class="size-5" />
                       <NuxtLink to="/profile/wishlist">Wishlist</NuxtLink>
                     </li>
 
                     <li
                       class="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 text-red-500 cursor-pointer rounded transition">
-                      <IconsIconLoading v-if="authStore.loading" class="size-5 animate-spin" />
-                      <IconsIconLogout v-else class="size-5" />
+                      <LazyUIcon v-if="authStore.loading" name="i-lucide-loader" class="size-5 animate-spin" />
+                      <LazyUIcon v-else name="i-lucide-search" class="size-5" />
                       <button @click="logout" class="flex items-center gap-1 disabled:opacity-50">
                         <span>Logout</span>
                       </button>
@@ -158,22 +157,26 @@ const { data: categories, pending } = await useAsyncData("categories", async () 
           </template>
 
           <template v-else>
-            <NuxtLink to="/auth/login" class="flex items-center gap-2 cursor-pointer">
-              <div class="bg-white border border-border text-primary p-2 rounded-full hover:text-primary/80">
-                <IconsIconUser class="size-5" />
+            <NuxtLink to="/auth/login" class="flex items-center gap-3 cursor-pointer group">
+              <!-- Icon -->
+              <div class="w-10 h-10 flex items-center justify-center
+           bg-white border border-gray-200
+           rounded-full text-primary
+           group-hover:bg-gray-50 group-hover:text-primary/80
+           transition-colors duration-200">
+                <UIcon name="i-lucide-user-round" class="w-5 h-5" />
               </div>
 
-              <div class="hidden md:flex flex-col text-left">
-                <small class="text-xs">Hello, sign in</small>
-                <span class="font-semibold text-body whitespace-nowrap">
+              <div class="hidden md:flex flex-col text-left leading-tight">
+                <small class="text-xs text-gray-500">
+                  Hello, sign in
+                </small>
+                <span class="font-semibold text-gray-900 whitespace-nowrap">
                   Account & Lists
                 </span>
               </div>
-
-              <svg class="w-4 h-4 text-gray-500 transition-transform duration-200 hidden md:block" fill="none"
-                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-              </svg>
+              <UIcon name="i-lucide-chevron-down" class="w-4 h-4 text-gray-400 hidden md:block
+           group-hover:text-gray-600 transition-colors" />
             </NuxtLink>
           </template>
         </div>

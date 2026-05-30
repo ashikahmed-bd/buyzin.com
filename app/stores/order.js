@@ -32,11 +32,7 @@ export const useOrderStore = defineStore("order", {
       try {
         const response = await apiClient.post("/api/orders/store", form);
         if (response.status === 200) {
-          toast.success(response.data.message);
-          cartStore.$reset();
-          setTimeout(() => {
-            window.location.href = response.data.redirect_url;
-          }, 2500);
+          return Promise.resolve(response.data);
         }
       } catch (error) {
         if (error.response) {

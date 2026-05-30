@@ -38,9 +38,6 @@ useSchemaOrg([
             class="relative block overflow-hidden rounded group">
             <NuxtImg :src="item?.image_url" :alt="item?.title" loading="eager"
               class="w-full h-auto object-cover transition duration-500 group-hover:scale-105" />
-
-            <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
-
             <div class="absolute inset-0 z-10 flex items-center">
               <div class="max-w-xl px-6 md:px-12 text-white">
                 <span v-if="item?.subtitle"
@@ -167,9 +164,6 @@ useSchemaOrg([
               <NuxtImg :src="item.banner_url" :alt="item.name"
                 class="w-full h-full object-cover rounded transition-transform duration-500 group-hover:scale-105"
                 loading="lazy" />
-
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-
               <div class="absolute bottom-0 left-0 right-0 p-4 text-white">
                 <h3 class="text-lg font-bold line-clamp-1">
                   {{ item.name }}

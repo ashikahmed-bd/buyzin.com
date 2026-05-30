@@ -10,8 +10,10 @@ const props = defineProps({
 <template>
     <article class="group bg-white rounded overflow-hidden transition border border-border">
         <div class="relative bg-gray-100 aspect-square overflow-hidden">
-            <NuxtImg :src="product.media?.cover_url" :alt="product.meta_title ?? product.name"
+            <NuxtLink :to="`/product/${product.slug}/${product.id}`" :title="product.meta_title">
+                <NuxtImg :src="product.media?.cover_url" :alt="product.meta_title ?? product.name"
                 class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+            </NuxtLink>
 
             <div v-if="product.discount_percentage > 0"
                 class="absolute top-2 left-2 bg-danger text-white text-xs px-2 py-1 rounded">

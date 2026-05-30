@@ -37,7 +37,7 @@ const confirmOrder = () => {
       </div>
 
       <button @click="close" class="absolute top-3 right-4 text-body hover:text-primary">
-        <IconsIconClose class="size-5" />
+        <LazyUIcon name="i-lucide-circle-x" class="size-5" />
       </button>
     </div>
   </div>
