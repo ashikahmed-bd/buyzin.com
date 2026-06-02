@@ -1,18 +1,29 @@
 <script setup>
-const { $settings } = useNuxtApp();
+const settings = useSettings();
 </script>
 
 <template>
   <main class="max-w-3xl mx-auto px-4 py-4">
+    <Head>
+      <Title>Order Successful | Thank You</Title>
+      <Meta name="description" content="Your order has been placed successfully. You will receive a confirmation email shortly with order details and tracking information." />
+      <Meta name="robots" content="noindex, nofollow" />
+
+      <Meta property="og:title" content="Order Successful" />
+      <Meta property="og:description" content="Your order has been placed successfully. Check your email for confirmation and tracking details." />
+      <Meta property="og:type" content="website" />
+
+      <Meta name="twitter:card" content="summary" />
+      <Meta name="twitter:title" content="Order Successful" />
+      <Meta name="twitter:description" content="Your order has been placed successfully." />
+    </Head>
     <div class="bg-white rounded-2xl w-full p-6">
-      <!-- Success Icon -->
       <div class="flex justify-center mb-4">
         <div class="bg-primary rounded-full p-4">
-          <IconsIconCheckCircle class="size-8 text-white" />
+          <LazyUIcon name="i-lucide-check-circle" class="size-8 text-white" />
         </div>
       </div>
 
-      <!-- Heading -->
       <div class="max-w-md mx-auto mb-4">
         <h2 class="text-2xl font-bold text-center text-primary mb-2">
           Congratulations!
@@ -26,7 +37,6 @@ const { $settings } = useNuxtApp();
         </p>
       </div>
 
-      <!-- Info Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6">
         <div class="bg-green-50 rounded-xl p-3 text-center">
           <svg
@@ -64,7 +74,7 @@ const { $settings } = useNuxtApp();
           </svg>
           <p class="text-sm font-medium">Phone Confirmation</p>
           <client-only>
-            <p v-if="$settings?.contact">{{ $settings.contact.phone }}</p>
+            <p v-if="settings?.app">{{ settings.app.contact.sales_phone }}</p>
           </client-only>
         </div>
 
@@ -109,19 +119,19 @@ const { $settings } = useNuxtApp();
       <client-only>
         <div class="text-center text-body text-xs">
           Need help? Contact us:
-          <template v-if="$settings?.contact">
+          <template v-if="settings.app">
             <a
-              :href="`mailto:${$settings.contact.email}`"
+              href="/"
               class="text-primary font-medium after:content-['.'] after:mx-1"
             >
-              {{ $settings.contact.email }}
+              {{ settings.app.contact.sales_email }}
             </a>
             <a
-              :href="`https://wa.me/${$settings.contact.whatsapp}`"
+              href="/"
               target="_blank"
               class="text-green-500 font-medium"
             >
-              WhatsApp
+              {{ settings.app.contact.support_phone }}
             </a>
           </template>
         </div>

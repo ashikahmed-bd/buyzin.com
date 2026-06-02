@@ -3,15 +3,7 @@ const route = useRoute();
 const config = useRuntimeConfig();
 
 const cartStore = useCartStore();
-const orderStore = useOrderStore();
 
-definePageMeta({
-  middleware: ["cart"],
-});
-
-const { data: cart, pending, refresh } = await useAsyncData("checkout", async () => {
-  return await cartStore.getItems();
-});
 
 const form = reactive({
   name: "",
@@ -20,7 +12,7 @@ const form = reactive({
   city: "",
   state: "",
   postal_code: "",
-  country: "Bangladesh",
+  country: 'BD',
   note: "",
   payment_method: "",
 });
@@ -64,44 +56,30 @@ const submit = async () => {
     state: form.state,
     postal_code: form.postal_code,
     country: form.country,
+    delivery_type: 'regular',
     note: form.note,
     payment_method: form.payment_method,
   };
 
-  try {
-    const response = await orderStore.store(payload);
-
-    cartStore.$reset();
-
-    if (response?.success) {
-      toast.success(response.message);
-
-      await refresh();
-
-      // Online payment gateway redirect
-      if (response?.data?.redirect_url) {
-        return navigateTo(response.data.redirect_url, {
-          external: true,
-        });
-      }
-
-      // Order success page
-      if (response?.data?.order_number) {
-        return navigateTo(`/orders/${response.data.order_number}`);
-      }
-
-      return navigateTo("/orders");
-    }
-
-    toast.error(response?.message);
-  } catch (error) {
-    toast.error(
-      error?.data?.message ||
-      error?.message ||
-      "Something went wrong. Please try again."
-    );
-  }
+  await cartStore.checkout(payload);
 };
+
+const { data, pending, refresh } = await useAsyncData("checkout", async () => {
+  return await cartStore.getItems()
+});
+
+
+watch([() => form.country, () => form.delivery_type], async () => {
+  await cartStore.getShippingCost({
+    country: form.country,
+    delivery_type: form.delivery_type,
+  })
+
+  await refresh()
+},
+  { immediate: true }
+)
+
 
 useSchemaOrg([
   defineWebPage({
@@ -133,14 +111,12 @@ useSchemaOrg([
     keywords="checkout, secure payment, online shopping, ecommerce, Buyzin, Bangladesh, fast delivery, order review, complete purchase" />
 
   <main class="max-w-7xl mx-auto px-4 py-4">
-    <div v-if="pending" class="py-20 text-center">
+    <template v-if="pending" class="py-20 text-center">
       Loading...
-    </div>
+    </template>
 
     <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Left Content -->
       <div class="lg:col-span-2 space-y-6">
-        <!-- Shipping Address -->
         <div class="bg-white rounded-xl border border-border overflow-hidden">
           <div class="border-b px-5 py-4">
             <h6 class="font-semibold text-lg">
@@ -208,8 +184,26 @@ useSchemaOrg([
                 Country
               </label>
 
-              <input v-model="form.country" type="text" placeholder="Bangladesh"
-                class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none" />
+              <select v-model="form.country"
+                class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none">
+                <option value="">Select Country</option>
+                <option value="BD">Bangladesh</option>
+                <option value="IN">India</option>
+                <option value="PK">Pakistan</option>
+                <option value="NP">Nepal</option>
+                <option value="LK">Sri Lanka</option>
+                <option value="AE">United Arab Emirates</option>
+                <option value="SA">Saudi Arabia</option>
+                <option value="MY">Malaysia</option>
+                <option value="SG">Singapore</option>
+                <option value="TH">Thailand</option>
+                <option value="GB">United Kingdom</option>
+                <option value="DE">Germany</option>
+                <option value="FR">France</option>
+                <option value="CA">Canada</option>
+                <option value="AU">Australia</option>
+                <option value="US">United States</option>
+              </select>
             </div>
 
             <div class="md:col-span-2">
@@ -223,7 +217,6 @@ useSchemaOrg([
           </div>
         </div>
 
-        <!-- Payment Method -->
         <div class="bg-white rounded-xl border border-border overflow-hidden">
           <div class="border-b px-5 py-4">
             <h6 class="font-semibold text-lg">
@@ -234,20 +227,17 @@ useSchemaOrg([
           <div class="p-5 space-y-3">
             <label class="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:border-primary">
               <span>Cash on Delivery</span>
-
               <input v-model="form.payment_method" type="radio" value="cod" />
             </label>
 
             <label class="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:border-primary">
-              <span>bKash / Nagad</span>
-
-              <input v-model="form.payment_method" type="radio" value="online" />
+              <span>BKash</span>
+              <input v-model="form.payment_method" type="radio" value="bkash" />
             </label>
           </div>
         </div>
       </div>
 
-      <!-- Order Summary -->
       <aside>
         <div class="bg-white rounded-xl border border-border sticky top-24">
           <div class="border-b p-4">
@@ -257,7 +247,7 @@ useSchemaOrg([
           </div>
 
           <div class="space-y-2 p-4">
-            <div v-for="item in cart?.items" :key="item.id" class="flex items-center justify-between">
+            <div v-for="item in data?.items" :key="item.id" class="flex items-center justify-between">
               <div class="w-full flex items-center gap-2">
                 <NuxtImg :src="item.cover_url" :alt="item.name" class="w-12 h-12 object-cover rounded border" />
 
@@ -285,36 +275,37 @@ useSchemaOrg([
             <div class="space-y-2.5 text-sm">
               <div class="flex justify-between">
                 <span>Subtotal</span>
-                <span>{{ cart?.subtotal_formatted }}</span>
+                <span>{{ data?.subtotal_formatted }}</span>
               </div>
 
               <div class="flex justify-between">
                 <span>Shipping</span>
-                <span>{{ cart?.shipping_formatted }}</span>
+                <span>{{ data?.shipping_formatted }}</span>
               </div>
 
               <div class="flex justify-between">
                 <span>Tax</span>
-                <span>{{ cart?.tax_formatted }}</span>
+                <span>{{ data?.tax_formatted }}</span>
               </div>
 
               <div class="flex justify-between text-success">
                 <span>Discount</span>
-                <span>{{ cart?.discount_formatted }}</span>
+                <span>{{ data?.discount_formatted }}</span>
               </div>
 
               <div class="flex justify-between font-semibold text-lg pt-3">
                 <span>Total</span>
-                <span>{{ cart?.total_formatted }}</span>
+                <span>{{ data?.total_formatted }}</span>
               </div>
             </div>
 
-            <BaseButton class="w-full" :disabled="!cart?.items?.length" :loading="orderStore.loading" @click="submit">
+            <BaseButton class="w-full" :disabled="!data?.items?.length" :loading="cartStore.loading" @click="submit">
               Place Order
             </BaseButton>
           </div>
         </div>
       </aside>
     </div>
+
   </main>
 </template>

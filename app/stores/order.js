@@ -26,22 +26,7 @@ export const useOrderStore = defineStore("order", {
       }
     },
 
-    async store(form) {
-      this.loading = true;
-      const cartStore = useCartStore();
-      try {
-        const response = await apiClient.post("/api/orders/store", form);
-        if (response.status === 200) {
-          return Promise.resolve(response.data);
-        }
-      } catch (error) {
-        if (error.response) {
-          this.errors = error.response.errors;
-        }
-      } finally {
-        this.loading = false;
-      }
-    },
+    
 
     
     async tracking(order_number) {

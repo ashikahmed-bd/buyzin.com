@@ -58,7 +58,7 @@ useSchemaOrg([
           <div class="bg-white rounded-xl">
             <div class="px-4 py-3 border-b border-border flex items-center justify-between">
               <h3 class="text-lg font-semibold text-heading">
-                Shopping Cart ({{ cart.items?.length }})
+                Shopping Cart ({{ cart?.items?.length }})
               </h3>
               <button type="button" class="text-sm text-danger hover:text-danger/80" @click="cartStore.clear">
                 Clear all
@@ -68,7 +68,7 @@ useSchemaOrg([
             <div class="p-4 relative overflow-x-auto">
               <div class="flow-root">
                 <ul role="list" class="divide-y divide-gray-200 divide-dashed">
-                  <li v-for="item in cart.items" :key="item.id" class="flex gap-4 py-4 border-b border-gray-100">
+                  <li v-for="item in cart?.items" :key="item.id" class="flex gap-4 py-4 border-b border-gray-100">
                     <div class="w-20 h-20 shrink-0 rounded-lg overflow-hidden border">
                       <NuxtImg :src="item.cover_url" :alt="item.name" class="w-full h-full object-cover"
                         loading="lazy" />
@@ -152,23 +152,23 @@ useSchemaOrg([
             <div class="space-y-3">
               <div class="flex justify-between">
                 <span>Subtotal</span>
-                <span>{{ cart.subtotal_formatted }}</span>
+                <span>{{ cart?.subtotal_formatted ?? '----' }}</span>
               </div>
               <div class="flex justify-between">
                 <span>Shipping</span>
-                <span>{{ cart.shipping_formatted }}</span>
+                <span>{{ cart?.shipping_formatted ?? '----'}}</span>
               </div>
               <div class="flex justify-between">
                 <span>Tax</span>
-                <span>{{ cart.tax_formatted }}</span>
+                <span>{{ cart?.tax_formatted ?? '----'}}</span>
               </div>
-              <div class="flex items-center justify-between ">
+              <div class="flex items-center justify-between text-success">
                 <span>Discount</span>
-                <span>{{ cart.discount_formatted }}</span>
+                <span>{{ cart?.discount_formatted ?? '----'}}</span>
               </div>
               <div class="flex justify-between font-semibold">
                 <span>Total</span>
-                <span>{{ cart.total }}</span>
+                <span>{{ cart?.total_formatted ?? '----'}}</span>
               </div>
             </div>
 

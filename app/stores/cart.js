@@ -10,7 +10,9 @@ export const useCartStore = defineStore("cart", {
     items: [],
   }),
 
-  persist: true,
+  persist: {
+    pick: ["cart_token"],
+  },
 
   getters: {},
 
@@ -21,7 +23,7 @@ export const useCartStore = defineStore("cart", {
         const response = await apiClient.get("/api/cart");
         if (response.status === 200) {
           this.items = response.data.data.items;
-          return Promise.resolve(response.data.data);
+          return Promise.resolve(response.data?.data);
         }
       } catch (error) {
         console.log(error?.response?.data);
@@ -69,6 +71,19 @@ export const useCartStore = defineStore("cart", {
       this.$reset();
     },
 
+
+    async getShippingCost(payload) {
+      try {
+        const response = await apiClient.put("/api/cart/shipping/calculate", payload);
+
+        if (response.status === 200) {
+          return Promise.resolve(response.data)
+        }
+      } catch (error) {
+        return Promise.reject(error?.response?.data)
+      }
+    },
+
     /**
      * Apply coupon
      */
@@ -76,7 +91,7 @@ export const useCartStore = defineStore("cart", {
       this.loading = true;
 
       try {
-        const response = await apiClient.post("/api/coupon/apply", {
+        const response = await apiClient.post("/api/cart/coupon/apply", {
           code: code
         });
 
@@ -86,6 +101,27 @@ export const useCartStore = defineStore("cart", {
       } catch (error) {
         this.errors = error.response.data;
         toast.error(error.response.data.message);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+
+    async checkout(payload) {
+      this.loading = true;
+      try {
+        const response = await apiClient.post("/api/cart/checkout", payload);
+        console.log(response)
+
+        if (response.status === 200) {
+          return navigateTo(response.data?.redirect_url, {
+            external: true,
+          });
+        }
+      } catch (error) {
+        if (error.response) {
+          this.errors = error.response.errors;
+        }
       } finally {
         this.loading = false;
       }

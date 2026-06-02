@@ -145,18 +145,36 @@ const getStars = (rating) => {
                   {{ product?.price_formatted }}
                 </span>
 
-                <del v-if="product?.discount > 0" class="text-base md:text-lg text-gray-400 font-medium">
+                <del v-if="product?.base_price > product?.price" class="text-base md:text-lg text-gray-400 font-medium">
                   {{ product?.base_price_formatted }}
                 </del>
 
-                <span v-if="product?.discount > 0"
+                <span v-if="product?.discount_percentage > 0"
                   class="inline-flex items-center rounded-full bg-red-500 text-white px-3 py-1 text-xs md:text-sm font-bold">
-                  {{ product?.discount_formatted }} OFF
+                  {{ product?.discount_percentage_formatted }} OFF
                 </span>
               </div>
 
               <div v-if="product?.summary" class="prose prose-sm max-w-none text-gray-600">
                 <div v-html="product?.summary" class="text-base leading-7"></div>
+              </div>
+
+              <div class="flex flex-wrap gap-2 mt-4 text-xs">
+                <div v-if="product?.dimensions?.weight" class="px-3 py-1 bg-white border rounded">
+                  Weight: {{ product.dimensions.weight }} {{ product.dimensions.unit.weight }}
+                </div>
+
+                <div v-if="product?.dimensions?.length" class="px-3 py-1 bg-white border rounded">
+                  Length: {{ product.dimensions.length }} {{ product.dimensions.unit.dimension }}
+                </div>
+
+                <div v-if="product?.dimensions?.width" class="px-3 py-1 bg-white border rounded">
+                  Width: {{ product.dimensions.width }} {{ product.dimensions.unit.dimension }}
+                </div>
+
+                <div v-if="product?.dimensions?.height" class="px-3 py-1 bg-white border rounded">
+                  Height: {{ product.dimensions.height }} {{ product.dimensions.unit.dimension }}
+                </div>
               </div>
 
               <div v-if="product.variants?.length" class="space-y-5">
@@ -212,7 +230,7 @@ const getStars = (rating) => {
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <BaseButton @click="addToCart(product)" :disabled="cartStore.loading">
+                <BaseButton :loading="cartStore.loading" @click="addToCart(product)" :disabled="cartStore.loading">
                   <span class="font-normal text-base">Add to Cart</span>
                 </BaseButton>
 
