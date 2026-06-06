@@ -1,6 +1,4 @@
 <script setup>
-import ProfileLayout from "~/components/ProfileLayout.vue";
-
 const wishlistStore = useWishlistStore();
 const { items } = storeToRefs(wishlistStore);
 
@@ -34,7 +32,6 @@ onMounted(() => {
     />
   </Head>
 
-  <ProfileLayout>
     <div class="bg-white rounded-xl">
       <div class="px-4 py-3 border-b border-border">
         <h3 class="text-lg font-semibold text-heading">Wishlist</h3>
@@ -138,7 +135,7 @@ onMounted(() => {
         </template>
       </div>
     </div>
-  </ProfileLayout>
+
 </template>
 
 <style scoped></style>

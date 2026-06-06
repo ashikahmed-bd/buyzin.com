@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.NUXT_PUBLIC_API_BASE,
+  baseURL: 'http://127.0.0.1:8000', // http://127.0.0.1:8000 http://api.buyzin.com
   headers: {
     "Content-type": "application/json",
     Author: "Ashik Ahmed",
