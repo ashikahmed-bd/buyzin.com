@@ -1,14 +1,25 @@
-import { defineSitemapEventHandler } from '#imports'
+import { defineSitemapEventHandler, useRuntimeConfig } from '#imports'
 
 export default defineSitemapEventHandler(async () => {
-    const response = await $fetch('http://127.0.0.1:8000/api/products')
+    const config = useRuntimeConfig()
 
-    const products = response?.data
+    let page = 1
+    let urls = []
+    let hasMore = true
 
-    if (!Array.isArray(products)) return []
+    while (hasMore) {
+        const response = await $fetch(`${config.public.apiBase}/api/sitemaps/products?page=${page}`)
 
-    return products.map((product) => ({
-        loc: `/product/${product.slug}/${product.id}`,
-        lastmod: product.updated_at || new Date().toISOString(),
-    }))
+        urls.push(
+            ...response.data.map(product => ({
+                loc: `/product/${product.slug}/${product.hashid}`,
+                lastmod: product.updated_at,
+            }))
+        )
+
+        hasMore = response.has_more
+        page++
+    }
+
+    return urls
 })

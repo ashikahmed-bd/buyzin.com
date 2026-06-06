@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "https://api.buyzin.com", // http://127.0.0.1:8000  https://api.buyzin.com
+  baseURL: import.meta.env.NUXT_PUBLIC_API_BASE,
   headers: {
     "Content-type": "application/json",
     Author: "Ashik Ahmed",
@@ -13,15 +13,15 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     const authStore = useAuthStore();
-    const cartStore = useCartStore();
+    const cartToken = useCartToken();
 
     if (authStore.token) {
       config.headers["Authorization"] = `Bearer ${authStore.token}`;
     }
 
-    if (cartStore.cart_token) {
-      config.headers["X-Cart-Token"] = cartStore.cart_token;
-    }
+    config.headers["X-Cart-Token"] = cartToken.value;
+    config.headers["X-Source"] = 'Web';
+
     return config;
   },
   (error) => Promise.reject(error),

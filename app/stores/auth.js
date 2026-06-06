@@ -27,7 +27,7 @@ export const useAuthStore = defineStore("auth", {
           this.user = response.data.user;
           toast.success(response.data.message);
           setTimeout(() => {
-            navigateTo("/profile");
+            navigateTo("/account");
           }, 3000);
         }
       } catch (error) {

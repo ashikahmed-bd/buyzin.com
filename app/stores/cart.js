@@ -5,14 +5,13 @@ export const useCartStore = defineStore("cart", {
   state: () => ({
     loading: false,
     errors: {},
-    cart_token: null,
     dialog: false,
     items: [],
   }),
 
-  persist: {
-    pick: ["cart_token"],
-  },
+  // persist: {
+  //   pick: ["items"],
+  // },
 
   getters: {},
 
@@ -22,7 +21,6 @@ export const useCartStore = defineStore("cart", {
       try {
         const response = await apiClient.get("/api/cart");
         if (response.status === 200) {
-          this.items = response.data.data.items;
           return Promise.resolve(response.data?.data);
         }
       } catch (error) {
@@ -36,7 +34,6 @@ export const useCartStore = defineStore("cart", {
       try {
         const response = await apiClient.post("/api/cart/items", payload);
         if (response.status === 201) {
-          this.cart_token = response.data.cart_token;
           this.dialog = true;
           toast.success(response?.data.message);
           return Promise.resolve(response.data);

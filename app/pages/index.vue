@@ -25,15 +25,111 @@ useSchemaOrg([
 </script>
 
 <template>
-  <main class="space-y-6">
+  <main v-if="pending" class="space-y-6 animate-pulse py-4">
+    <section class="container mx-auto px-4">
+      <div class="h-48 md:h-96 rounded-2xl bg-gray-200"></div>
+    </section>
 
+    <section class="container mx-auto px-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div v-for="i in 4" :key="i" class="flex gap-4 p-4 border rounded-xl">
+          <div class="w-14 h-14 rounded-lg bg-gray-200"></div>
+
+          <div class="flex-1">
+            <div class="h-4 w-32 bg-gray-200 rounded mb-2"></div>
+            <div class="h-3 w-full bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container mx-auto px-4">
+      <div class="flex justify-between items-center mb-5">
+        <div>
+          <div class="h-6 w-48 bg-gray-200 rounded mb-2"></div>
+          <div class="h-4 w-64 bg-gray-200 rounded"></div>
+        </div>
+        <div class="h-4 w-20 bg-gray-200 rounded"></div>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div v-for="i in 5" :key="i" class="bg-white border rounded-xl p-3">
+          <div class="aspect-square bg-gray-200 rounded-lg mb-3"></div>
+          <div class="h-4 bg-gray-200 rounded mb-2"></div>
+          <div class="h-4 w-2/3 bg-gray-200 rounded mb-3"></div>
+          <div class="h-5 w-20 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container mx-auto px-4">
+      <div class="flex justify-between items-center mb-5">
+        <div>
+          <div class="h-6 w-40 bg-gray-200 rounded mb-2"></div>
+          <div class="h-4 w-56 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div v-for="i in 10" :key="i" class="bg-white border rounded-xl p-3">
+          <div class="aspect-square bg-gray-200 rounded-lg mb-3"></div>
+          <div class="h-4 bg-gray-200 rounded mb-2"></div>
+          <div class="h-4 w-2/3 bg-gray-200 rounded mb-3"></div>
+          <div class="h-5 w-20 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container mx-auto px-4">
+      <div class="flex justify-between items-center mb-5">
+        <div>
+          <div class="h-6 w-52 bg-gray-200 rounded mb-2"></div>
+          <div class="h-4 w-64 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div v-for="i in 4" :key="i" class="h-64 rounded-2xl bg-gray-200"></div>
+      </div>
+    </section>
+
+    <section class="container mx-auto px-4">
+      <div class="h-6 w-40 bg-gray-200 rounded mb-6"></div>
+
+      <div class="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-10 gap-4">
+        <div v-for="i in 10" :key="i" class="border rounded-xl p-4">
+          <div class="w-16 h-16 mx-auto bg-gray-200 rounded-full mb-3"></div>
+          <div class="h-3 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container mx-auto px-4">
+      <div class="mb-6">
+        <div class="h-5 w-24 bg-gray-200 rounded mb-3"></div>
+        <div class="h-8 w-64 bg-gray-200 rounded mb-3"></div>
+        <div class="h-4 w-full max-w-xl bg-gray-200 rounded"></div>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div v-for="i in 10" :key="i" class="bg-white border rounded-xl p-3">
+          <div class="aspect-square bg-gray-200 rounded-lg mb-3"></div>
+          <div class="h-4 bg-gray-200 rounded mb-2"></div>
+          <div class="h-4 w-2/3 bg-gray-200 rounded mb-3"></div>
+          <div class="h-5 w-20 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <main v-else class="space-y-6">
     <SeoMeta title="Buyzin | Simplify Your Shopping. | Best Deals on Fashion, Gadgets & Lifestyle in Bangladesh"
       description="Buyzin is Bangladesh’s trusted online shopping platform offering authentic fashion, electronics, gadgets, and lifestyle products with fast delivery and secure payments."
       keywords="ecommerce, online shopping, buy online, fashion, gadgets, electronics, Bangladesh, best price, quick delivery, Buyzin" />
 
     <section class="container mx-auto px-4">
       <div class="py-4">
-        <UCarousel v-slot="{ item }" loop :items="data.banners" :autoplay="{ delay: 4000 }" class="w-full">
+        <UCarousel v-slot="{ item }" loop :items="data?.banners" :autoplay="{ delay: 4000 }" class="w-full">
           <a :href="item?.target_url" target="_blank" rel="noopener noreferrer"
             class="relative block overflow-hidden rounded group">
             <NuxtImg :src="item?.image_url" :alt="item?.title" loading="eager"
@@ -66,7 +162,7 @@ useSchemaOrg([
     <section class="py-4">
       <div class="container mx-auto">
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <div v-for="promo in data.promo" :key="promo.title"
+          <div v-for="promo in data?.promo" :key="promo.title"
             class="group flex items-start gap-4 rounded-xl border border-gray-100 bg-white p-4 transition-all duration-300 hover:-translate-y-1">
             <div
               class="flex size-14 items-center justify-center rounded-lg bg-gray-100 group-hover:bg-primary/10 transition">
@@ -117,10 +213,10 @@ useSchemaOrg([
         <div class="flex flex-wrap items-center justify-between mb-4">
           <div class="block">
             <h2 class="text-2xl font-bold text-gray-800">
-              {{ data.top_sales?.title }}
+              {{ data?.top_sales?.title }}
             </h2>
             <span class="text-gray-600 text-sm mt-1">
-              {{ data.top_sales?.subtitle }}</span>
+              {{ data?.top_sales?.subtitle }}</span>
           </div>
           <NuxtLink :to="{
             path: `/shop`,
@@ -133,7 +229,7 @@ useSchemaOrg([
           }" class="text-primary hover:underline text-sm">See all</NuxtLink>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          <ProductCard v-for="(product, index) in data.top_sales?.items" :key="index" :product="product" />
+          <ProductCard v-for="(product, index) in data?.top_sales?.items" :key="index" :product="product" />
         </div>
       </div>
     </section>
@@ -155,7 +251,7 @@ useSchemaOrg([
           </NuxtLink>
         </div>
 
-        <UCarousel v-slot="{ item }" loop :autoplay="{ delay: 3500 }" :items="data.collections" :ui="{
+        <UCarousel v-slot="{ item }" loop :autoplay="{ delay: 3500 }" :items="data?.collections" :ui="{
           item: 'basis-1/2 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 px-2'
         }">
           <NuxtLink :to="`/collections/${item.slug}`"
@@ -184,10 +280,10 @@ useSchemaOrg([
         <div class="flex flex-wrap items-center justify-between mb-4">
           <div class="block">
             <h2 class="text-2xl font-bold text-gray-800">
-              {{ data.brands?.title }}
+              {{ data?.brands?.title }}
             </h2>
             <span class="text-gray-600 text-sm mt-1">
-              {{ data.brands?.subtitle }}</span>
+              {{ data?.brands?.subtitle }}</span>
           </div>
           <NuxtLink :to="{
             path: `/shop`,
@@ -200,7 +296,7 @@ useSchemaOrg([
           }" class="text-primary hover:underline text-sm">See all</NuxtLink>
         </div>
 
-        <UCarousel v-slot="{ item }" loop :autoplay="{ delay: 2000 }" :items="data.brands?.items"
+        <UCarousel v-slot="{ item }" loop :autoplay="{ delay: 2000 }" :items="data?.brands?.items"
           :ui="{ item: 'basis-1/3 md:basis-1/10' }">
           <NuxtLink :to="{
             path: `/brand/${item.slug}/products`,
@@ -229,11 +325,11 @@ useSchemaOrg([
             </div>
 
             <h2 class="text-2xl font-bold tracking-tight text-gray-900 md:text-3xl">
-              {{ data.trending?.title }}
+              {{ data?.trending?.title }}
             </h2>
 
             <p class="mt-2 text-sm leading-6 text-gray-600 md:text-base">
-              {{ data.trending?.subtitle }}
+              {{ data?.trending?.subtitle }}
             </p>
           </div>
 
@@ -250,7 +346,7 @@ useSchemaOrg([
           </NuxtLink>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 py-6">
-          <ProductCard v-for="(product, index) in data.trending?.items" :key="index" :product="product" />
+          <ProductCard v-for="(product, index) in data?.trending?.items" :key="index" :product="product" />
         </div>
 
         <div class="flex items-center justify-center py-6">

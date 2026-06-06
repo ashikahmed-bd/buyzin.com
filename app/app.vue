@@ -1,4 +1,10 @@
 <script setup>
+const authStore = useAuthStore()
+
+await callOnce(async () => {
+  await authStore.getProfile();
+})
+
 useSchemaOrg([
   defineWebSite({
     name: "Buyzin",
@@ -15,7 +21,7 @@ useSchemaOrg([
     email: "support@buyzin.com",
     telephone: "+880-9649-492233",
     sameAs: [
-      "https://www.facebook.com/BuyzinOfficial",  
+      "https://www.facebook.com/BuyzinOfficial",
       "https://www.instagram.com/BuyzinOfficial",
       "https://www.threads.com/@buyzinofficial",
       "https://www.youtube.com/@BuyzinOfficial",

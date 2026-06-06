@@ -1,38 +1,8 @@
 <script setup>
-import { useAuthStore } from "@/stores/auth";
-
-const authStore = useAuthStore();
+const authStore = useAuthStore()
 const cartStore = useCartStore();
 
-const { user } = storeToRefs(authStore);
-
-const profileRef = ref(null);
-const showProfileDropdown = ref(false);
 const open = ref(false);
-
-const toggleProfileDropdown = () => {
-  showProfileDropdown.value = !showProfileDropdown.value;
-};
-
-const onClickOutside = (event) => {
-  if (profileRef.value && !profileRef.value.contains(event.target)) {
-    showProfileDropdown.value = false;
-  }
-};
-
-onMounted(() => {
-  document.addEventListener("click", onClickOutside);
-});
-
-onUnmounted(() => {
-  document.removeEventListener("click", onClickOutside);
-});
-
-const logout = async () => {
-  if (confirm("Are you sure you went to logout?")) {
-    await authStore.logout();
-  }
-};
 
 const categoryStore = useCategoryStore();
 
@@ -72,113 +42,38 @@ const { data: categories, pending } = await useAsyncData("categories", async () 
           </div>
         </div>
 
-        <div class="flex items-center space-x-2.5">
-          <NuxtLink to="/cart" class="relative inline-flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-200 text-primary
-         hover:bg-gray-50 hover:text-primary/80
-         transition-colors duration-200
-         focus:outline-none focus:ring-2 focus:ring-primary/30">
-            <UIcon name="i-lucide-shopping-cart" class="w-5 h-5" />
-            <span class="absolute -top-1 -right-1 min-w-5 h-5 px-1
-           flex items-center justify-center
-           text-xs font-semibold text-white
-           bg-primary rounded-full">
+        <div class="flex items-center gap-3">
+          <!-- Cart -->
+          <NuxtLink to="/cart"
+            class="relative inline-flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-200 text-primary hover:bg-gray-50 transition-all">
+            <UIcon name="i-lucide-shopping-cart" class="size-5" />
+
+            <span
+              class="absolute -top-1 -right-1 min-w-5 h-5 px-1 flex items-center justify-center text-[10px] font-bold text-white bg-primary rounded-full">
               {{ cartStore.items?.length ?? 0 }}
             </span>
           </NuxtLink>
 
-          <template v-if="authStore.loggedIn && authStore.user">
-            <div ref="profileRef" class="relative">
-              <div @click="toggleProfileDropdown" class="flex items-center gap-2 cursor-pointer">
-                <div class="bg-white border border-border text-primary p-2 rounded-full hover:text-primary/80">
-                  <UIcon name="i-lucide-user-round" class="size-5" />
-                </div>
-
-                <div class="hidden md:flex flex-col text-left">
-                  <small class="text-xs">Hello, sign in</small>
-                  <span class="font-semibold text-body whitespace-nowrap">
-                    Account & Lists
-                  </span>
-                </div>
-                <svg :class="{ 'rotate-180': showProfileDropdown }"
-                  class="w-4 h-4 text-gray-500 transition-transform duration-200 hidden md:block" fill="none"
-                  stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
-              </div>
-
-              <transition name="fade">
-                <nav v-if="showProfileDropdown"
-                  class="absolute top-full right-0 mt-2 w-64 rounded-xl border border-border bg-white z-50 shadow-lg">
-                  <div class="flex items-center gap-3 border-b border-border px-4 py-2">
-                    <NuxtImg :src="user?.photo_url" :alt="user?.name"
-                      class="w-10 h-10 rounded-full border border-border" />
-                    <div>
-                      <h4 class="text-sm font-semibold text-heading">
-                        {{ user?.name }}
-                      </h4>
-                      <p class="text-xs">
-                        {{ user?.email ?? "N/A" }}
-                      </p>
-                    </div>
-                  </div>
-
-                  <ul class="space-y-1 text-sm text-gray-700 px-2 py-4">
-                    <li
-                      class="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 hover:text-primary cursor-pointer rounded transition">
-                      <LazyUIcon name="i-lucide-user-pen" class="size-5" />
-                      <NuxtLink to="/profile">My Profile</NuxtLink>
-                    </li>
-
-                    <li
-                      class="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 hover:text-primary cursor-pointer rounded transition">
-                      <LazyUIcon name="i-lucide-search" class="size-5" />
-                      <NuxtLink to="/profile/orders">Orders</NuxtLink>
-                    </li>
-
-                   
-                    <li
-                      class="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 hover:text-primary cursor-pointer rounded transition">
-                      <LazyUIcon name="i-lucide-heart" class="size-5" />
-                      <NuxtLink to="/profile/wishlist">Wishlist</NuxtLink>
-                    </li>
-
-                    <li
-                      class="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 text-red-500 cursor-pointer rounded transition">
-                      <LazyUIcon v-if="authStore.loading" name="i-lucide-loader" class="size-5 animate-spin" />
-                      <LazyUIcon v-else name="i-lucide-search" class="size-5" />
-                      <button @click="logout" class="flex items-center gap-1 disabled:opacity-50">
-                        <span>Logout</span>
-                      </button>
-                    </li>
-                  </ul>
-                </nav>
-              </transition>
+          <NuxtLink :to="authStore.loggedIn ? '/account' : '/auth/login'"
+            class="group flex items-center gap-3 px-2 py-1.5 rounded-xl hover:bg-gray-50 transition-all">
+            <div
+              class="size-10 rounded-full border border-gray-200 bg-white flex items-center justify-center text-primary shrink-0">
+              <UIcon name="i-lucide-user-round" class="size-5" />
             </div>
-          </template>
 
-          <template v-else>
-            <NuxtLink to="/auth/login" class="flex items-center gap-3 cursor-pointer group">
-              <!-- Icon -->
-              <div class="w-10 h-10 flex items-center justify-center
-           bg-white border border-gray-200
-           rounded-full text-primary
-           group-hover:bg-gray-50 group-hover:text-primary/80
-           transition-colors duration-200">
-                <UIcon name="i-lucide-user-round" class="w-5 h-5" />
-              </div>
+            <div class="hidden md:flex flex-col leading-tight min-w-0">
+              <span class="text-xs text-gray-500">
+                {{ authStore.loggedIn ? 'Welcome back' : 'Hello, Sign in' }}
+              </span>
 
-              <div class="hidden md:flex flex-col text-left leading-tight">
-                <small class="text-xs text-gray-500">
-                  Hello, sign in
-                </small>
-                <span class="font-semibold text-gray-900 whitespace-nowrap">
-                  Account & Lists
-                </span>
-              </div>
-              <UIcon name="i-lucide-chevron-down" class="w-4 h-4 text-gray-400 hidden md:block
-           group-hover:text-gray-600 transition-colors" />
-            </NuxtLink>
-          </template>
+              <span class="font-semibold text-gray-900 truncate">
+                {{ authStore.loggedIn ? authStore.user?.name : 'Account & Lists' }}
+              </span>
+            </div>
+
+            <UIcon name="i-lucide-chevron-down"
+              class="hidden md:block size-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
+          </NuxtLink>
         </div>
       </div>
 

@@ -11,7 +11,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: 'https://api.buyzin.com',
+      apiBase: 'http://127.0.0.1:8000',
       siteUrl: 'https://buyzin.com'
     }
   },
@@ -66,59 +66,18 @@ export default defineNuxtConfig({
   sitemap: {
     sitemaps: {
       pages: {
-        urls: [
-          { loc: '/', lastmod: new Date().toISOString() },
-
-          // Core
-          { loc: '/about-us', lastmod: new Date().toISOString() },
-          { loc: '/contact-us', lastmod: new Date().toISOString() },
-          { loc: '/blog', lastmod: new Date().toISOString() },
-          { loc: '/categories', lastmod: new Date().toISOString() },
-          { loc: '/search', lastmod: new Date().toISOString() },
-
-          // Shop
-          { loc: '/products', lastmod: new Date().toISOString() },
-          { loc: '/offers', lastmod: new Date().toISOString() },
-          { loc: '/flash-sale', lastmod: new Date().toISOString() },
-          { loc: '/new-arrivals', lastmod: new Date().toISOString() },
-          { loc: '/best-sellers', lastmod: new Date().toISOString() },
-
-          // Account
-          { loc: '/my-account', lastmod: new Date().toISOString() },
-          { loc: '/my-orders', lastmod: new Date().toISOString() },
-          { loc: '/order-tracking', lastmod: new Date().toISOString() },
-          { loc: '/wishlist', lastmod: new Date().toISOString() },
-
-          // Vendor
-          { loc: '/become-a-vendor', lastmod: new Date().toISOString() },
-
-          // Support
-          { loc: '/help-center', lastmod: new Date().toISOString() },
-
-          // Legal
-          { loc: '/faq', lastmod: new Date().toISOString() },
-          { loc: '/privacy-policy', lastmod: new Date().toISOString() },
-          { loc: '/return-policy', lastmod: new Date().toISOString() },
-          { loc: '/refund-policy', lastmod: new Date().toISOString() },
-          { loc: '/terms-and-conditions', lastmod: new Date().toISOString() },
-          { loc: '/cookie-policy', lastmod: new Date().toISOString() },
-          { loc: '/shipping-and-delivery', lastmod: new Date().toISOString() },
-          { loc: '/disclaimer', lastmod: new Date().toISOString() },
-        ],
+        sources: ['/api/__sitemap__/urls/pages']
       },
 
       categories: {
         sources: ['/api/__sitemap__/urls/categories']
       },
-
+      brands: {
+        sources: ['/api/__sitemap__/urls/brands']
+      },
       products: {
         sources: ['/api/__sitemap__/urls/products']
-      },
+      }
     },
-
-    exclude: [
-      '/auth/**',
-      '/dashboard/**',
-    ],
   },
 })

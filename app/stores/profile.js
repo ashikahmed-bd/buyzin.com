@@ -50,11 +50,11 @@ export const useProfileStore = defineStore("profile", {
       try {
         const response = await apiClient.get("/api/orders");
         if (response.status === 200) {
-          return Promise.resolve(response);
+          return Promise.resolve(response.data);
         }
       } catch (error) {
         if (error.response) {
-          return Promise.reject(error.response);
+          return Promise.reject(error.response.data);
         }
       } finally {
         this.loading = false;

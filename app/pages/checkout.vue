@@ -11,7 +11,7 @@ const form = reactive({
   address: "",
   city: "",
   state: "",
-  postal_code: "",
+  postcode: "",
   country: 'BD',
   note: "",
   payment_method: "",
@@ -54,7 +54,7 @@ const submit = async () => {
     address: form.address,
     city: form.city,
     state: form.state,
-    postal_code: form.postal_code,
+    postcode: form.postcode,
     country: form.country,
     delivery_type: 'regular',
     note: form.note,
@@ -106,11 +106,15 @@ useSchemaOrg([
 </script>
 
 <template>
-  <SeoMeta title="Checkout | Buyzin - Secure Payment & Fast Delivery in Bangladesh"
-    description="Complete your purchase on Buyzin with a secure and easy checkout process. Pay online, review your order, and enjoy fast delivery across Bangladesh."
-    keywords="checkout, secure payment, online shopping, ecommerce, Buyzin, Bangladesh, fast delivery, order review, complete purchase" />
 
   <main class="max-w-7xl mx-auto px-4 py-4">
+
+    <Head>
+      <Title>Checkout | Buyzin - Secure Payment & Fast Delivery in Bangladesh</Title>
+      <Meta name="description" content="Complete your order securely. Review billing details, shipping address, and choose a payment method." />
+      <Meta name="robots" content="noindex, nofollow" />
+      <Meta name="referrer" content="no-referrer-when-downgrade" />
+    </Head>
     <template v-if="pending" class="py-20 text-center">
       Loading...
     </template>
@@ -175,7 +179,7 @@ useSchemaOrg([
                 Postal Code
               </label>
 
-              <input v-model="form.postal_code" type="text" placeholder="e.g. 1207"
+              <input v-model="form.postcode" type="text" placeholder="e.g. 1207"
                 class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none" />
             </div>
 
