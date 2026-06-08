@@ -22,7 +22,7 @@ const props = defineProps({
   },
   robots: {
     type: String,
-    default: "index, follow",
+    default: "noindex, nofollow",
   },
 
   author: {

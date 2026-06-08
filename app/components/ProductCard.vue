@@ -10,12 +10,11 @@ const props = defineProps({
 });
 
 const addToWishlist = async (product) => {
-  if (authStore.token) {
-    await wishlistStore.addItem(product);
+  if (!authStore.token) {
+    return navigateTo("/auth/login");
   }
-  setTimeout(() => {
-    navigateTo("/auth/login");
-  }, 2000);
+
+  await wishlistStore.addItem(product);
 };
 </script>
 
@@ -26,7 +25,7 @@ const addToWishlist = async (product) => {
         class="text-[11px] font-semibold px-2 py-1 bg-danger text-white rounded-full">
         -{{ product.discount_percentage_formatted }} OFF
       </span>
-      <button type="button">
+      <button @click="addToWishlist(product)" type="button">
         <UIcon name="i-lucide-heart" class="size-5 hover:text-primary" />
       </button>
     </div>

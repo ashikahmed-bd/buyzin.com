@@ -147,13 +147,13 @@ onMounted(() => {
               <ul class="space-y-2">
                 <li class="flex items-center group">
                   <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
-                  <NuxtLink to="/profile" class="hover:text-primary transition-colors duration-200">
+                  <NuxtLink to="/" class="hover:text-primary transition-colors duration-200">
                     My Account
                   </NuxtLink>
                 </li>
                 <li class="flex items-center group">
                   <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
-                  <NuxtLink to="/profile/orders" class="hover:text-primary transition-colors duration-200">
+                  <NuxtLink to="/" class="hover:text-primary transition-colors duration-200">
                     My Orders
                   </NuxtLink>
                 </li>

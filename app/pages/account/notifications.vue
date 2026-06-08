@@ -3,7 +3,8 @@
 </script>
 
 <template>
-  <Header />
-  <slot />
-  <Footer />
+    <Dashboard>
+        
+    </Dashboard>
+    
 </template>

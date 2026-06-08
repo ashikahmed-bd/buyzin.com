@@ -1,9 +1,9 @@
 <script setup>
 const route = useRoute();
 const config = useRuntimeConfig();
+const { getLocation } = useLocation()
 
 const cartStore = useCartStore();
-
 
 const form = reactive({
   name: "",
@@ -18,6 +18,7 @@ const form = reactive({
 });
 
 const submit = async () => {
+
   if (!form.name) {
     toast.error("Please enter your name.");
     return;
@@ -48,6 +49,8 @@ const submit = async () => {
     return;
   }
 
+  const location = await getLocation();
+
   const payload = {
     name: form.name,
     phone: form.phone,
@@ -56,6 +59,8 @@ const submit = async () => {
     state: form.state,
     postcode: form.postcode,
     country: form.country,
+    latitude: location.latitude,
+    longitude: location.longitude,
     delivery_type: 'regular',
     note: form.note,
     payment_method: form.payment_method,
@@ -107,19 +112,21 @@ useSchemaOrg([
 
 <template>
 
-  <main class="max-w-7xl mx-auto px-4 py-4">
+  <main v-if="pending">
+
+  </main>
+  
+  <main v-else class="max-w-7xl mx-auto px-4 py-4">
 
     <Head>
       <Title>Checkout | Buyzin - Secure Payment & Fast Delivery in Bangladesh</Title>
-      <Meta name="description" content="Complete your order securely. Review billing details, shipping address, and choose a payment method." />
+      <Meta name="description"
+        content="Complete your order securely. Review billing details, shipping address, and choose a payment method." />
       <Meta name="robots" content="noindex, nofollow" />
       <Meta name="referrer" content="no-referrer-when-downgrade" />
     </Head>
-    <template v-if="pending" class="py-20 text-center">
-      Loading...
-    </template>
 
-    <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div class="lg:col-span-2 space-y-6">
         <div class="bg-white rounded-xl border border-border overflow-hidden">
           <div class="border-b px-5 py-4">

@@ -1,10 +1,4 @@
 <script setup>
-const authStore = useAuthStore()
-
-await callOnce(async () => {
-  await authStore.getProfile();
-})
-
 useSchemaOrg([
   defineWebSite({
     name: "Buyzin",

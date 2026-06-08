@@ -51,11 +51,11 @@ export const useWishlistStore = defineStore("wishlist", {
         const response = await apiClient.get("/api/wishlist");
         if (response.status === 200) {
           this.items = response.data;
-          return Promise.resolve(response);
+          return Promise.resolve(response.data);
         }
       } catch (error) {
         if (error.response) {
-          return Promise.reject(error.response);
+          return Promise.reject(error.response.data);
         }
       }
     },
