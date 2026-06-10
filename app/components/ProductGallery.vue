@@ -33,7 +33,7 @@ function select(index) {
         ref="carousel"
         v-slot="{ item }"
         arrows
-        :items="product.gallery"
+        :items="product.gallery ?? product.cover_url"
         :prev="{ onClick: onClickPrev }"
         :next="{ onClick: onClickNext }"
         prev-icon="i-lucide-chevron-left"
@@ -50,6 +50,7 @@ function select(index) {
         <div class="aspect-square w-full bg-gray-50">
           <NuxtImg
             :src="item"
+            :alt="product.meta_title"
             class="h-full w-full object-cover"
             loading="lazy"
           />
@@ -72,7 +73,7 @@ function select(index) {
       >
         <NuxtImg
           :src="item"
-          alt=""
+          :alt="product.meta_title"
           loading="lazy"
           class="size-16 sm:size-20 object-cover"
         />

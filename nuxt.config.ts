@@ -16,15 +16,7 @@ export default defineNuxtConfig({
     }
   },
 
-  modules: [
-    '@nuxt/image',
-    '@pinia/nuxt',
-    'pinia-plugin-persistedstate/nuxt',
-    '@nuxtjs/sitemap',
-    'nuxt-schema-org',
-    '@nuxt/ui',
-    'nuxt-gtag',
-  ],
+  modules: ['@nuxt/image', '@pinia/nuxt', 'pinia-plugin-persistedstate/nuxt', '@nuxtjs/sitemap', 'nuxt-schema-org', '@nuxt/ui', 'nuxt-gtag', '@nuxtjs/mdc'],
 
   gtag: {
     id: 'G-4JS5BWE863'

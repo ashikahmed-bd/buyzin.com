@@ -228,6 +228,7 @@ useSchemaOrg([
             },
           }" class="text-primary hover:underline text-sm">See all</NuxtLink>
         </div>
+       
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
           <ProductCard v-for="(product, index) in data?.top_sales?.items" :key="index" :product="product" />
         </div>

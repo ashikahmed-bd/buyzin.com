@@ -27,7 +27,7 @@ const props = defineProps({
 
   author: {
     type: String,
-    default: "Buyzin Limited",
+    default: "Buyzin",
   },
 });
 </script>
@@ -59,7 +59,7 @@ const props = defineProps({
     <Meta name="twitter:title" :content="props.title" />
     <Meta name="twitter:description" :content="props.description" />
     <Meta name="twitter:image" :content="props.image" />
-    <Meta name="twitter:site" content="@BuyzinLimited" />
-    <Meta name="twitter:creator" content="@BuyzinLimited" />
+    <Meta name="twitter:site" content="@BuyzinOfficial" />
+    <Meta name="twitter:creator" content="@BuyzinOfficial" />
   </Head>
 </template>

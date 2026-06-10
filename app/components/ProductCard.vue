@@ -21,9 +21,9 @@ const addToWishlist = async (product) => {
 <template>
   <article class="group relative bg-white border border-border rounded overflow-hidden">
     <div class="absolute top-2 left-2 right-2 z-10 flex justify-between items-start">
-      <span v-if="product.price && product.base_price > product.price"
+      <span v-if="product.has_discount"
         class="text-[11px] font-semibold px-2 py-1 bg-danger text-white rounded-full">
-        -{{ product.discount_percentage_formatted }} OFF
+        -{{ product.discount_percentage }} OFF
       </span>
       <button @click="addToWishlist(product)" type="button">
         <UIcon name="i-lucide-heart" class="size-5 hover:text-primary" />
@@ -33,7 +33,7 @@ const addToWishlist = async (product) => {
     <NuxtLink :to="`/product/${product.slug}/${product.id}`">
       <div
         class="relative shine__img__wrapper aspect-square bg-gray-50 overflow-hidden flex items-center justify-center">
-        <NuxtImg :src="product.media?.cover_url" :alt="product.name"
+        <NuxtImg :src="product.cover_url" :alt="product.meta_title"
           class="w-full h-full object-contain shine__img group-hover:scale-105 transition-transform duration-300"
           loading="lazy" />
       </div>
