@@ -34,7 +34,7 @@ const addToWishlist = async (product) => {
       <div
         class="relative shine__img__wrapper aspect-square bg-gray-50 overflow-hidden flex items-center justify-center">
         <NuxtImg :src="product.cover_url" :alt="product.meta_title"
-          class="w-full h-full object-contain shine__img group-hover:scale-105 transition-transform duration-300"
+          class="w-full h-full p-2 object-contain shine__img group-hover:scale-105 transition-transform duration-300"
           loading="lazy" />
       </div>
     </NuxtLink>

@@ -14,7 +14,6 @@ const activeTab = ref(0);
 
 <template>
   <div>
-    <!-- Tab Headers -->
     <div class="flex border-b border-border">
       <button
         v-for="(tab, index) in tabs"
@@ -31,8 +30,7 @@ const activeTab = ref(0);
       </button>
     </div>
 
-    <!-- Tab Content -->
-    <div class="p-4">
+    <div class="py-4">
       <slot :name="tabs[activeTab].slot"></slot>
     </div>
   </div>

@@ -346,11 +346,7 @@ const getStars = (rating) => {
           { label: 'Reviews', slot: 'reviews' },
         ]">
           <template #description>
-            <MDC :value="product?.description" class="prose max-w-none [&_hr]:!my-0">
-              <template #hr>
-                <hr class="border-default border-t my-0" />
-              </template>
-            </MDC>
+            <MDC :value="product?.description" class="prose max-w-none [&_hr]:!my-0"/>
           </template>
           <template #specifications>
             <table v-for="section in product?.specifications" :key="section.title" class="mb-6 border max-w-5xl w-full">
