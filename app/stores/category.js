@@ -7,6 +7,10 @@ export const useCategoryStore = defineStore("category", {
     categories: [],
   }),
 
+  persist: {
+    pick: ["categories"],
+  },
+
   getters: {},
 
   actions: {

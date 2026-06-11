@@ -32,7 +32,7 @@ useSchemaOrg([
 
     <section class="container mx-auto px-4">
       <div class="py-4">
-        <UCarousel v-slot="{ item }" loop :items="home?.banners" :autoplay="{ delay: 4000 }" class="w-full">
+        <UCarousel v-slot="{ item }" loop wheel-gestures fade :items="home?.banners" :autoplay="{ delay: 3000, pauseOnHover: true }" class="w-full">
           <a :href="item?.target_url" target="_blank" rel="noopener noreferrer"
             class="relative block overflow-hidden rounded group">
 
@@ -42,23 +42,29 @@ useSchemaOrg([
             </div>
 
             <div class="absolute inset-0 z-10 flex items-center">
-              <div class="max-w-xl px-6 md:px-12 text-white">
+              <div class="max-w-xl px-6 md:px-12 text-white space-y-2.5">
                 <span v-if="item?.subtitle"
-                  class="inline-flex items-center rounded-full bg-white/15 backdrop-blur px-4 py-1 text-xs md:text-sm font-medium mb-4 border border-white/20">
+                  class="inline-flex items-center rounded-full bg-white/15 backdrop-blur px-4 py-1 text-xs md:text-sm font-medium border border-white/20">
                   {{ item.subtitle }}
                 </span>
-                <h2 class="text-2xl md:text-5xl font-extrabold leading-tight mb-4">
+
+                <h2 class="text-2xl md:text-5xl font-extrabold leading-tight tracking-tight">
                   {{ item?.title }}
                 </h2>
 
-                <div class="flex items-center gap-4">
+                <p class="text-sm md:text-base text-white/80 leading-relaxed max-w-md">
+                  {{ item?.description }}
+                </p>
+
+                <div class="pt-2">
                   <span
-                    class="inline-flex items-center gap-2 bg-white text-black px-5 py-3 rounded-xl font-semibold transition group-hover:translate-x-1">
+                    class="inline-flex items-center gap-2 bg-white text-black px-5 py-2 rounded-full font-semibold text-sm md:text-base hover:gap-3 transition-all duration-300">
                     {{ item?.button_text ?? 'Shop Now' }}
 
                     <UIcon name="i-lucide-arrow-right" class="size-4" />
                   </span>
                 </div>
+
               </div>
             </div>
           </a>
@@ -210,7 +216,7 @@ useSchemaOrg([
         <UCarousel v-if="home?.brands?.items?.length" v-slot="{ item }" loop :autoplay="{ delay: 2000 }"
           :items="home?.brands?.items" :ui="{ item: 'basis-1/3 md:basis-1/10' }">
           <NuxtLink :to="{
-            path: `/brand/${item.slug}/products`,
+            path: `/brands/${item.slug}`,
             query: {
               sort: 'default',
             },

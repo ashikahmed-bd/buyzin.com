@@ -11,12 +11,10 @@ export const useBrandStore = defineStore("brand", {
   getters: {},
 
   actions: {
-    async all(params = {}) {
-      this.loading = true;
+    async getBrands() {
+
       try {
-        const response = await apiClient.get(`/api/brands`, {
-          params: params,
-        });
+        const response = await apiClient.get(`/api/brands`);
         if (response.status === 200) {
           this.brands = response.data;
           return Promise.resolve(response.data);
@@ -25,8 +23,6 @@ export const useBrandStore = defineStore("brand", {
         if (error.response) {
           return Promise.reject(error.response.data);
         }
-      } finally {
-        this.loading = false;
       }
     },
 
