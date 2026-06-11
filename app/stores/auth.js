@@ -31,8 +31,10 @@ export const useAuthStore = defineStore("auth", {
           }, 3000);
         }
       } catch (error) {
-        toast.error(error.response.data.message);
-        this.errors = error.response.data;
+        toast.error(error?.response?.data?.message);
+        console.log(error?.response?.data?.message)
+        this.errors = error?.response?.data || {};
+        throw error;
       } finally {
         this.loading = false;
       }

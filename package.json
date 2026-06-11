@@ -16,7 +16,7 @@
     "@nuxtjs/sitemap": "^8.0.9",
     "@pinia/nuxt": "^0.11.3",
     "@tailwindcss/vite": "^4.2.2",
-    "axios": "^1.14.0",
+    "axios": "^1.17.0",
     "nuxt": "^4.2.2",
     "nuxt-gtag": "^4.1.0",
     "nuxt-schema-org": "^6.0.4",

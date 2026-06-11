@@ -1,4 +1,3 @@
-import { defineStore } from "pinia";
 import apiClient from "~/utils/axios";
 
 export const useCategoryStore = defineStore("category", {
@@ -14,15 +13,12 @@ export const useCategoryStore = defineStore("category", {
     async getCategories() {
       try {
         const response = await apiClient.get("/api/categories");
-        if (response.status === 200) {
-          this.categories = response.data;
-          return Promise.resolve(response.data);
-        }
+        this.categories = response.data;
+        return response.data;
       } catch (error) {
-        if (error.response) {
-          return Promise.reject(error.response.data);
-        }
+        console.error(error);
+        throw error;
       }
-    },
+    }
   },
 });

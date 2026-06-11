@@ -6,9 +6,10 @@ const open = ref(false);
 
 const categoryStore = useCategoryStore();
 
-const { data: categories, pending } = await useAsyncData("categories", async () => {
+const { data: categories } = await useAsyncData("categories", async () => {
   return await categoryStore.getCategories();
-});
+}
+);
 
 </script>
 

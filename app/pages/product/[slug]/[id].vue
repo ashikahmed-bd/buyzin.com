@@ -9,7 +9,7 @@ const config = useRuntimeConfig();
 const { related } = storeToRefs(productStore);
 
 
-const { data: product, pending, refresh } = await useAsyncData(
+const { data: product, pending, error, refresh } = await useAsyncData(
   () => `product-${route.params.slug}-${route.params.id}`,
   async () => {
     return await productStore.getProduct(
@@ -67,82 +67,11 @@ const getStars = (rating) => {
 </script>
 
 <template>
-  <main>
-    <div v-if="pending" class="max-w-7xl mx-auto px-4 py-6 animate-pulse space-y-8">
-      <div class="flex gap-2 text-sm">
-        <div class="h-4 w-20 bg-gray-200 rounded"></div>
-        <div class="h-4 w-4 bg-gray-200 rounded"></div>
-        <div class="h-4 w-24 bg-gray-200 rounded"></div>
-      </div>
 
-      <section class="grid grid-cols-1 lg:grid-cols-[1.05fr_.95fr] gap-6">
-
-        <div class="space-y-3">
-          <div class="aspect-square bg-gray-200 rounded-2xl"></div>
-          <div class="grid grid-cols-4 gap-2">
-            <div class="h-20 bg-gray-200 rounded-lg"></div>
-            <div class="h-20 bg-gray-200 rounded-lg"></div>
-            <div class="h-20 bg-gray-200 rounded-lg"></div>
-            <div class="h-20 bg-gray-200 rounded-lg"></div>
-          </div>
-        </div>
-
-        <div class="space-y-5">
-          <div class="space-y-2">
-            <div class="h-8 bg-gray-200 rounded w-3/4"></div>
-            <div class="h-4 bg-gray-200 rounded w-1/2"></div>
-          </div>
-
-          <div class="flex gap-3 items-center">
-            <div class="h-8 w-32 bg-gray-200 rounded"></div>
-            <div class="h-5 w-24 bg-gray-200 rounded"></div>
-          </div>
-
-          <div class="flex gap-2">
-            <div class="h-4 w-24 bg-gray-200 rounded"></div>
-            <div class="h-4 w-10 bg-gray-200 rounded"></div>
-          </div>
-
-          <div class="space-y-2">
-            <div class="h-3 bg-gray-200 rounded"></div>
-            <div class="h-3 bg-gray-200 rounded w-5/6"></div>
-            <div class="h-3 bg-gray-200 rounded w-4/6"></div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <div class="h-12 bg-gray-200 rounded-xl"></div>
-            <div class="h-12 bg-gray-200 rounded-xl"></div>
-            <div class="h-12 bg-gray-200 rounded-xl"></div>
-            <div class="h-12 bg-gray-200 rounded-xl"></div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div class="h-11 bg-gray-300 rounded-lg"></div>
-            <div class="h-11 bg-gray-200 rounded-lg"></div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div class="h-16 bg-gray-200 rounded-lg"></div>
-            <div class="h-16 bg-gray-200 rounded-lg"></div>
-          </div>
-
-        </div>
-      </section>
-
-      <div class="space-y-3">
-        <div class="flex gap-3">
-          <div class="h-8 w-24 bg-gray-200 rounded"></div>
-          <div class="h-8 w-28 bg-gray-200 rounded"></div>
-          <div class="h-8 w-24 bg-gray-200 rounded"></div>
-        </div>
-
-        <div class="h-40 bg-gray-200 rounded-xl"></div>
-      </div>
-    </div>
-
-    <div v-if="product" class="max-w-7xl mx-auto px-4 py-6 space-y-6">
-      <SeoMeta :title="product.meta_title" :description="product.meta_description" :keywords="product.meta_keywords"
-        :image="product.cover_url" />
+  <main v-if="product">
+    <div class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+      <SeoMeta :title="product?.meta_title" :description="product?.meta_description" :keywords="product?.meta_keywords"
+        :image="product?.cover_url" />
 
       <UBreadcrumb :items="[
         { label: 'Home', to: '/' },
@@ -157,7 +86,7 @@ const getStars = (rating) => {
         <div class="w-full">
           <div class="sticky top-24 bg-white space-y-6">
             <div class="space-y-2">
-              <div v-if="product.has_discount"
+              <div v-if="product?.has_discount"
                 class="relative overflow-hidden rounded-xl bg-gradient-to-r from-red-600 to-pink-500 text-white ">
                 <div class="flex items-center justify-between px-5 py-4">
                   <div class="flex items-center gap-4">
@@ -184,7 +113,7 @@ const getStars = (rating) => {
               <div class="flex flex-wrap items-center gap-4 text-sm">
                 <div class="flex items-center gap-2">
                   <div class="flex items-center">
-                    <UIcon v-for="(type, i) in getStars(product.rating_avg)" :key="i" :name="type === 'full'
+                    <UIcon v-for="(type, i) in getStars(product?.rating_avg)" :key="i" :name="type === 'full'
                       ? 'i-heroicons-star-solid'
                       : type === 'half'
                         ? 'i-heroicons-star'
@@ -249,7 +178,7 @@ const getStars = (rating) => {
               </div>
             </div>
 
-            <div v-if="product.variants?.length" class="space-y-5">
+            <div v-if="product?.variants?.length" class="space-y-5">
               <div class="space-y-3">
                 <div class="flex items-center gap-3">
                   <h3 class="text-sm font-bold text-body">Select Variant:</h3>
@@ -327,7 +256,7 @@ const getStars = (rating) => {
                 </div>
               </div>
               <a :href="link(
-                product.store?.phone,
+                product?.store?.phone,
                 `Hi, I'm interested in this product: ${config.public.siteUrl}${route.fullPath}`
               )" target="_blank"
                 class="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-white text-sm font-medium hover:bg-green-700 transition">
@@ -346,7 +275,7 @@ const getStars = (rating) => {
           { label: 'Reviews', slot: 'reviews' },
         ]">
           <template #description>
-            <MDC :value="product?.description" class="prose max-w-none [&_hr]:!my-0"/>
+            <MDC :value="product?.description" class="prose max-w-none [&_hr]:!my-0" />
           </template>
           <template #specifications>
             <table v-for="section in product?.specifications" :key="section.title" class="mb-6 border max-w-5xl w-full">
@@ -389,34 +318,13 @@ const getStars = (rating) => {
       </div>
     </div>
 
-
-    <div v-else class="max-w-2xl mx-auto px-4 py-20 text-center">
-
-      <div class="mx-auto w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-6">
-        <UIcon name="i-heroicons-exclamation-triangle" class="text-gray-400 size-10" />
-      </div>
-
-      <h2 class="text-2xl font-bold text-gray-900 mb-2">
-        Product not found
-      </h2>
-
-      <p class="text-gray-500 mb-6">
-        The product you are looking for doesn’t exist or has been removed.
-      </p>
-
-      <div class="flex justify-center gap-3">
-        <NuxtLink to="/shop" class="px-5 py-2.5 rounded-lg bg-primary text-white font-medium hover:opacity-90">
-          Back to Shop
-        </NuxtLink>
-
-        <NuxtLink to="/" class="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">
-          Go Home
-        </NuxtLink>
-      </div>
-    </div>
-
     <CartSuccessDialog :show="cartStore.dialog" @close="cartStore.dialog = false" />
   </main>
+
+  <ErrorState v-else-if="error" :retry="refresh" />
+
+  <LoadingState v-else />
+
 </template>
 
 <style scoped></style>

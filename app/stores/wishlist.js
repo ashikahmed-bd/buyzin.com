@@ -1,6 +1,3 @@
-import { defineStore } from "pinia";
-import apiClient from "~/utils/axios";
-
 export const useWishlistStore = defineStore("wishlist", {
   state: () => ({
     loading: false,
@@ -12,10 +9,11 @@ export const useWishlistStore = defineStore("wishlist", {
 
   actions: {
     async addItem(product) {
+      const { $api } = useNuxtApp();
       this.loading = product.id;
 
       try {
-        const response = await apiClient.post("/api/wishlist", {
+        const response = await $api.post("/api/wishlist", {
           product_id: product.id,
         });
         if (response.status === 201) {
@@ -32,8 +30,9 @@ export const useWishlistStore = defineStore("wishlist", {
     },
 
     async remove(wishlist) {
+      const { $api } = useNuxtApp();
       try {
-        const response = await apiClient.delete(`/api/wishlist/${wishlist}`);
+        const response = await $api.delete(`/api/wishlist/${wishlist}`);
 
         if (response.status === 200) {
           toast.success(response.data.message);
@@ -47,8 +46,9 @@ export const useWishlistStore = defineStore("wishlist", {
     },
 
     async getWishlist() {
+      const { $api } = useNuxtApp();
       try {
-        const response = await apiClient.get("/api/wishlist");
+        const response = await $api.get("/api/wishlist");
         if (response.status === 200) {
           this.items = response.data;
           return Promise.resolve(response.data);

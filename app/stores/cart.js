@@ -1,4 +1,3 @@
-import { defineStore } from "pinia";
 import apiClient from "~/utils/axios";
 
 export const useCartStore = defineStore("cart", {
@@ -104,7 +103,7 @@ export const useCartStore = defineStore("cart", {
     },
 
 
-    async checkout(payload) {
+    async checkout(payload) {  
       this.loading = true;
       try {
         const response = await apiClient.post("/api/cart/checkout", payload);

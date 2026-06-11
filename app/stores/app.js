@@ -10,7 +10,6 @@ export const useAppStore = defineStore("app", {
 
   actions: {
     async getHome() {
-      this.loading = true;
       try {
         const response = await apiClient.get("/api/home");
         if (response.status === 200) {
@@ -18,11 +17,20 @@ export const useAppStore = defineStore("app", {
         }
       } catch (error) {
         if (error.response) {
-          return Promise.reject(error.response.data);
+          return Promise.reject(error.response);
         }
-      } finally {
-        this.loading = false;
       }
     },
+
+    // async getCategories() {
+    //   try {
+    //     const response = await apiClient.get("/api/categories");
+    //     this.categories = response.data;
+    //     return response.data;
+    //   } catch (error) {
+    //     console.error(error);
+    //     throw error;
+    //   }
+    // }
   },
 });

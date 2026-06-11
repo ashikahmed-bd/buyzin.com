@@ -1,57 +1,49 @@
+//app/utils/axios.js
+
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: 'https://api.buyzin.com', // http://127.0.0.1:8000 https://api.buyzin.com
-  headers: {
-    "Content-type": "application/json",
-    Author: "Ashik Ahmed",
-  },
-  withCredentials: false,
+    baseURL: "https://api.buyzin.com", // http://127.0.0.1:8000  https://api.buyzin.com
+    timeout: 10000,
+    headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "X-Source": "Web",
+    },
+    withCredentials: false,
 });
 
 // Request interceptor
 apiClient.interceptors.request.use(
-  (config) => {
-    const authStore = useAuthStore();
-    const cartToken = useCartToken();
+    (config) => {
+        const authStore = useAuthStore();
+        const cartToken = useCartToken();
 
-    if (authStore.token) {
-      config.headers["Authorization"] = `Bearer ${authStore.token}`;
-    }
-
-    config.headers["X-Cart-Token"] = cartToken.value;
-    config.headers["X-Source"] = 'Web';
-
-    return config;
-  },
-  (error) => Promise.reject(error),
+        if (authStore.token) {
+            config.headers["Authorization"] = `Bearer ${authStore.token}`;
+        }
+        config.headers["X-Cart-Token"] = cartToken.value;
+        return config;
+    },
+    (error) => Promise.reject(error),
 );
 
 // Response interceptor
 apiClient.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    // If server returned a response (401, 422, 500 etc.)
-    if (error.response) {
-      if (error.response.status === 401) {
-        // Logout user
-        const authStore = useAuthStore();
-        authStore.$reset();
+    (response) => response,
+    async (error) => {
+        if (error.response) {
+            if (error.response.status === 401) {
+                const authStore = useAuthStore();
+                authStore.$reset();
+                navigateTo("/auth/login");
+                return Promise.reject(error);
+            }
+            return Promise.reject(error);
+        }
 
-        // DO NOT return navigateTo — reject error so catch() works
-        navigateTo("/auth/login");
-
-        // send the error to catch()
         return Promise.reject(error);
-      }
-
-      // For all other errors → pass to catch()
-      return Promise.reject(error);
-    }
-
-    // If no response (network error etc.)
-    return Promise.reject(error);
-  },
+    },
 );
 
 export default apiClient;
