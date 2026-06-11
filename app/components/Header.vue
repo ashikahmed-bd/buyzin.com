@@ -92,7 +92,7 @@ const { data: categories } = await useAsyncData("categories", async () => {
 
   <nav class="hidden md:block bg-white">
     <div class="max-w-7xl mx-auto px-4">
-      <nav class="scrollbar flex items-center overflow-x-auto whitespace-nowrap">
+      <nav v-if="categories?.data" class="scrollbar flex items-center overflow-x-auto whitespace-nowrap">
         <UDropdownMenu v-for="parent in categories?.data" :key="parent.id" :items="parent.children.map((item) => ({
           label: item.name,
           to: `/categories/${parent.slug}/${item.slug}`,

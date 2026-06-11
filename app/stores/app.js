@@ -22,15 +22,6 @@ export const useAppStore = defineStore("app", {
       }
     },
 
-    // async getCategories() {
-    //   try {
-    //     const response = await apiClient.get("/api/categories");
-    //     this.categories = response.data;
-    //     return response.data;
-    //   } catch (error) {
-    //     console.error(error);
-    //     throw error;
-    //   }
-    // }
+    
   },
 });

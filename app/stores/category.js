@@ -13,11 +13,14 @@ export const useCategoryStore = defineStore("category", {
     async getCategories() {
       try {
         const response = await apiClient.get("/api/categories");
-        this.categories = response.data;
-        return response.data;
+        if (response.status === 200) {
+          this.categories = response.data;
+          return Promise.resolve(response.data);
+        }
       } catch (error) {
-        console.error(error);
-        throw error;
+        if (error.response) {
+          return Promise.reject(error.response);
+        }
       }
     }
   },
