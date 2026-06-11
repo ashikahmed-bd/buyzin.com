@@ -35,8 +35,12 @@ useSchemaOrg([
         <UCarousel v-slot="{ item }" loop :items="home?.banners" :autoplay="{ delay: 4000 }" class="w-full">
           <a :href="item?.target_url" target="_blank" rel="noopener noreferrer"
             class="relative block overflow-hidden rounded group">
-            <NuxtImg :src="item?.image_url" :alt="item?.title" loading="eager"
-              class="w-full h-auto object-cover transition duration-500 group-hover:scale-105" />
+
+            <div class="overflow-hidden rounded-xl aspect-[16/9] md:aspect-[21/9] lg:aspect-[3/1]">
+              <NuxtImg :src="item?.image_url" :alt="item?.title" loading="eager"
+                class="w-full h-full object-cover object-center" />
+            </div>
+
             <div class="absolute inset-0 z-10 flex items-center">
               <div class="max-w-xl px-6 md:px-12 text-white">
                 <span v-if="item?.subtitle"
