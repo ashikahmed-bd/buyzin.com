@@ -32,7 +32,8 @@ useSchemaOrg([
 
     <section class="container mx-auto px-4">
       <div class="py-4">
-        <UCarousel v-slot="{ item }" loop wheel-gestures fade :items="home?.banners" :autoplay="{ delay: 3000, pauseOnHover: true }" class="w-full">
+        <UCarousel v-slot="{ item }" loop wheel-gestures fade :items="home?.banners"
+          :autoplay="{ delay: 3000, pauseOnHover: true }" class="w-full">
           <a :href="item?.target_url" target="_blank" rel="noopener noreferrer"
             class="relative block overflow-hidden rounded group">
 
@@ -52,7 +53,7 @@ useSchemaOrg([
                   {{ item?.title }}
                 </h2>
 
-                <p class="text-sm md:text-base text-white/80 leading-relaxed max-w-md">
+                <p class="text-sm text-white/80 leading-relaxed max-w-md hidden md:block">
                   {{ item?.description }}
                 </p>
 
