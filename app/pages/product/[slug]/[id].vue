@@ -6,21 +6,18 @@ const route = useRoute();
 const { link } = useWhatsapp()
 const config = useRuntimeConfig();
 
-const { related } = storeToRefs(productStore);
-
-
-const { data: product, pending, error, refresh } = await useAsyncData(
-  () => `product-${route.params.slug}-${route.params.id}`,
-  async () => {
-    return await productStore.getProduct(
-      route.params.slug,
-      route.params.id
-    )
-  },
+const { data: product, pending, error, refresh } = await useAsyncData('product', () =>
+  productStore.getProduct(
+    route.params.slug,
+    route.params.id
+  ),
   {
-    watch: [() => route.params.slug, () => route.params.id]
+    watch: [
+      () => route.params.slug,
+      () => route.params.id
+    ]
   }
-)
+);
 
 
 const selectedVariant = ref(null);
@@ -69,6 +66,7 @@ const getStars = (rating) => {
 <template>
 
   <main v-if="product">
+
     <div class="max-w-7xl mx-auto px-4 py-6 space-y-6">
       <SeoMeta :title="product?.meta_title" :description="product?.meta_description" :keywords="product?.meta_keywords"
         :image="product?.cover_url" />
@@ -141,21 +139,37 @@ const getStars = (rating) => {
               </div>
             </div>
 
-            <div class="flex flex-wrap items-end gap-3">
-              <span class="text-3xl md:text-4xl font-black text-primary leading-none">
-                {{ product?.price_formatted }}
-              </span>
+            <div class="space-y-3">
+              <div class="flex items-start justify-between">
+                <div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-4xl font-bold text-gray-900">
+                      {{ product.price_formatted }}
+                    </span>
 
-              <del v-if="product?.base_price > product?.price" class="text-base md:text-lg text-gray-400 font-medium">
-                {{ product?.base_price_formatted }}
-              </del>
+                    <span v-if="product.base_price > product.price" class="text-xl text-gray-400 line-through">
+                      {{ product.base_price_formatted }}
+                    </span>
+                  </div>
 
-              <span v-if="product?.discount_percentage > 0"
-                class="inline-flex items-center rounded-full bg-red-500 text-white px-3 py-1 text-xs md:text-sm font-bold">
-                {{ product?.discount_percentage_formatted }} OFF
-              </span>
+                  <p v-if="product.discount_percentage > 0" class="mt-1 text-lg font-medium text-success">
+                    Save
+                    {{ product.base_price - product.price }}
+                    ({{ product.discount_percentage_formatted }})
+                  </p>
+                </div>
+
+                <div class="flex items-center gap-2" :class="product.quantity > 0 ? 'text-success' : 'text-error'">
+                  <span class="h-2.5 w-2.5 rounded-full"
+                    :class="product.quantity > 0 ? 'bg-success' : 'bg-error'"></span>
+                  <span class="font-medium">
+                    {{ product.quantity > 0 ? 'In Stock' : 'Out of Stock' }}
+                  </span>
+                </div>
+              </div>
             </div>
 
+            
             <div v-if="product?.summary" class="prose prose-sm max-w-none text-gray-600">
               <div v-html="product?.summary" class="text-base leading-7"></div>
             </div>
@@ -322,6 +336,8 @@ const getStars = (rating) => {
   </main>
 
   <ErrorState v-else-if="error" :retry="refresh" />
+
+  <LoadingState v-else-if="pending" />
 
   <LoadingState v-else />
 

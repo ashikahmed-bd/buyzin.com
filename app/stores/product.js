@@ -28,7 +28,6 @@ export const useProductStore = defineStore("product", {
     },
 
     async getProduct(slug, sku) {
-      this.loading = true;
       try {
         const response = await apiClient.get(`/api/products/${slug}/${sku}`);
         if (response.status === 200) {
@@ -36,12 +35,11 @@ export const useProductStore = defineStore("product", {
         }
       } catch (error) {
         if (error.response) {
-          return Promise.reject(error.response.data);
+          return Promise.reject(error.response);
         }
-      } finally {
-        this.loading = false;
       }
     },
+
 
     async getSearch(query) {
       this.loading = true;
