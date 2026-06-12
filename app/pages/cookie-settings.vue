@@ -1,212 +1,251 @@
 <script setup>
-const appStore = useAppStore();
-const route = useRoute();
-const page = ref(null);
+const route = useRoute()
+const config = useRuntimeConfig()
 
-const loadPage = async () => {
-  const response = await appStore.getPage(route.name);
-  page.value = response.data;
-};
-
-onMounted(() => {
-  loadPage();
-});
-
-const cookies = ref([
-  {
-    name: "Essential Cookies",
-    description: "Required for basic site functionality. Cannot be disabled.",
-    enabled: true,
-    required: true,
-  },
-  {
-    name: "Performance Cookies",
-    description: "Help us analyze site traffic and improve performance.",
-    enabled: false,
-    required: false,
-  },
-  {
-    name: "Functional Cookies",
-    description: "Remember user preferences such as language or location.",
-    enabled: false,
-    required: false,
-  },
-  {
-    name: "Marketing Cookies",
-    description: "Used for personalized ads and marketing optimization.",
-    enabled: false,
-    required: false,
-  },
-]);
-
-const savePreferences = () => {
-  alert("Your cookie preferences have been saved!");
-};
+const cookies = reactive({
+  analytics: true,
+  marketing: true,
+  personalization: true,
+})
 
 const acceptAll = () => {
-  cookies.value.forEach((c) => {
-    if (!c.required) c.enabled = true;
-  });
-  alert("All cookies accepted!");
-};
+  cookies.analytics = true
+  cookies.marketing = true
+  cookies.personalization = true
+}
 
-useHead({
-  title: "Cookie Settings | Buyzin",
-  meta: [
-    {
-      name: "description",
-      content:
-        "Manage your cookie preferences on Buyzin. Control essential, performance, functional, and marketing cookies to personalize your online shopping experience.",
-    },
-  ],
-});
+const rejectOptional = () => {
+  cookies.analytics = false
+  cookies.marketing = false
+  cookies.personalization = false
+}
+
+const savePreferences = () => {
+  // API Call
+}
+
+useSchemaOrg([
+  defineWebPage({
+    name: 'Cookie Settings | Buyzin Bangladesh',
+    description:
+      'Manage your cookie preferences and understand how Buyzin uses cookies and similar technologies.',
+    url: new URL(route.fullPath, config.public.siteUrl).toString(),
+    inLanguage: 'en-BD',
+  }),
+
+  defineBreadcrumb({
+    items: [
+      { name: 'Home', item: '/' },
+      { name: 'Cookie Settings', item: '/cookie-settings' },
+    ],
+  }),
+])
 </script>
 
 <template>
-  <Head>
-    <Title>{{ page?.meta_title ?? "" }}</Title>
-    <Meta name="description" :content="page?.meta_description" />
-    <Meta name="keywords" :content="page?.meta_keywords" />
-  </Head>
+  <main class="max-w-4xl mx-auto px-6 py-6">
 
-  <main class="max-w-4xl mx-auto px-6 py-12">
-    <div class="bg-white rounded-xl px-4 py-8">
-      <template v-if="page === null">
-        <div class="space-y-6">
-          <div
-            class="h-10 bg-gray-200 rounded w-3/5 mx-auto animate-pulse"
-          ></div>
+    <Head>
+      <Title>Cookie Settings | Buyzin Bangladesh</Title>
 
-          <div
-            class="h-6 bg-gray-200 rounded w-2/5 mx-auto animate-pulse"
-          ></div>
+      <Meta name="description"
+        content="Manage your cookie preferences and learn how Buyzin uses cookies for security, analytics, personalization, and marketing." />
 
-          <div class="space-y-4 mt-6">
-            <div
-              v-for="n in 5"
-              :key="n"
-              class="h-4 bg-gray-200 rounded animate-pulse"
-            ></div>
+      <Meta name="keywords"
+        content="Buyzin cookie settings, cookie policy, privacy preferences, analytics cookies, marketing cookies, ecommerce privacy" />
+    </Head>
+
+    <section class="container mx-auto px-4 py-8">
+      <div class="max-w-5xl mx-auto">
+        <UCard class="mb-6">
+          <div class="text-center py-4">
+            <UBadge color="primary" variant="soft" class="mb-4">
+              Privacy Controls
+            </UBadge>
+
+            <h1 class="text-3xl md:text-4xl font-bold">
+              Cookie Settings
+            </h1>
+
+            <p class="mt-4 text-gray-600 max-w-2xl mx-auto">
+              Manage how Buyzin uses cookies and similar technologies to improve
+              your shopping experience, personalize content, analyze traffic,
+              and enhance website security.
+            </p>
           </div>
+        </UCard>
+
+        <div class="grid md:grid-cols-3 gap-4 mb-6">
+          <UButton block size="lg" color="primary" @click="acceptAll">
+            Accept All Cookies
+          </UButton>
+
+          <UButton block size="lg" color="neutral" variant="outline" @click="rejectOptional">
+            Reject Optional Cookies
+          </UButton>
+
+          <UButton block size="lg" variant="soft" @click="savePreferences">
+            Save Preferences
+          </UButton>
         </div>
-      </template>
 
-      <template v-else>
-        <div class="text-center mb-12">
-          <h1 class="text-4xl font-bold text-heading mb-3">
-            {{ page?.title }}
-          </h1>
-          <p class="max-w-2xl mx-auto">{{ page?.subtitle }}</p>
-        </div>
-
-        <!-- Introduction -->
-        <div class="space-y-8 text-gray-700 leading-relaxed">
-          <section>
-            <h2 class="text-2xl font-semibold mb-3 text-gray-900">
-              1. What Are Cookies?
-            </h2>
-            <p>
-              Cookies are small text files stored on your device when you visit
-              our website. They help us improve functionality, analyze traffic,
-              and provide a personalized experience.
-            </p>
-          </section>
-
-          <!-- Types of Cookies -->
-          <section>
-            <h2 class="text-2xl font-semibold mb-3 text-gray-900">
-              2. Types of Cookies We Use
-            </h2>
-            <ul class="list-disc pl-6 space-y-2">
-              <li>
-                <strong>Essential Cookies:</strong> Necessary for website
-                functionality — such as login, cart, and checkout processes.
-              </li>
-              <li>
-                <strong>Performance Cookies:</strong> Collect data to help us
-                understand how visitors use the site and improve user
-                experience.
-              </li>
-              <li>
-                <strong>Functional Cookies:</strong> Remember your preferences
-                like language, location, or login details.
-              </li>
-              <li>
-                <strong>Marketing Cookies:</strong> Used to deliver relevant ads
-                and measure the effectiveness of our marketing campaigns.
-              </li>
-            </ul>
-          </section>
-
-          <!-- Cookie Control -->
-          <section>
-            <h2 class="text-2xl font-semibold mb-3 text-gray-900">
-              3. How to Manage Cookie Preferences
-            </h2>
-            <p>
-              You can choose which cookies to accept or decline below. You can
-              also modify your preferences at any time in your browser settings.
-            </p>
-
-            <div class="mt-6 space-y-4">
-              <div
-                v-for="(cookie, index) in cookies"
-                :key="index"
-                class="flex items-center justify-between border rounded-lg p-4"
-              >
+        <div class="space-y-6">
+          <UCard>
+            <template #header>
+              <div class="flex items-center justify-between">
                 <div>
-                  <h3 class="font-semibold text-gray-900">{{ cookie.name }}</h3>
-                  <p class="text-gray-600 text-sm">{{ cookie.description }}</p>
+                  <h2 class="text-lg font-semibold">
+                    Essential Cookies
+                  </h2>
+
+                  <p class="text-sm text-gray-500">
+                    Required for website functionality
+                  </p>
                 </div>
-                <label class="inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    class="sr-only peer"
-                    v-model="cookie.enabled"
-                    :disabled="cookie.required"
-                  />
-                  <div
-                    class="relative w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-primary transition"
-                  >
-                    <div
-                      class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full peer-checked:translate-x-5 transition"
-                    ></div>
-                  </div>
-                </label>
+
+                <USwitch :model-value="true" disabled />
               </div>
-            </div>
+            </template>
 
-            <div class="mt-8 flex gap-4">
-              <button
-                @click="savePreferences"
-                class="bg-primary hover:bg-primary text-white px-6 py-2 rounded-lg font-medium"
-              >
-                Save Preferences
-              </button>
-              <button
-                @click="acceptAll"
-                class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-6 py-2 rounded-lg font-medium"
-              >
-                Accept All
-              </button>
-            </div>
-          </section>
-
-          <!-- More Info -->
-          <section>
-            <h2 class="text-2xl font-semibold mb-3 text-gray-900">
-              4. Learn More
-            </h2>
-            <p>
-              For more information about how we use cookies and protect your
-              data, please read our
-              <a href="/privacy-policy" class="text-primary hover:underline"
-                >Privacy Policy</a
-              >.
+            <p class="text-gray-600 leading-7">
+              Essential cookies enable core website functionality such as account
+              login, shopping cart management, checkout processing, fraud prevention,
+              security protection, and session management. These cookies cannot be disabled.
             </p>
-          </section>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <div class="flex items-center justify-between">
+                <div>
+                  <h2 class="text-lg font-semibold">
+                    Analytics Cookies
+                  </h2>
+
+                  <p class="text-sm text-gray-500">
+                    Help us understand website usage
+                  </p>
+                </div>
+
+                <USwitch v-model="cookies.analytics" />
+              </div>
+            </template>
+
+            <p class="text-gray-600 leading-7">
+              Analytics cookies help us understand how visitors interact with Buyzin,
+              identify popular products, monitor performance, and improve the overall
+              customer experience.
+            </p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <div class="flex items-center justify-between">
+                <div>
+                  <h2 class="text-lg font-semibold">
+                    Marketing Cookies
+                  </h2>
+
+                  <p class="text-sm text-gray-500">
+                    Personalized advertising and promotions
+                  </p>
+                </div>
+
+                <USwitch v-model="cookies.marketing" />
+              </div>
+            </template>
+
+            <p class="text-gray-600 leading-7">
+              Marketing cookies help display relevant advertisements, promotions,
+              product recommendations, and measure advertising effectiveness across platforms.
+            </p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <div class="flex items-center justify-between">
+                <div>
+                  <h2 class="text-lg font-semibold">
+                    Personalization Cookies
+                  </h2>
+
+                  <p class="text-sm text-gray-500">
+                    Customized shopping experience
+                  </p>
+                </div>
+
+                <USwitch v-model="cookies.personalization" />
+              </div>
+            </template>
+
+            <p class="text-gray-600 leading-7">
+              These cookies remember your preferences such as language,
+              recently viewed products, wishlist items, and shopping behavior
+              to provide a more personalized experience.
+            </p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                What Are Cookies?
+              </h2>
+            </template>
+
+            <p class="text-gray-600 leading-7">
+              Cookies are small text files stored on your device when you visit a website.
+              They help websites function efficiently, remember preferences, improve security,
+              and provide insights into user behavior.
+            </p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                Third-Party Cookies
+              </h2>
+            </template>
+
+            <p class="text-gray-600 leading-7">
+              Buyzin may use trusted third-party services such as analytics providers,
+              payment gateways, advertising networks, and customer support platforms
+              that may set cookies according to their own privacy policies.
+            </p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                Cookie Retention
+              </h2>
+            </template>
+
+            <p class="text-gray-600 leading-7">
+              Some cookies expire when your browser session ends, while others remain
+              stored for a defined period to remember your preferences across visits.
+            </p>
+          </UCard>
+
+          <UCard class="border-primary">
+            <div class="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+              <div>
+                <h3 class="font-semibold text-lg">
+                  Update Your Preferences
+                </h3>
+
+                <p class="text-gray-600 mt-2">
+                  Your cookie preferences can be updated at any time from this page.
+                </p>
+              </div>
+
+              <UButton size="lg" color="primary" @click="savePreferences">
+                Save Preferences
+              </UButton>
+            </div>
+          </UCard>
+
         </div>
-      </template>
-    </div>
+      </div>
+    </section>
   </main>
 </template>

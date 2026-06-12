@@ -1,200 +1,258 @@
 <script setup>
-import { main } from "#build/ui";
+const route = useRoute()
+const config = useRuntimeConfig()
 
-const appStore = useAppStore();
-const route = useRoute();
-const page = ref(null);
+useSchemaOrg([
+  defineWebPage({
+    name: 'Privacy Policy | Buyzin Bangladesh',
+    description:
+      'Read Buyzin Bangladesh Privacy Policy to understand how we collect, use, store, protect, and process your personal information, orders, payments, and account data when using our website and services.',
+    url: new URL(route.fullPath, config.public.siteUrl).toString(),
+    inLanguage: 'en-BD',
+  }),
 
-const loadPage = async () => {
-  const response = await appStore.getPage(route.name);
-  page.value = response.data;
-};
-
-onMounted(() => {
-  loadPage();
-});
+  defineBreadcrumb({
+    items: [
+      {
+        name: 'Home',
+        item: '/',
+      },
+      {
+        name: 'Privacy Policy',
+        item: '/privacy-policy',
+      },
+    ],
+  }),
+])
 </script>
 
 <template>
-  <Head>
-    <Title>{{ page?.meta_title ?? "" }}</Title>
-    <Meta name="description" :content="page?.meta_description" />
-    <Meta name="keywords" :content="page?.meta_keywords" />
-  </Head>
-
   <main class="max-w-5xl mx-auto px-4 py-8">
-    <div class="bg-white rounded-xl px-4 py-8">
-      <template v-if="page === null">
-        <div class="space-y-6">
-          <div
-            class="h-10 bg-gray-200 rounded w-3/5 mx-auto animate-pulse"
-          ></div>
 
-          <div
-            class="h-6 bg-gray-200 rounded w-2/5 mx-auto animate-pulse"
-          ></div>
+    <Head>
+      <Title>Privacy Policy | Buyzin Bangladesh</Title>
+      <Meta name="description"
+        content="Learn how Buyzin collects, uses, protects, and manages your personal information when you use our website and services." />
+      <Meta name="keywords"
+        content="Buyzin privacy policy, data protection, customer privacy, personal information, ecommerce privacy Bangladesh" />
+    </Head>
 
-          <div class="space-y-4 mt-6">
-            <div
-              v-for="n in 5"
-              :key="n"
-              class="h-4 bg-gray-200 rounded animate-pulse"
-            ></div>
+    <div class="bg-white">
+      <section class="border-b border-gray-100">
+        <div class="container mx-auto px-4 py-8">
+          <div class="max-w-4xl mx-auto text-center">
+            <UBadge color="primary" variant="soft" size="lg">
+              Legal Information
+            </UBadge>
+
+            <h1 class="mt-4 text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
+              Privacy Policy
+            </h1>
+
+            <p class="mt-6 text-lg text-gray-600">
+              Your privacy matters to us. This policy explains how
+              Buyzin collects, uses, stores, and protects your
+              personal information.
+            </p>
+
+            <p class="mt-4 text-sm text-gray-500">
+              Last Updated: June 12, 2026
+            </p>
           </div>
         </div>
-      </template>
+      </section>
 
-      <template v-else>
-        <div class="text-center mb-12">
-          <h1 class="text-4xl font-bold text-heading mb-3">
-            {{ page?.title }}
-          </h1>
-          <p class="max-w-2xl mx-auto">{{ page?.subtitle }}</p>
+      <section class="container mx-auto px-4 py-8 lg:py-12">
+        <div class="max-w-5xl mx-auto space-y-6">
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                1. Introduction
+              </h2>
+            </template>
+
+            <p class="text-gray-600 leading-7">
+              At Buyzin, we value your privacy and are committed to protecting your personal information.
+              This Privacy Policy explains how we collect, use, store, share, and safeguard information
+              when you visit our website, create an account, place orders, make payments, or interact with
+              our services. By using Buyzin, you agree to the practices described in this policy.
+            </p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                2. Information We Collect
+              </h2>
+            </template>
+
+            <p class="text-gray-600 mb-4">
+              To provide a seamless shopping experience, we may collect the following information:
+            </p>
+
+            <ul class="space-y-3 text-gray-600">
+              <li>• Full name and account information</li>
+              <li>• Email address and mobile phone number</li>
+              <li>• Shipping and billing addresses</li>
+              <li>• Order history and purchase records</li>
+              <li>• Payment-related transaction information</li>
+              <li>• Device, browser, IP address, and usage analytics</li>
+              <li>• Customer support communications and feedback</li>
+            </ul>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                3. How We Use Your Information
+              </h2>
+            </template>
+
+            <ul class="space-y-3 text-gray-600">
+              <li>• Process and deliver your orders</li>
+              <li>• Manage customer accounts and authentication</li>
+              <li>• Provide customer support and resolve issues</li>
+              <li>• Improve website performance and user experience</li>
+              <li>• Prevent fraud, abuse, and unauthorized activities</li>
+              <li>• Send order updates, service notices, and account notifications</li>
+              <li>• Provide personalized offers, discounts, and recommendations</li>
+              <li>• Comply with legal and regulatory obligations</li>
+            </ul>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                4. Cookies & Tracking Technologies
+              </h2>
+            </template>
+
+            <p class="text-gray-600 leading-7">
+              Buyzin uses cookies, pixels, and similar technologies to remember your preferences,
+              improve website functionality, analyze traffic patterns, enhance security, and deliver
+              personalized shopping experiences. You may disable cookies through your browser settings,
+              although some features may not function properly.
+            </p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                5. Information Sharing & Disclosure
+              </h2>
+            </template>
+
+            <p class="text-gray-600 mb-4">
+              We do not sell or rent your personal information.
+            </p>
+
+            <p class="text-gray-600">
+              Information may be shared with trusted third-party service providers including payment
+              gateways, delivery partners, cloud infrastructure providers, analytics services, and
+              regulatory authorities when required by law or necessary to provide our services.
+            </p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                6. Data Security
+              </h2>
+            </template>
+
+            <p class="text-gray-600 leading-7">
+              We implement reasonable technical, administrative, and organizational safeguards to
+              protect your personal information against unauthorized access, misuse, loss, disclosure,
+              alteration, or destruction. While we strive to protect your data, no internet transmission
+              or electronic storage system can be guaranteed to be 100% secure.
+            </p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                7. Data Retention
+              </h2>
+            </template>
+
+            <p class="text-gray-600 leading-7">
+              We retain personal information only for as long as necessary to fulfill business,
+              operational, legal, tax, accounting, and regulatory requirements. When data is no longer
+              required, it is securely deleted or anonymized.
+            </p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                8. Your Privacy Rights
+              </h2>
+            </template>
+
+            <ul class="space-y-3 text-gray-600">
+              <li>• Access your personal information</li>
+              <li>• Update inaccurate account details</li>
+              <li>• Request account deletion where applicable</li>
+              <li>• Opt out of marketing communications</li>
+              <li>• Request information regarding stored personal data</li>
+              <li>• Raise privacy-related concerns with our support team</li>
+            </ul>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                9. Third-Party Services
+              </h2>
+            </template>
+
+            <p class="text-gray-600 leading-7">
+              Our website may contain links to third-party websites, services, or applications.
+              Buyzin is not responsible for the privacy practices, policies, or content of external
+              websites. We encourage users to review the privacy policies of those services before use.
+            </p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                10. Policy Updates
+              </h2>
+            </template>
+
+            <p class="text-gray-600 leading-7">
+              We may update this Privacy Policy from time to time to reflect changes in our business,
+              technology, legal requirements, or services. Updates will be published on this page along
+              with the revised effective date.
+            </p>
+          </UCard>
         </div>
-        <!-- Content -->
-        <div class="space-y-10 prose max-w-none">
-          <!-- 1. Introduction -->
-          <section>
-            <h2 class="text-2xl font-semibold text-gray-800">
-              1. Introduction
-            </h2>
-            <p>
-              Welcome to Buyzin ("we", "our", "us"). By accessing or using our
-              website, you agree to this Privacy Policy. We are committed to
-              safeguarding your privacy and ensuring transparency in how we
-              handle your data.
-            </p>
-          </section>
+      </section>
 
-          <!-- 2. Information We Collect -->
-          <section>
-            <h2 class="text-2xl font-semibold text-gray-800">
-              2. Information We Collect
-            </h2>
-            <p>
-              We collect different types of information to provide and improve
-              our services:
-            </p>
-            <ul class="list-disc ml-6">
-              <li>
-                <strong>Personal Information:</strong> Name, phone number, email
-                address, shipping and billing address.
-              </li>
-              <li>
-                <strong>Account Information:</strong> Login details, password
-                (encrypted).
-              </li>
-              <li>
-                <strong>Transaction Details:</strong> Orders, payments, and
-                purchase history.
-              </li>
-              <li>
-                <strong>Device & Usage Data:</strong> IP address, browser type,
-                and usage analytics.
-              </li>
-            </ul>
-          </section>
+      <section class="bg-gray-50">
+        <div class="container mx-auto px-4 py-16">
+          <div class="max-w-3xl mx-auto">
+            <UCard>
+              <div class="text-center">
+                <h2 class="text-2xl font-bold text-gray-900">
+                  Questions About Privacy?
+                </h2>
 
-          <!-- 3. How We Use Your Information -->
-          <section>
-            <h2 class="text-2xl font-semibold text-gray-800">
-              3. How We Use Your Information
-            </h2>
-            <p>We use your data to:</p>
-            <ul class="list-disc ml-6">
-              <li>Process and deliver your orders.</li>
-              <li>Provide customer support and respond to inquiries.</li>
-              <li>Improve our website, products, and services.</li>
-              <li>
-                Send updates, offers, or promotional information (only with your
-                consent).
-              </li>
-              <li>Comply with legal obligations.</li>
-            </ul>
-          </section>
+                <p class="mt-3 text-gray-600">
+                  If you have any questions, concerns, or requests regarding this Privacy Policy or the handling of your
+                  personal information, please contact the Buyzin Customer Support Team.
+                </p>
 
-          <!-- 4. Cookies and Tracking -->
-          <section>
-            <h2 class="text-2xl font-semibold text-gray-800">
-              4. Cookies and Tracking Technologies
-            </h2>
-            <p>
-              We use cookies to personalize your shopping experience, analyze
-              website traffic, and improve site performance. You can manage or
-              disable cookies in your browser settings.
-            </p>
-          </section>
-
-          <!-- 5. Data Protection -->
-          <section>
-            <h2 class="text-2xl font-semibold text-gray-800">
-              5. How We Protect Your Data
-            </h2>
-            <p>
-              We implement strong technical and organizational measures to
-              protect your data against unauthorized access, alteration,
-              disclosure, or destruction. Sensitive information (like passwords
-              and payment data) is encrypted and securely transmitted.
-            </p>
-          </section>
-
-          <!-- 6. Third-Party Services -->
-          <section>
-            <h2 class="text-2xl font-semibold text-gray-800">
-              6. Third-Party Services
-            </h2>
-            <p>
-              We may use trusted third-party service providers (like payment
-              gateways and delivery partners) to perform functions on our
-              behalf. These parties are obligated to protect your data and use
-              it only as necessary.
-            </p>
-          </section>
-
-          <!-- 7. Your Rights -->
-          <section>
-            <h2 class="text-2xl font-semibold text-gray-800">7. Your Rights</h2>
-            <p>You have the right to:</p>
-            <ul class="list-disc ml-6">
-              <li>Access and review your personal data.</li>
-              <li>Request corrections to inaccurate information.</li>
-              <li>Request deletion of your account and data.</li>
-              <li>Opt out of marketing communications at any time.</li>
-            </ul>
-          </section>
-
-          <!-- 8. Policy Updates -->
-          <section>
-            <h2 class="text-2xl font-semibold text-gray-800">
-              8. Changes to This Policy
-            </h2>
-            <p>
-              We may update this Privacy Policy from time to time to reflect
-              improvements or legal requirements. Updates will be posted on this
-              page with the revised date.
-            </p>
-          </section>
-
-          <!-- 9. Contact -->
-          <section>
-            <h2 class="text-2xl font-semibold text-gray-800">9. Contact Us</h2>
-            <p>
-              If you have questions or concerns about this Privacy Policy,
-              please contact us at:
-            </p>
-            <div class="mt-4">
-              <p><strong>Email:</strong> support@buyzin.com</p>
-              <p><strong>Phone:</strong> +880-1516-598533</p>
-              <p><strong>Address:</strong> Buyzin Limited, Dhaka, Bangladesh</p>
-            </div>
-          </section>
-
-          <!-- Last updated -->
-          <div class="text-sm text-gray-400 mt-12 text-center">
-            Last updated: November 2025
+                <div class="mt-8">
+                  <UButton to="/contact" size="xl">
+                    Contact Support
+                  </UButton>
+                </div>
+              </div>
+            </UCard>
           </div>
         </div>
-      </template>
+      </section>
     </div>
   </main>
 </template>

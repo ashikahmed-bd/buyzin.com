@@ -114,7 +114,7 @@ useSchemaOrg([
         </div>
 
         <UCarousel v-if="home?.promotions?.items?.length" v-slot="{ item }" loop :autoplay="{ delay: 3000 }"
-          :items="data?.promotions?.items" :ui="{
+          :items="home?.promotions?.items" :ui="{
             item: 'basis-1/2 sm:basis-1/2 md:basis-1/4 lg:basis-1/5'
           }">
           <CycloneProductCard :product="item" />

@@ -1,182 +1,233 @@
 <script setup>
-const appStore = useAppStore();
-const route = useRoute();
-const page = ref(null);
+const route = useRoute()
+const config = useRuntimeConfig()
 
-const loadPage = async () => {
-  const response = await appStore.getPage(route.name);
-  page.value = response.data;
-};
-
-onMounted(() => {
-  loadPage();
-});
-
-const faqs = ref([
+const faqs = [
   {
-    question: "What is Buyzin?",
-    answer:
-      "Buyzin is Bangladesh’s trusted online shopping platform offering 100% genuine and authentic products with fast delivery and secure payments.",
+    category: "Orders & Shopping",
+    items: [
+      {
+        question: "How do I place an order on Buyzin?",
+        answer:
+          "Browse products, add items to your cart, proceed to checkout, enter your shipping details, and complete payment."
+      },
+      {
+        question: "Can I cancel my order after placing it?",
+        answer:
+          "Orders can be cancelled before they are shipped. Contact our support team as soon as possible."
+      },
+      {
+        question: "How can I track my order?",
+        answer:
+          "You can track your order from your account dashboard under the Orders section."
+      }
+    ]
   },
   {
-    question: "How can I place an order?",
-    answer:
-      "Browse your favorite products, add them to your cart, and complete checkout using any of our supported payment methods.",
+    category: "Payments",
+    items: [
+      {
+        question: "What payment methods are accepted?",
+        answer:
+          "We accept Cash on Delivery (COD), Visa, Mastercard, Mobile Banking, and Online Payments."
+      },
+      {
+        question: "Is online payment secure?",
+        answer:
+          "Yes. All transactions are processed through secure payment gateways with industry-standard encryption."
+      }
+    ]
   },
   {
-    question: "What payment methods are accepted?",
-    answer:
-      "We accept Bkash, Nagad, Rocket, Visa, MasterCard, and Cash on Delivery for your convenience.",
+    category: "Shipping & Delivery",
+    items: [
+      {
+        question: "How long does delivery take?",
+        answer:
+          "Delivery usually takes 1–3 business days inside Dhaka and 2–7 business days outside Dhaka."
+      },
+      {
+        question: "Do you deliver nationwide?",
+        answer:
+          "Yes. Buyzin delivers products across Bangladesh."
+      }
+    ]
   },
   {
-    question: "How long does delivery take?",
-    answer:
-      "Orders within Dhaka are usually delivered within 1–3 days, while outside Dhaka may take 3–7 days depending on location.",
+    category: "Returns & Refunds",
+    items: [
+      {
+        question: "What is your return policy?",
+        answer:
+          "Eligible products can be returned within the return window if they meet our return conditions."
+      },
+      {
+        question: "How do refunds work?",
+        answer:
+          "Approved refunds are processed to the original payment method or store credit depending on the payment type."
+      }
+    ]
   },
   {
-    question: "Can I return or exchange a product?",
-    answer:
-      "Yes! You can return or exchange products within 7 days of delivery if they are unused, unopened, and in their original packaging.",
-  },
-  {
-    question: "How can I contact customer support?",
-    answer:
-      "You can reach our support team via email at support@buyzin.com or call us at +880-1516-598533.",
-  },
-]);
+    category: "Warranty & Support",
+    items: [
+      {
+        question: "Do products come with warranty?",
+        answer:
+          "Warranty coverage depends on the product and brand. Warranty information is shown on the product page."
+      },
+      {
+        question: "How can I contact customer support?",
+        answer:
+          "You can contact us through our contact page, email, or customer support hotline."
+      }
+    ]
+  }
+]
 
-const searchQuery = ref("");
-const activeIndex = ref(null);
-
-const filteredFaqs = computed(() =>
-  faqs.value.filter((faq) =>
-    faq.question.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-);
-
-const toggle = (index) => {
-  activeIndex.value = activeIndex.value === index ? null : index;
-};
 
 useSchemaOrg([
   defineWebPage({
-    "@type": "FAQPage",
+    name: 'Frequently Asked Questions (FAQ) | Buyzin Bangladesh',
+    description:
+      'Find answers to common questions about orders, payments, shipping, delivery, returns, refunds, warranty, and customer support at Buyzin.',
+    url: new URL(route.fullPath, config.public.siteUrl).toString(),
+    inLanguage: 'en-US',
   }),
-  defineQuestion({
-    name: "How long is a piece of string?",
-    acceptedAnswer:
-      "The length of a piece of string is the number of characters in the string.",
+
+  defineBreadcrumb({
+    items: [
+      {
+        name: 'Home',
+        item: '/',
+      },
+      {
+        name: 'FAQ',
+        item: '/faq',
+      },
+    ],
   }),
-  defineQuestion({
-    name: "How big is a giraffe?",
-    acceptedAnswer: "A giraffe is 12 feet tall",
-  }),
-]);
+
+  {
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'How do I place an order on Buyzin?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Browse products, add items to your cart, proceed to checkout, enter your shipping details, and complete payment.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How can I track my order?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'You can track your order from your account dashboard under the Orders section.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What payment methods are accepted?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'We accept Cash on Delivery (COD), Visa, Mastercard, Mobile Banking, and secure online payments.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How long does delivery take?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Delivery typically takes 1-3 business days inside Dhaka and 2-7 business days outside Dhaka.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Can I return a product?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Eligible products can be returned within the applicable return period according to our return policy.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Do products come with warranty?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Warranty coverage varies by product and brand. Please check the warranty information on the product page.',
+        },
+      },
+    ],
+  },
+])
 </script>
 
 <template>
-  <Head>
-    <Title>{{ page?.meta_title ?? "" }}</Title>
-    <Meta name="description" :content="page?.meta_description" />
-    <Meta name="keywords" :content="page?.meta_keywords" />
-  </Head>
 
   <main class="max-w-4xl mx-auto px-4 py-6">
-    <div class="bg-white rounded-xl px-4 py-8">
-      <template v-if="page === null">
-        <div class="space-y-6">
-          <div
-            class="h-10 bg-gray-200 rounded w-3/5 mx-auto animate-pulse"
-          ></div>
 
-          <div
-            class="h-6 bg-gray-200 rounded w-2/5 mx-auto animate-pulse"
-          ></div>
+    <Head>
+      <Title>Frequently Asked Questions (FAQ) | Buyzin Bangladesh</Title>
+      <Meta name="description"
+        content="Find answers to common questions about orders, payments, shipping, returns, refunds, warranty, and account management at Buyzin Bangladesh." />
+      <Meta name="keywords"
+        content="Buyzin FAQ, Buyzin help center, online shopping Bangladesh, order tracking, return policy, refund policy, payment methods, warranty information, ecommerce support" />
+    </Head>
 
-          <div class="space-y-4 mt-6">
-            <div
-              v-for="n in 5"
-              :key="n"
-              class="h-4 bg-gray-200 rounded animate-pulse"
-            ></div>
+
+    <div class="bg-white">
+      <section class="border-b border-gray-100">
+        <div class="container mx-auto px-4 py-16">
+          <div class="max-w-3xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900">
+              Frequently Asked Questions
+            </h1>
+
+            <p class="mt-4 text-lg text-gray-600">
+              Find quick answers about orders, payments, delivery,
+              returns, warranties, and more.
+            </p>
           </div>
         </div>
-      </template>
-      <template v-else>
-        <div class="mx-auto">
-          <h1 class="text-4xl font-bold text-center mb-6 text-gray-800">
-            {{ page?.title }}
-          </h1>
-          <p class="text-center text-gray-500 mb-10">
-            {{ page?.subtitle }}
-          </p>
-        </div>
-        <!-- Search Bar -->
-        <div class="flex justify-center mb-8">
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Search for a question..."
-            class="w-full max-w-sm border border-border rounded-full px-5 py-3 focus:ring-2 focus:ring-primary focus:outline-none"
-          />
-        </div>
+      </section>
 
-        <!-- FAQ Accordion -->
-        <div class="space-y-4">
-          <div
-            v-for="(faq, index) in filteredFaqs"
-            :key="index"
-            class="border border-border rounded-2xl overflow-hidden"
-          >
-            <button
-              @click="toggle(index)"
-              class="w-full flex justify-between items-center px-6 py-4 text-left font-semibold text-gray-800 hover:bg-gray-50 transition"
-            >
-              <span>{{ faq.question }}</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 transform transition-transform duration-200"
-                :class="{ 'rotate-180': activeIndex === index }"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
+      <section class="container mx-auto px-4 py-16">
+        <div class="max-w-4xl mx-auto space-y-10">
+          <div v-for="section in faqs" :key="section.category" class="space-y-4">
+            <h2 class="text-2xl font-bold text-gray-900 border-b pb-3">
+              {{ section.category }}
+            </h2>
 
-            <transition
-              enter-active-class="transition duration-300 ease-out"
-              enter-from-class="opacity-0 max-h-0"
-              enter-to-class="opacity-100 max-h-screen"
-              leave-active-class="transition duration-200 ease-in"
-              leave-from-class="opacity-100 max-h-screen"
-              leave-to-class="opacity-0 max-h-0"
-            >
-              <div
-                v-if="activeIndex === index"
-                class="px-6 pb-4 text-gray-600 bg-gray-50"
-              >
-                {{ faq.answer }}
-              </div>
-            </transition>
+            <UAccordion :items="section.items.map(item => ({
+              label: item.question,
+              content: item.answer
+            }))
+              " />
           </div>
         </div>
+      </section>
 
-        <!-- Empty State -->
-        <div
-          v-if="filteredFaqs.length === 0"
-          class="text-center mt-10 text-gray-500"
-        >
-          No results found for "<strong>{{ searchQuery }}</strong
-          >"
+      <section class="bg-gray-50">
+        <div class="container mx-auto px-4 py-16">
+          <div class="max-w-2xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-gray-900">
+              Still Need Help?
+            </h2>
+
+            <p class="mt-4 text-gray-600">
+              Can't find the answer you're looking for? Our support team is ready to help.
+            </p>
+
+            <div class="mt-8">
+              <UButton to="/contact-us" size="xl">
+                Contact Support
+              </UButton>
+            </div>
+          </div>
         </div>
-      </template>
+      </section>
     </div>
   </main>
 </template>

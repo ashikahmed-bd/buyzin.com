@@ -19,7 +19,6 @@ const { data: product, pending, error, refresh } = await useAsyncData('product',
   }
 );
 
-
 const selectedVariant = ref(null);
 
 const selectVariant = (variant) => {
@@ -82,28 +81,8 @@ const getStars = (rating) => {
         </div>
 
         <div class="w-full">
-          <div class="sticky top-24 bg-white space-y-6">
+          <div class="sticky top-24 bg-white space-y-3">
             <div class="space-y-2">
-              <div v-if="product?.has_discount"
-                class="relative overflow-hidden rounded-xl bg-gradient-to-r from-red-600 to-pink-500 text-white ">
-                <div class="flex items-center justify-between px-5 py-4">
-                  <div class="flex items-center gap-4">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
-                      <UIcon name="i-heroicons-percent-badge" class="h-6 w-6 text-white" />
-                    </div>
-
-                    <div>
-                      <p class="text-sm font-semibold uppercase tracking-wide">
-                        Limited Time Promo!
-                      </p>
-                      <p class="text-xs text-white/80">
-                        Don’t miss this exclusive offer
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
               <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight text-dark leading-tight">
                 {{ product?.name }}
               </h1>
@@ -112,11 +91,16 @@ const getStars = (rating) => {
                 <div class="flex items-center gap-2">
                   <div class="flex items-center">
                     <UIcon v-for="(type, i) in getStars(product?.rating_avg)" :key="i" :name="type === 'full'
-                      ? 'i-heroicons-star-solid'
+                      ? 'i-heroicons:star-solid'
                       : type === 'half'
-                        ? 'i-heroicons-star'
-                        : 'i-heroicons-star'
-                      " class="text-amber-400 size-4" />
+                        ? 'i-heroicons:star-half-solid'
+                        : 'i-heroicons:star'
+                      " class="size-4" :class="type === 'full'
+                        ? 'text-amber-400'
+                        : type === 'half'
+                          ? 'text-amber-400'
+                          : 'text-gray-300'
+                        " />
                   </div>
 
                   <span class="font-semibold text-gray-900">
@@ -124,7 +108,7 @@ const getStars = (rating) => {
                   </span>
 
                   <span class="text-gray-500 text-sm">
-                    ({{ product?.review_count }})
+                    ({{ product?.review_count }} Reviews)
                   </span>
                 </div>
 
@@ -139,42 +123,30 @@ const getStars = (rating) => {
               </div>
             </div>
 
-            <div class="space-y-3">
-              <div class="flex items-start justify-between">
-                <div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-4xl font-bold text-gray-900">
-                      {{ product.price_formatted }}
-                    </span>
+            <div class="py-2">
+              <div class="flex items-end justify-between">
+                <div class="flex items-baseline gap-2.5">
+                  <span class="text-4xl font-bold text-gray-900">
+                    {{ product.price_formatted }}
+                  </span>
 
-                    <span v-if="product.base_price > product.price" class="text-xl text-gray-400 line-through">
-                      {{ product.base_price_formatted }}
-                    </span>
-                  </div>
+                  <span v-if="product.base_price > product.price" class="text-xl text-gray-400 line-through">
+                    {{ product.base_price_formatted }}
+                  </span>
 
-                  <p v-if="product.discount_percentage > 0" class="mt-1 text-lg font-medium text-success">
-                    Save
-                    {{ product.base_price - product.price }}
-                    ({{ product.discount_percentage_formatted }})
-                  </p>
-                </div>
-
-                <div class="flex items-center gap-2" :class="product.quantity > 0 ? 'text-success' : 'text-error'">
-                  <span class="h-2.5 w-2.5 rounded-full"
-                    :class="product.quantity > 0 ? 'bg-success' : 'bg-error'"></span>
-                  <span class="font-medium">
-                    {{ product.quantity > 0 ? 'In Stock' : 'Out of Stock' }}
+                  <span v-if="product.has_discount"
+                    class="text-sm font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded">
+                    Save {{ product.discount_percentage }}
                   </span>
                 </div>
               </div>
             </div>
 
-            
-            <div v-if="product?.summary" class="prose prose-sm max-w-none text-gray-600">
-              <div v-html="product?.summary" class="text-base leading-7"></div>
+            <div v-if="product?.features" class="text-body py-4">
+              <MDC :value="product?.features" class="prose max-w-none" />
             </div>
 
-            <div class="flex flex-wrap gap-2 mt-4 text-xs">
+            <div class="flex flex-wrap gap-2 text-xs">
               <div v-if="product?.dimensions?.weight" class="px-3 py-1 bg-white border rounded">
                 Weight: {{ product.dimensions.weight }} {{ product.dimensions.unit.weight }}
               </div>
@@ -282,14 +254,99 @@ const getStars = (rating) => {
         </div>
       </section>
 
-      <div class="bg-white py-4 rounded-xl">
+      <section>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 border rounded-xl p-6 bg-white">
+          <div class="flex items-start gap-3">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <UIcon name="i-lucide-badge-check" class="size-6" />
+            </div>
+
+            <div class="min-w-0 flex-1">
+              <h4 class="font-semibold text-gray-900">
+                Official Warranty
+              </h4>
+              <p v-html="product?.warranty" class="mt-1 text-sm text-gray-600"></p>
+
+              <NuxtLink to="/warranty-policy" target="_blank"
+                class="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+                View details
+                <UIcon name="i-lucide-arrow-right" class="size-4" />
+              </NuxtLink>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <UIcon name="i-lucide-truck" class="size-6" />
+            </div>
+
+            <div class="min-w-0 flex-1">
+              <h4 class="font-semibold text-gray-900">
+                Estimated Delivery
+              </h4>
+              <p v-html="product?.estimated_delivery" class="mt-1 text-sm text-gray-600"></p>
+              <NuxtLink to="/shipping-delivery" target="_blank"
+                class="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+                Learn more
+                <UIcon name="i-lucide-arrow-right" class="size-4" />
+              </NuxtLink>
+            </div>
+          </div>
+
+          <div v-if="product?.is_refundable" class="flex items-start gap-3">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <UIcon name="i-lucide-refresh-cw" class="size-6" />
+            </div>
+
+            <div class="min-w-0 flex-1">
+              <h4 class="font-semibold text-gray-900">
+                Return Policy
+              </h4>
+
+              <p class="mt-1 text-sm text-gray-600">
+                {{ product.return_policy }}
+              </p>
+
+              <NuxtLink to="/return-policy" target="_blank"
+                class="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+                View policy
+                <UIcon name="i-lucide-arrow-right" class="size-4" />
+              </NuxtLink>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <UIcon name="i-lucide-store" class="size-6" />
+            </div>
+
+            <div class="min-w-0 flex-1">
+              <h4 class="font-semibold text-gray-900">
+                Authorized Seller
+              </h4>
+
+              <p class="mt-1 text-sm text-gray-600 line-clamp-2">
+                Sold by {{ product?.store?.name }}
+              </p>
+
+              <NuxtLink :to="`/stores/${product?.store?.slug}`"
+                class="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+                About Store
+                <UIcon name="i-lucide-arrow-right" class="size-4" />
+              </NuxtLink>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white py-4 rounded-xl">
         <Tabs :tabs="[
           { label: 'Description', slot: 'description' },
           { label: 'Specifications', slot: 'specifications' },
           { label: 'Reviews', slot: 'reviews' },
         ]">
           <template #description>
-            <MDC :value="product?.description" class="prose max-w-none [&_hr]:!my-0" />
+            <MDC :value="product?.description" class="prose max-w-none" />
           </template>
           <template #specifications>
             <table v-for="section in product?.specifications" :key="section.title" class="mb-6 border max-w-5xl w-full">
@@ -312,9 +369,9 @@ const getStars = (rating) => {
             <ProductReview />
           </template>
         </Tabs>
-      </div>
+      </section>
 
-      <div class="py-8 md:16">
+      <section class="py-8 md:16">
         <div class="flex flex-wrap items-center justify-between mb-4">
           <div class="block">
             <h2 class="text-2xl font-bold text-heading">Related products</h2>
@@ -329,7 +386,7 @@ const getStars = (rating) => {
           :ui="{ item: 'basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5' }" class="gap-4">
           <ProductCard :product="item" />
         </UCarousel> -->
-      </div>
+      </section>
     </div>
 
     <CartSuccessDialog :show="cartStore.dialog" @close="cartStore.dialog = false" />

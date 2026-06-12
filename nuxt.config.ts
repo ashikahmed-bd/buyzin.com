@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  
+
   devtools: { enabled: false },
 
   css: ['~/assets/css/main.css'],
@@ -17,6 +17,24 @@ export default defineNuxtConfig({
   },
 
   modules: ['@nuxt/image', '@pinia/nuxt', 'pinia-plugin-persistedstate/nuxt', '@nuxtjs/sitemap', 'nuxt-schema-org', '@nuxt/ui', 'nuxt-gtag', '@nuxtjs/mdc'],
+
+  mdc: {
+    components: {
+      prose: true,
+    }
+  },
+
+  components: [
+    {
+      path: '~/components',
+      global: true
+    },
+    {
+      path: '~/components/prose',
+      global: true
+    }
+  ],
+
 
   gtag: {
     id: 'G-4JS5BWE863'

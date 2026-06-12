@@ -1,187 +1,271 @@
 <script setup>
-const appStore = useAppStore();
-const route = useRoute();
-const page = ref(null);
+const route = useRoute()
+const config = useRuntimeConfig()
 
-const loadPage = async () => {
-  const response = await appStore.getPage(route.name);
-  page.value = response.data;
-};
+useSchemaOrg([
+  defineWebPage({
+    name: 'Shipping & Delivery Policy | Buyzin Bangladesh',
+    description:
+      'Learn about Buyzin shipping methods, delivery coverage, estimated delivery times, shipping charges, and order tracking.',
+    url: new URL(route.fullPath, config.public.siteUrl).toString(),
+    inLanguage: 'en-BD',
+  }),
 
-onMounted(() => {
-  loadPage();
-});
+  defineBreadcrumb({
+    items: [
+      { name: 'Home', item: '/' },
+      { name: 'Shipping & Delivery', item: '/shipping-delivery' },
+    ],
+  }),
+])
 </script>
 
 <template>
-  <Head>
-    <Title>{{ page?.meta_title ?? "" }}</Title>
-    <Meta name="description" :content="page?.meta_description" />
-    <Meta name="keywords" :content="page?.meta_keywords" />
-  </Head>
 
-  <div class="max-w-4xl mx-auto px-6 py-12">
-    <div class="bg-white rounded-xl px-4 py-8">
-      <template v-if="page === null">
+  <main class="max-w-4xl mx-auto px-6 py-6">
+
+    <Head>
+      <Title>Shipping & Delivery Policy | Buyzin Bangladesh</Title>
+
+      <Meta name="description"
+        content="Learn about Buyzin shipping methods, delivery coverage, estimated delivery times, shipping charges, order tracking, and courier policies." />
+
+      <Meta name="keywords"
+        content="Buyzin shipping policy, delivery policy Bangladesh, order tracking, courier delivery, shipping charges, ecommerce delivery" />
+    </Head>
+
+    <section class="container mx-auto px-4 py-8">
+      <div class="max-w-5xl mx-auto">
+        <div class="mb-6">
+          <UBadge color="primary" variant="soft">
+            Last Updated: June 12, 2026
+          </UBadge>
+        </div>
+
         <div class="space-y-6">
-          <div
-            class="h-10 bg-gray-200 rounded w-3/5 mx-auto animate-pulse"
-          ></div>
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                1. Shipping & Delivery Overview
+              </h2>
+            </template>
 
-          <div
-            class="h-6 bg-gray-200 rounded w-2/5 mx-auto animate-pulse"
-          ></div>
-
-          <div class="space-y-4 mt-6">
-            <div
-              v-for="n in 5"
-              :key="n"
-              class="h-4 bg-gray-200 rounded animate-pulse"
-            ></div>
-          </div>
-        </div>
-      </template>
-
-      <template v-else>
-        <div class="text-center mb-12">
-          <h1 class="text-4xl font-bold text-heading mb-3">
-            {{ page?.title }}
-          </h1>
-          <p class="max-w-2xl mx-auto">{{ page?.subtitle }}</p>
-        </div>
-        <!-- Main Content -->
-        <div class="space-y-10 text-gray-700 leading-relaxed">
-          <!-- Section 1 -->
-          <section>
-            <h2 class="text-2xl font-semibold mb-3 text-gray-900">
-              1. Delivery Coverage
-            </h2>
-            <p>
-              Buyzin delivers across all major cities and towns in Bangladesh.
-              Our goal is to make sure every customer enjoys a smooth and fast
-              delivery experience no matter where they are located.
+            <p class="text-gray-600 leading-7">
+              Buyzin is committed to delivering your orders safely, efficiently,
+              and on time. This Shipping & Delivery Policy explains our order
+              processing timelines, shipping methods, delivery coverage, estimated
+              delivery times, and other important information regarding the shipment
+              of products purchased through our platform.
             </p>
-            <ul class="list-disc pl-6 mt-3 space-y-2">
-              <li>Dhaka Metro — same-day or next-day delivery.</li>
-              <li>Outside Dhaka — within 2–5 working days.</li>
-              <li>Remote areas — within 5–7 working days.</li>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                2. Delivery Coverage
+              </h2>
+            </template>
+
+            <p class="text-gray-600 mb-4">
+              We currently provide delivery services throughout Bangladesh.
+            </p>
+
+            <ul class="space-y-3 text-gray-600">
+              <li>• Nationwide delivery coverage.</li>
+              <li>• Home delivery available in most locations.</li>
+              <li>• Delivery availability may vary for remote areas.</li>
+              <li>• Certain products may have delivery restrictions based on location.</li>
             </ul>
-          </section>
+          </UCard>
 
-          <!-- Section 2 -->
-          <section>
-            <h2 class="text-2xl font-semibold mb-3 text-gray-900">
-              2. Shipping Partners
-            </h2>
-            <p>
-              We partner with trusted courier services such as Pathao, RedX, and
-              Sundarban Courier to ensure your products are delivered safely and
-              on time.
-            </p>
-          </section>
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                3. Order Processing Time
+              </h2>
+            </template>
 
-          <!-- Section 3 -->
-          <section>
-            <h2 class="text-2xl font-semibold mb-3 text-gray-900">
-              3. Processing & Dispatch
-            </h2>
-            <p>
-              Orders are processed within <strong>24 hours</strong> of
-              confirmation. Once dispatched, you’ll receive a tracking link via
-              SMS or email so you can follow your order’s journey.
+            <p class="text-gray-600 leading-7">
+              Orders are typically processed within 24–48 business hours after
+              successful order confirmation. Orders placed during weekends,
+              public holidays, or promotional events may require additional processing time.
             </p>
-            <ul class="list-disc pl-6 mt-3 space-y-2">
-              <li>Orders placed before 3 PM are shipped the same day.</li>
-              <li>Orders after 3 PM are shipped the next business day.</li>
-              <li>Public holidays may affect delivery timelines.</li>
-            </ul>
-          </section>
+          </UCard>
 
-          <!-- Section 4 -->
-          <section>
-            <h2 class="text-2xl font-semibold mb-3 text-gray-900">
-              4. Shipping Fees
-            </h2>
-            <p>
-              We offer affordable and transparent shipping charges based on your
-              location and the size/weight of your order.
-            </p>
-            <div class="overflow-x-auto mt-4">
-              <table class="min-w-full border rounded-lg">
-                <thead>
-                  <tr class="bg-gray-100 text-left text-gray-800">
-                    <th class="py-2 px-4 border-b">Location</th>
-                    <th class="py-2 px-4 border-b">Delivery Time</th>
-                    <th class="py-2 px-4 border-b">Charge</th>
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                4. Estimated Delivery Time
+              </h2>
+            </template>
+
+            <div class="overflow-x-auto">
+              <table class="w-full border border-gray-200 rounded-lg">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="text-left p-4 border-b">Location</th>
+                    <th class="text-left p-4 border-b">Estimated Delivery Time</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   <tr>
-                    <td class="py-2 px-4 border-b">Dhaka Metro</td>
-                    <td class="py-2 px-4 border-b">1–2 Days</td>
-                    <td class="py-2 px-4 border-b">৳60</td>
+                    <td class="p-4 border-b">Dhaka City</td>
+                    <td class="p-4 border-b">1–3 Business Days</td>
                   </tr>
+
                   <tr>
-                    <td class="py-2 px-4 border-b">Outside Dhaka</td>
-                    <td class="py-2 px-4 border-b">2–5 Days</td>
-                    <td class="py-2 px-4 border-b">৳100</td>
+                    <td class="p-4 border-b">Major Cities</td>
+                    <td class="p-4 border-b">2–5 Business Days</td>
                   </tr>
+
                   <tr>
-                    <td class="py-2 px-4 border-b">Remote Areas</td>
-                    <td class="py-2 px-4 border-b">5–7 Days</td>
-                    <td class="py-2 px-4 border-b">৳150</td>
+                    <td class="p-4">Remote Areas</td>
+                    <td class="p-4">3–7 Business Days</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-          </section>
 
-          <!-- Section 5 -->
-          <section>
-            <h2 class="text-2xl font-semibold mb-3 text-gray-900">
-              5. Order Tracking
-            </h2>
-            <p>
-              Once your order is shipped, you can easily track its progress
-              using the tracking number provided in your confirmation message.
-              You can also check the status anytime by visiting your
-              <a href="/orders/tracking" class="text-primary hover:underline"
-                >Order History</a
-              >
-              page.
+            <p class="text-sm text-gray-500 mt-4">
+              Delivery timelines are estimates and may vary depending on courier operations and location.
             </p>
-          </section>
+          </UCard>
 
-          <!-- Section 6 -->
-          <section>
-            <h2 class="text-2xl font-semibold mb-3 text-gray-900">
-              6. Delayed or Missing Deliveries
-            </h2>
-            <p>
-              In rare cases, delays may occur due to weather, traffic, or
-              courier issues. If your order is delayed beyond the estimated
-              delivery time, please contact our customer support team at
-              <a
-                href="mailto:support@buyzin.com"
-                class="text-primary hover:underline"
-              >
-                support@buyzin.com </a
-              >.
-            </p>
-          </section>
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                5. Shipping Charges
+              </h2>
+            </template>
 
-          <!-- Section 7 -->
-          <section>
-            <h2 class="text-2xl font-semibold mb-3 text-gray-900">
-              7. International Shipping
-            </h2>
-            <p>
-              Currently, we only deliver within Bangladesh. However,
-              international shipping options will be available soon.
+            <p class="text-gray-600 mb-4">
+              Shipping fees may vary depending on:
             </p>
-          </section>
+
+            <ul class="space-y-3 text-gray-600">
+              <li>• Delivery location.</li>
+              <li>• Product dimensions and weight.</li>
+              <li>• Courier service availability.</li>
+              <li>• Ongoing promotions and free shipping campaigns.</li>
+            </ul>
+
+            <p class="text-gray-600 mt-4">
+              Applicable shipping charges will be displayed during checkout before payment confirmation.
+            </p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                6. Order Tracking
+              </h2>
+            </template>
+
+            <p class="text-gray-600 leading-7">
+              Once your order has been shipped, tracking information may become
+              available through your account dashboard or shipment notification.
+              Tracking updates depend on courier partner systems and may not update instantly.
+            </p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                7. Failed Delivery Attempts
+              </h2>
+            </template>
+
+            <ul class="space-y-3 text-gray-600">
+              <li>• Incorrect or incomplete address information.</li>
+              <li>• Recipient unavailable during delivery.</li>
+              <li>• Phone number unreachable.</li>
+              <li>• Delivery location inaccessible.</li>
+            </ul>
+
+            <p class="text-gray-600 mt-4">
+              Additional delivery charges may apply if re-delivery is required.
+            </p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                8. Delivery Delays
+              </h2>
+            </template>
+
+            <p class="text-gray-600 leading-7">
+              Delivery may occasionally be delayed due to weather conditions,
+              public holidays, natural disasters, transportation disruptions,
+              government restrictions, or other circumstances beyond our control.
+            </p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                9. Delivery Inspection
+              </h2>
+            </template>
+
+            <p class="text-gray-600 leading-7">
+              Customers are encouraged to inspect delivered products upon receipt.
+              Any visible damage, missing items, or delivery issues should be reported
+              promptly to our customer support team.
+            </p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                10. International Shipping
+              </h2>
+            </template>
+
+            <p class="text-gray-600 leading-7">
+              Currently, Buyzin primarily serves customers within Bangladesh.
+              International shipping availability may vary based on product category,
+              supplier, and destination country.
+            </p>
+          </UCard>
+
+          <UCard>
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                11. Policy Updates
+              </h2>
+            </template>
+
+            <p class="text-gray-600 leading-7">
+              Buyzin reserves the right to modify this Shipping & Delivery Policy
+              at any time. Updated versions will be published on this page along
+              with the revised effective date.
+            </p>
+          </UCard>
+
+          <UCard class="border-primary">
+            <template #header>
+              <h2 class="text-xl font-semibold">
+                Need Delivery Assistance?
+              </h2>
+            </template>
+
+            <p class="text-gray-600">
+              If you have questions regarding shipping, delivery timelines,
+              order tracking, or courier services, please contact our customer support team.
+            </p>
+
+            <div class="mt-6">
+              <UButton to="/contact" size="lg">
+                Contact Support
+              </UButton>
+            </div>
+          </UCard>
+
         </div>
-      </template>
-    </div>
-  </div>
+      </div>
+    </section>
+
+  </main>
 </template>

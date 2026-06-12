@@ -11,20 +11,23 @@ const props = defineProps({
     <article class="group bg-white rounded overflow-hidden transition border border-border">
         <div class="relative bg-gray-100 aspect-square overflow-hidden">
             <NuxtLink :to="`/product/${product.slug}/${product.id}`" :title="product.meta_title">
-                <NuxtImg :src="product.media?.cover_url" :alt="product.meta_title ?? product.name"
-                class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                <NuxtImg :src="product.cover_url" :alt="product.meta_title ?? product.name"
+                    class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
             </NuxtLink>
 
-            <div v-if="product.discount_percentage > 0"
+            <div v-if="product.has_discount"
                 class="absolute top-2 left-2 bg-danger text-white text-xs px-2 py-1 rounded">
-                -{{ product.discount_percentage_formatted }} OFF
+                -{{ product.discount_percentage }} OFF
             </div>
         </div>
 
         <div class="p-3 space-y-2">
-            <h3 class="text-sm font-medium line-clamp-2 text-heading truncate">
-                {{ product.name }}
-            </h3>
+            <NuxtLink :to="`/product/${product.slug}/${product.id}`" :title="product.meta_title">
+                <h3 class="text-sm font-medium line-clamp-2 text-heading hover:text-primary transition">
+                    {{ product.name }}
+                </h3>
+            </NuxtLink>
+
 
             <div class="flex items-center gap-2 ">
                 <span class="text-red-600 font-bold font-bangla">

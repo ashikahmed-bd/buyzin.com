@@ -8,8 +8,7 @@ const categoryStore = useCategoryStore();
 
 const { data: categories } = await useAsyncData("categories", async () => {
   return await categoryStore.getCategories();
-}
-);
+});
 
 </script>
 
