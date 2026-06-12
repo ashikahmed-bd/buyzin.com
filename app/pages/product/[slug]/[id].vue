@@ -19,11 +19,14 @@ const { data, pending, error, refresh } = await useAsyncData(`product-${route.pa
   }
 );
 
-await cartStore.store({
-  product_id: '',
-  quantity: 1,
-  variant_id: null,
-});
+const addToCart = async (product) => {
+  await cartStore.store({
+    product_id: product.id,
+    quantity: 1,
+    variant_id: null,
+  });
+}
+
 
 
 const addToWishlist = async (product) => {
