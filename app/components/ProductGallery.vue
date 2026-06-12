@@ -24,62 +24,64 @@ function select(index) {
 
   carousel.value?.emblaApi?.scrollTo(index);
 }
+
+const isVideoOpen = ref(false)
+const videoUrl = ref('')
+
+const videoPlay = (url) => {
+  const id = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^?&]+)/)?.[1]
+
+  if (!id) return
+
+  videoUrl.value = `https://www.youtube.com/embed/${id}?autoplay=1`
+  isVideoOpen.value = true
+}
 </script>
 
 <template>
   <div class="w-full">
-    <div class="overflow-hidden rounded-2xl bg-white">
-      <UCarousel
-        ref="carousel"
-        v-slot="{ item }"
-        arrows
-        :items="product.gallery ?? product.cover_url"
-        :prev="{ onClick: onClickPrev }"
-        :next="{ onClick: onClickNext }"
-        prev-icon="i-lucide-chevron-left"
-        next-icon="i-lucide-chevron-right"
-        :ui="{
+    <div class="overflow-hidden">
+      <UCarousel ref="carousel" v-slot="{ item }" arrows :items="product.gallery ?? product.cover_url"
+        :prev="{ onClick: onClickPrev }" :next="{ onClick: onClickNext }" prev-icon="i-lucide-chevron-left"
+        next-icon="i-lucide-chevron-right" :ui="{
           container: 'gap-0',
           item: 'basis-full',
           prev: 'start-3 size-9 rounded-full bg-white/90 shadow border border-gray-200',
           next: 'end-3 size-9 rounded-full bg-white/90 shadow border border-gray-200',
-        }"
-        class="w-full"
-        @select="onSelect"
-      >
-        <div class="aspect-square w-full bg-gray-50">
-          <NuxtImg
-            :src="item"
-            :alt="product.meta_title"
-            class="h-full w-full object-cover"
-            loading="lazy"
-          />
+        }" class="w-full" @select="onSelect">
+        <div class="relative aspect-square rounded-2xl overflow-hidden">
+          <NuxtImg :src="product.cover_url" class="w-full h-full object-cover" />
+          <button v-if="product.video_url" @click="videoPlay(product.video_url)" class="absolute inset-0 flex items-center justify-center">
+            <div class="size-16 rounded-full bg-black/70 flex items-center justify-center">
+              <UIcon name="i-heroicons-play-solid" class="size-8 text-white ml-1" />
+            </div>
+          </button>
         </div>
       </UCarousel>
     </div>
 
-    <div class="mt-3 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-      <button
-        v-for="(item, index) in product.gallery"
-        :key="index"
-        type="button"
-        class="shrink-0 overflow-hidden rounded-xl border-2 bg-white transition-all"
-        :class="
-          activeIndex === index
-            ? 'border-primary ring-2 ring-primary/15'
-            : 'border-gray-200'
-        "
-        @click="select(index)"
-      >
-        <NuxtImg
-          :src="item"
-          :alt="product.meta_title"
-          loading="lazy"
-          class="size-16 sm:size-20 object-cover"
-        />
+    <div v-if="product.gallery" class="mt-3 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+      <button v-for="(item, index) in product.gallery" :key="index" type="button"
+        class="shrink-0 overflow-hidden rounded-xl border-2 bg-white transition-all" :class="activeIndex === index
+          ? 'border-primary ring-2 ring-primary/15'
+          : 'border-gray-200'
+          " @click="select(index)">
+        <NuxtImg :src="item" :alt="product.meta_title" loading="lazy" class="size-20 sm:size-28 object-cover p-2" />
       </button>
     </div>
   </div>
+
+  <UModal v-model:open="isVideoOpen" @update:open="(open) => !open && (videoUrl = '')" :ui="{
+    content: 'max-w-5xl p-0 overflow-hidden'
+  }">
+    <template #content>
+      <div class="aspect-video w-full bg-black">
+        <iframe :src="videoUrl" class="w-full h-full" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen />
+      </div>
+    </template>
+  </UModal>
 </template>
 
 <style scoped>

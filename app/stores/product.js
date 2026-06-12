@@ -31,7 +31,7 @@ export const useProductStore = defineStore("product", {
       try {
         const response = await apiClient.get(`/api/products/${slug}/${sku}`);
         if (response.status === 200) {
-          return Promise.resolve(response.data.data);
+          return Promise.resolve(response.data);
         }
       } catch (error) {
         if (error.response) {

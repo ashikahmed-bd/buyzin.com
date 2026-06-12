@@ -24,7 +24,6 @@ export const useCartStore = defineStore("cart", {
         }
       } catch (error) {
         console.log(error?.response?.data);
-        toast.error(error?.response?.data.message);
       }
     },
 
@@ -34,12 +33,11 @@ export const useCartStore = defineStore("cart", {
         const response = await apiClient.post("/api/cart/items", payload);
         if (response.status === 201) {
           this.dialog = true;
-          toast.success(response?.data.message);
+          
           return Promise.resolve(response.data);
         }
       } catch (error) {
-        console.log(error?.response?.data);
-        toast.error(error?.response?.data.message);
+
       } finally {
         this.loading = false;
       }
@@ -92,11 +90,11 @@ export const useCartStore = defineStore("cart", {
         });
 
         if (response.status === 200) {
-          toast.success(response.data.message);
+
         }
       } catch (error) {
         this.errors = error.response.data;
-        toast.error(error.response.data.message);
+
       } finally {
         this.loading = false;
       }
