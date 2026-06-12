@@ -28,7 +28,6 @@ const addToCart = async (product) => {
 }
 
 
-
 const addToWishlist = async (product) => {
   await wishlistStore.addItem(product);
 };

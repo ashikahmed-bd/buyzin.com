@@ -41,7 +41,7 @@ const videoPlay = (url) => {
 <template>
   <div class="w-full">
     <div class="overflow-hidden">
-      <UCarousel ref="carousel" v-slot="{ item }" arrows :items="product.gallery ?? product.cover_url"
+      <UCarousel v-if="product.gallery" ref="carousel" v-slot="{ item }" arrows :items="product.gallery"
         :prev="{ onClick: onClickPrev }" :next="{ onClick: onClickNext }" prev-icon="i-lucide-chevron-left"
         next-icon="i-lucide-chevron-right" :ui="{
           container: 'gap-0',
@@ -50,14 +50,25 @@ const videoPlay = (url) => {
           next: 'end-3 size-9 rounded-full bg-white/90 shadow border border-gray-200',
         }" class="w-full" @select="onSelect">
         <div class="relative aspect-square rounded-2xl overflow-hidden">
-          <NuxtImg :src="product.cover_url" class="w-full h-full object-cover" />
-          <button v-if="product.video_url" @click="videoPlay(product.video_url)" class="absolute inset-0 flex items-center justify-center">
+          <NuxtImg :src="item" :alt="product.meta_title" loading="lazy" class="w-full h-full object-cover" />
+          <button v-if="product.video_url" @click="videoPlay(product.video_url)"
+            class="absolute inset-0 flex items-center justify-center">
             <div class="size-16 rounded-full bg-black/70 flex items-center justify-center">
               <UIcon name="i-heroicons-play-solid" class="size-8 text-white ml-1" />
             </div>
           </button>
         </div>
       </UCarousel>
+
+      <div v-else class="relative aspect-square rounded-2xl overflow-hidden">
+        <NuxtImg :src="product.cover_url" :alt="product.meta_title" loading="lazy" class="w-full h-full object-cover" />
+        <button v-if="product.video_url" @click="videoPlay(product.video_url)"
+          class="absolute inset-0 flex items-center justify-center">
+          <div class="size-16 rounded-full bg-black/70 flex items-center justify-center">
+            <UIcon name="i-heroicons-play-solid" class="size-8 text-white ml-1" />
+          </div>
+        </button>
+      </div>
     </div>
 
     <div v-if="product.gallery" class="mt-3 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
