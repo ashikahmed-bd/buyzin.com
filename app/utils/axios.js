@@ -9,6 +9,7 @@ const apiClient = axios.create({
         "Content-Type": "application/json",
         Accept: "application/json",
         "X-Source": "Web",
+        "X-APP-KEY": "base64:DZ/DIBMHkGIXA42v3OjTmcJa+L3VWvQ44lbq4LVVAjA=",
     },
     withCredentials: false,
 });
