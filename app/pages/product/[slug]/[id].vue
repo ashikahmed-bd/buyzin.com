@@ -77,7 +77,8 @@ watchEffect(() => {
         product.value?.summary ??
         '',
       image: [
-        product.value?.cover_url ?? '',
+        product.value?.cover_url,
+        ...(product.value?.gallery ?? [])
       ],
       sku: String(product.value?.sku ?? ''),
       mpn: String(product.value?.sku ?? ''),
@@ -85,18 +86,13 @@ watchEffect(() => {
       category: product.value?.category?.name ?? '',
 
       brand: {
-        '@type': 'Brand',
         name: product.value?.brand?.name ?? 'Individual',
       },
 
       offers: {
-        '@type': 'Offer',
         url: new URL(route.fullPath, config.public.siteUrl).toString(),
         priceCurrency: 'BDT',
-        price:
-          product.value?.price ??
-          product.value?.base_price ??
-          0,
+        price: Number(product.value?.price ?? product.value?.base_price ?? 0),
 
         availability:
           (product.value?.quantity ?? 0) > 0
@@ -104,11 +100,6 @@ watchEffect(() => {
             : 'https://schema.org/OutOfStock',
 
         itemCondition: 'https://schema.org/NewCondition',
-
-        seller: {
-          '@type': 'Organization',
-          name: product.value?.store?.name ?? 'Buyzin',
-        },
 
         ...(product.value?.end_at
           ? {
@@ -122,7 +113,6 @@ watchEffect(() => {
       ...(product.value?.rating_avg != null
         ? {
           aggregateRating: {
-            '@type': 'AggregateRating',
             ratingValue: product.value.rating_avg,
             reviewCount: product.value.review_count ?? 1,
             bestRating: 5,
@@ -132,10 +122,7 @@ watchEffect(() => {
         : {}),
     }),
   ]);
-
 });
-
-
 
 </script>
 
