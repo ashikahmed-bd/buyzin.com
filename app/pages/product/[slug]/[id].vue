@@ -95,7 +95,9 @@ useSchemaOrg([
       availability: 'https://schema.org/InStock',
       itemCondition: 'https://schema.org/NewCondition',
 
-      priceValidUntil: new Date(data.value.product.end_at).toISOString().split('T')[0],
+      ...(data.value?.product?.end_at
+        ? { priceValidUntil: new Date(data.value.product.end_at).toISOString().split('T')[0] }
+        : {}),
 
       shippingDetails: {
         shippingRate: {
