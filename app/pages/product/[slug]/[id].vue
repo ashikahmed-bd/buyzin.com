@@ -19,7 +19,7 @@ const { data, pending, error, refresh } = await useAsyncData(`product-${route.pa
   }
 );
 
-const product = computed(() => data.value?.product);
+const product = computed(() => data.value?.product)
 
 const addToCart = async (product) => {
   await cartStore.store({
@@ -42,12 +42,12 @@ const getStars = (rating) => {
   })
 }
 
-watch(
-  () => data.value?.product,
-  (item) => {
-    if (!item) return;
+useSchemaOrg(
+  computed(() => {
+    const item = product.value
+    if (!item) return []
 
-    useSchemaOrg([
+    return [
       defineWebPage({
         name: item?.name ?? '',
         description: item?.meta_description ?? '',
@@ -123,11 +123,9 @@ watch(
           }
           : {}),
       }),
-    ]);
-  },
-  { immediate: true }
-);
-
+    ]
+  })
+)
 
 </script>
 
