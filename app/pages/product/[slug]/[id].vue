@@ -19,6 +19,7 @@ const { data, pending, error, refresh } = await useAsyncData(`product-${route.pa
   }
 );
 
+const product = computed(() => data.value?.product);
 
 const addToCart = async (product) => {
   await cartStore.store({
@@ -41,92 +42,92 @@ const getStars = (rating) => {
   })
 }
 
-watch(() => data.value?.product, (product) => {
-  if (!product) return;
+watch(
+  () => data.value?.product,
+  (item) => {
+    if (!item) return;
 
-  useSchemaOrg([
-    defineWebPage({
-      name: product?.name ?? '',
-      description: product?.meta_description ?? '',
-      url: new URL(route.fullPath, config.public.siteUrl).toString(),
-      inLanguage: 'en-BD',
-    }),
-
-    defineBreadcrumb({
-      itemListElement: [
-        {
-          name: 'Home',
-          item: config.public.siteUrl,
-        },
-        {
-          name: product?.category?.name ?? '',
-          item: `${config.public.siteUrl}/categories/${product?.category?.slug ?? ''}`,
-        },
-        {
-          name: product?.name ?? '',
-          item: new URL(route.fullPath, config.public.siteUrl).toString(),
-        },
-      ],
-    }),
-
-    defineProduct({
-      name: product?.name ?? '',
-      description:
-        product?.meta_description ??
-        product?.summary ??
-        '',
-      image: [
-        product?.cover_url,
-        ...(product?.gallery ?? [])
-      ],
-      sku: String(product?.sku ?? ''),
-      mpn: String(product?.sku ?? ''),
-
-      category: product?.category?.name ?? '',
-
-      brand: {
-        name: product?.brand?.name ?? 'Individual',
-      },
-
-      offers: {
+    useSchemaOrg([
+      defineWebPage({
+        name: item?.name ?? '',
+        description: item?.meta_description ?? '',
         url: new URL(route.fullPath, config.public.siteUrl).toString(),
-        priceCurrency: 'BDT',
-        price: Number(product?.price ?? product?.base_price ?? 0),
+        inLanguage: 'en-BD',
+      }),
 
-        availability:
-          (product?.quantity ?? 0) > 0
-            ? 'https://schema.org/InStock'
-            : 'https://schema.org/OutOfStock',
+      defineBreadcrumb({
+        itemListElement: [
+          {
+            name: 'Home',
+            item: config.public.siteUrl,
+          },
+          {
+            name: item?.category?.name ?? '',
+            item: `${config.public.siteUrl}/categories/${item?.category?.slug ?? ''}`,
+          },
+          {
+            name: item?.name ?? '',
+            item: new URL(route.fullPath, config.public.siteUrl).toString(),
+          },
+        ],
+      }),
 
-        itemCondition: 'https://schema.org/NewCondition',
+      defineProduct({
+        name: item?.name ?? '',
+        description:
+          item?.meta_description ??
+          item?.summary ??
+          '',
+        image: [
+          item?.cover_url,
+          ...(item?.gallery ?? [])
+        ],
+        sku: String(item?.sku ?? ''),
+        mpn: String(item?.sku ?? ''),
 
-        ...(product?.end_at
+        category: item?.category?.name ?? '',
+
+        brand: {
+          name: item?.brand?.name ?? 'Individual',
+        },
+
+        offers: {
+          url: new URL(route.fullPath, config.public.siteUrl).toString(),
+          priceCurrency: 'BDT',
+          price: Number(item?.price ?? item?.base_price ?? 0),
+
+          availability:
+            (item?.quantity ?? 0) > 0
+              ? 'https://schema.org/InStock'
+              : 'https://schema.org/OutOfStock',
+
+          itemCondition: 'https://schema.org/NewCondition',
+
+          ...(item?.end_at
+            ? {
+              priceValidUntil: new Date(item.end_at)
+                .toISOString()
+                .split('T')[0],
+            }
+            : {}),
+        },
+
+        ...(item?.rating_avg != null
           ? {
-            priceValidUntil: new Date(product.end_at)
-              .toISOString()
-              .split('T')[0],
+            aggregateRating: {
+              ratingValue: item.rating_avg,
+              reviewCount: item.review_count ?? 1,
+              bestRating: 5,
+              worstRating: 1,
+            },
           }
           : {}),
-      },
-
-      ...(product?.rating_avg != null
-        ? {
-          aggregateRating: {
-            ratingValue: product.rating_avg,
-            reviewCount: product.review_count ?? 1,
-            bestRating: 5,
-            worstRating: 1,
-          },
-        }
-        : {}),
-    }),
-  ]);
-},
-  {
-    immediate: true,
-    deep: true,
-  }
+      }),
+    ]);
+  },
+  { immediate: true }
 );
+
 
 </script>
 

@@ -137,7 +137,7 @@ onMounted(() => {
 
                 <li class="flex items-center group">
                   <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
-                  <NuxtLink to="/cookie-settings" class="group-hover:text-primary transition-colors duration-200">
+                  <NuxtLink to="/cookie-policy" class="group-hover:text-primary transition-colors duration-200">
                     Cookie Policy
                   </NuxtLink>
                 </li>
