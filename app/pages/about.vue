@@ -1,16 +1,31 @@
 <script setup>
-import { main } from "#build/ui";
+const route = useRoute()
+const config = useRuntimeConfig()
 
-useHead({
-  title: "About Us | Buyzin",
-  meta: [
-    {
-      name: "description",
-      content:
-        "Learn more about Buyzin — Bangladesh’s most trusted online shopping platform. Discover our mission, vision, and why thousands of customers choose Buyzin every day.",
-    },
-  ],
-});
+useSchemaOrg([
+  defineWebPage({
+    name: "About Us | Buyzin.com Bangladesh",
+    description: "Learn about Buyzin, a trusted online shopping platform in Bangladesh offering fashion, electronics, gadgets, and lifestyle products with secure payments and reliable nationwide delivery.",
+    url: new URL(route.fullPath, config.public.siteUrl).toString(),
+    inLanguage: "en-US",
+  }),
+
+  defineBreadcrumb({
+    items: [
+      {
+        position: 1,
+        name: 'Home',
+        item: new URL('/', config.public.siteUrl).toString(),
+      },
+      {
+        position: 2,
+        name: 'About Us',
+        item: new URL(route.fullPath, config.public.siteUrl).toString(),
+      },
+    ],
+  }),
+
+]);
 </script>
 
 <template>

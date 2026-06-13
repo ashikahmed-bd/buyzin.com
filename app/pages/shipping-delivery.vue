@@ -13,11 +13,20 @@ useSchemaOrg([
 
   defineBreadcrumb({
     items: [
-      { name: 'Home', item: '/' },
-      { name: 'Shipping & Delivery', item: '/shipping-delivery' },
+      {
+        position: 1,
+        name: 'Home',
+        item: new URL('/', config.public.siteUrl).toString(),
+      },
+      {
+        position: 2,
+        name: 'Shipping & Delivery',
+        item: new URL(route.fullPath, config.public.siteUrl).toString(),
+      },
     ],
   }),
-])
+
+]);
 </script>
 
 <template>

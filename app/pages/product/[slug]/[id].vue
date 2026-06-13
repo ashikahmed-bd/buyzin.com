@@ -56,14 +56,17 @@ watchEffect(() => {
     defineBreadcrumb({
       items: [
         {
+          position: 1,
           name: 'Home',
           item: config.public.siteUrl,
         },
         {
+          position: 2,
           name: product.value?.category?.name ?? '',
           item: `${config.public.siteUrl}/categories/${product.value?.category?.slug ?? ''}`,
         },
         {
+          position: 3,
           name: product.value?.name ?? '',
           item: new URL(route.fullPath, config.public.siteUrl).toString(),
         },

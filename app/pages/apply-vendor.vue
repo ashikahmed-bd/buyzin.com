@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from "vue";
+const route = useRoute();
+const config = useRuntimeConfig();
 
 const form = ref({
   name: "",
@@ -8,6 +9,31 @@ const form = ref({
   store_name: "",
   message: "",
 });
+
+useSchemaOrg([
+  defineWebPage({
+    name: "Become a Vendor | Buyzin.com Bangladesh",
+    description: "Join Buyzin as a vendor and start selling your products online. Register your store, manage listings, and reach customers across Bangladesh with secure payments and reliable order fulfillment.",
+    url: new URL(route.fullPath, config.public.siteUrl).toString(),
+    inLanguage: "en-US",
+  }),
+
+  defineBreadcrumb({
+    items: [
+      {
+        position: 1,
+        name: 'Home',
+        item: new URL('/', config.public.siteUrl).toString(),
+      },
+      {
+        position: 2,
+        name: 'Become a Vendor',
+        item: new URL(route.fullPath, config.public.siteUrl).toString(),
+      },
+    ],
+  }),
+
+]);
 </script>
 
 <template>

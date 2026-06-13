@@ -98,15 +98,18 @@ useSchemaOrg([
   defineBreadcrumb({
     items: [
       {
-        name: "Home",
-        item: "/",
+        position: 1,
+        name: 'Home',
+        item: new URL('/', config.public.siteUrl).toString(),
       },
       {
-        name: "Checkout",
-        item: route.fullPath,
+        position: 2,
+        name: 'Checkout',
+        item: new URL(route.fullPath, config.public.siteUrl).toString(),
       },
     ],
   }),
+
 ]);
 </script>
 
@@ -115,7 +118,7 @@ useSchemaOrg([
   <main v-if="pending">
 
   </main>
-  
+
   <main v-else class="max-w-7xl mx-auto px-4 py-4">
 
     <Head>

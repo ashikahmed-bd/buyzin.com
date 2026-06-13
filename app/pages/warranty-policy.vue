@@ -13,8 +13,16 @@ useSchemaOrg([
 
     defineBreadcrumb({
         items: [
-            { name: 'Home', item: '/' },
-            { name: 'Warranty Policy', item: '/warranty-policy' },
+            {
+                position: 1,
+                name: 'Home',
+                item: new URL('/', config.public.siteUrl).toString(),
+            },
+            {
+                position: 2,
+                name: 'Warranty Policy',
+                item: new URL(route.fullPath, config.public.siteUrl).toString(),
+            },
         ],
     }),
 ])
@@ -22,6 +30,7 @@ useSchemaOrg([
 
 <template>
     <main class="max-w-5xl mx-auto px-4 py-10">
+
         <Head>
             <Title>Warranty Policy | Buyzin.com Bangladesh</Title>
 

@@ -33,7 +33,7 @@ useSchemaOrg([
       addressLocality: "Kurigram",
       addressRegion: "Rangpur Division",
       postalCode: "5640",
-      addressCountry: "Bangladesh",
+      addressCountry: "BD",
     },
 
     contactPoint: [

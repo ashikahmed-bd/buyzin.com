@@ -14,12 +14,14 @@ useSchemaOrg([
   defineBreadcrumb({
     items: [
       {
+        position: 1,
         name: 'Home',
-        item: '/',
+        item: new URL('/', config.public.siteUrl).toString(),
       },
       {
+        position: 2,
         name: 'Privacy Policy',
-        item: '/privacy-policy',
+        item: new URL(route.fullPath, config.public.siteUrl).toString(),
       },
     ],
   }),

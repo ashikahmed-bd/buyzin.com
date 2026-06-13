@@ -18,7 +18,10 @@ useSchemaOrg([
 
   defineBreadcrumb({
     items: [
-      { name: 'Home', item: '/' }
+      {
+        name: 'Home',
+        item: new URL('/', config.public.siteUrl).toString(),
+      }
     ]
   })
 ])
