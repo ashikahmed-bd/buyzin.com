@@ -100,12 +100,6 @@ onMounted(() => {
                 Information
               </h3>
               <ul class="space-y-2">
-                <li class="flex items-center group">
-                  <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
-                  <NuxtLink to="/faq" class="group-hover:text-primary transition-colors duration-200">
-                    FAQ
-                  </NuxtLink>
-                </li>
 
                 <li class="flex items-center group">
                   <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
@@ -115,26 +109,36 @@ onMounted(() => {
                 </li>
                 <li class="flex items-center group">
                   <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
-                  <NuxtLink to="/return-policy" class="group-hover:text-primary transition-colors duration-200">
-                    Return Policy
-                  </NuxtLink>
-                </li>
-                <li class="flex items-center group">
-                  <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
                   <NuxtLink to="/terms-and-conditions" class="group-hover:text-primary transition-colors duration-200">
                     Terms & Conditions
                   </NuxtLink>
                 </li>
+
                 <li class="flex items-center group">
                   <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
-                  <NuxtLink to="/cookie-settings" class="group-hover:text-primary transition-colors duration-200">
-                    Cookie Settings
+                  <NuxtLink to="/return-policy" class="group-hover:text-primary transition-colors duration-200">
+                    Return & Refund
                   </NuxtLink>
                 </li>
+
                 <li class="flex items-center group">
                   <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
                   <NuxtLink to="/shipping-delivery" class="group-hover:text-primary transition-colors duration-200">
                     Shipping & Delivery
+                  </NuxtLink>
+                </li>
+
+                <li class="flex items-center group">
+                  <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
+                  <NuxtLink to="/warranty-policy" class="group-hover:text-primary transition-colors duration-200">
+                    Warranty Policy
+                  </NuxtLink>
+                </li>
+
+                <li class="flex items-center group">
+                  <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
+                  <NuxtLink to="/cookie-settings" class="group-hover:text-primary transition-colors duration-200">
+                    Cookie Policy
                   </NuxtLink>
                 </li>
               </ul>
@@ -148,30 +152,40 @@ onMounted(() => {
                 <li class="flex items-center group">
                   <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
                   <NuxtLink to="/" class="hover:text-primary transition-colors duration-200">
-                    My Account
+                    FAQ
                   </NuxtLink>
                 </li>
+
                 <li class="flex items-center group">
                   <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
-                  <NuxtLink to="/" class="hover:text-primary transition-colors duration-200">
-                    My Orders
+                  <NuxtLink to="/contact" class="hover:text-primary transition-colors duration-200">
+                    Help Center
                   </NuxtLink>
                 </li>
+
+                <li class="flex items-center group">
+                  <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
+                  <NuxtLink to="/about" class="hover:text-primary transition-colors duration-200">
+                    Blog
+                  </NuxtLink>
+                </li>
+
                 <li class="flex items-center group">
                   <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
                   <NuxtLink to="/orders/tracking" class="hover:text-primary transition-colors duration-200">
                     Order Tracking
                   </NuxtLink>
                 </li>
+
                 <li class="flex items-center group">
                   <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
-                  <NuxtLink to="/about" class="hover:text-primary transition-colors duration-200">
+                  <NuxtLink to="/" class="hover:text-primary transition-colors duration-200">
                     About Us
                   </NuxtLink>
                 </li>
                 <li class="flex items-center group">
                   <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
-                  <NuxtLink to="/contact" class="hover:text-primary transition-colors duration-200">
+                  <NuxtLink to="/" class="hover:text-primary transition-colors duration-200">
                     Contact Us
                   </NuxtLink>
                 </li>

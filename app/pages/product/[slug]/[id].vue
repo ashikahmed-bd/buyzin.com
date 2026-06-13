@@ -19,6 +19,8 @@ const { data, pending, error, refresh } = await useAsyncData(`product-${route.pa
   }
 );
 
+const product = computed(() => data.value?.product);
+
 const addToCart = async (product) => {
   await cartStore.store({
     product_id: product.id,
@@ -39,6 +41,101 @@ const getStars = (rating) => {
     return 'empty'
   })
 }
+
+watchEffect(() => {
+  if (!product.value) return;
+
+  useSchemaOrg([
+    defineWebPage({
+      name: product.value?.name ?? '',
+      description: product.value?.meta_description ?? '',
+      url: new URL(route.fullPath, config.public.siteUrl).toString(),
+      inLanguage: 'en-BD',
+    }),
+
+    defineBreadcrumb({
+      items: [
+        {
+          name: 'Home',
+          item: config.public.siteUrl,
+        },
+        {
+          name: product.value?.category?.name ?? '',
+          item: `${config.public.siteUrl}/categories/${product.value?.category?.slug ?? ''}`,
+        },
+        {
+          name: product.value?.name ?? '',
+          item: new URL(route.fullPath, config.public.siteUrl).toString(),
+        },
+      ],
+    }),
+
+    defineProduct({
+      name: product.value?.name ?? '',
+      description:
+        product.value?.meta_description ??
+        product.value?.summary ??
+        '',
+      image: [
+        product.value?.cover_url ?? '',
+      ],
+      sku: String(product.value?.sku ?? ''),
+      mpn: String(product.value?.sku ?? ''),
+
+      category: product.value?.category?.name ?? '',
+
+      brand: {
+        '@type': 'Brand',
+        name: product.value?.brand?.name ?? 'Individual',
+      },
+
+      offers: {
+        '@type': 'Offer',
+        url: new URL(route.fullPath, config.public.siteUrl).toString(),
+        priceCurrency: 'BDT',
+        price:
+          product.value?.price ??
+          product.value?.base_price ??
+          0,
+
+        availability:
+          (product.value?.quantity ?? 0) > 0
+            ? 'https://schema.org/InStock'
+            : 'https://schema.org/OutOfStock',
+
+        itemCondition: 'https://schema.org/NewCondition',
+
+        seller: {
+          '@type': 'Organization',
+          name: product.value?.store?.name ?? 'Buyzin',
+        },
+
+        ...(product.value?.end_at
+          ? {
+            priceValidUntil: new Date(product.value.end_at)
+              .toISOString()
+              .split('T')[0],
+          }
+          : {}),
+      },
+
+      ...(product.value?.rating_avg != null
+        ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: product.value.rating_avg,
+            reviewCount: product.value.review_count ?? 1,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+        : {}),
+    }),
+  ]);
+
+});
+
+
 
 </script>
 
