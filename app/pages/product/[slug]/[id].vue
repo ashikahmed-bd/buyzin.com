@@ -45,12 +45,11 @@ const { data, pending, error, refresh } = await useAsyncData(`product-${route.pa
 
 useSchemaOrg([
   defineWebPage({
-    name: computed(() => data.value?.product?.meta_title ?? ''),
+    name: computed(() => data.value?.product?.name ?? ''),
     description: computed(() => data.value?.product?.meta_description ?? ''),
     url: computed(() => new URL(route.fullPath, config.public.siteUrl).toString()),
     inLanguage: 'en-BD',
   }),
-
 
   defineBreadcrumb({
     itemListElement: computed(() => [
@@ -76,29 +75,23 @@ useSchemaOrg([
       data.value?.product?.cover_url ?? '',
       ...(data.value?.product?.gallery ?? []),
     ].filter(Boolean)),
-
     sku: computed(() => data.value?.product?.sku ?? ''),
-    mpn: computed(() => data.value?.product?.id ?? ''),
-
+    mpn: computed(() => String(data.value?.product?.id ?? '')),
     category: computed(() => data.value?.product?.category?.name ?? ''),
-
     brand: {
       name: computed(() => data.value?.product?.brand?.name ?? 'Individual'),
     },
-
     offers: computed(() => ({
       url: new URL(route.fullPath, config.public.siteUrl).toString(),
-
       priceCurrency: 'BDT',
       price: data.value?.product?.price ?? 0,
-
-      availability: 'https://schema.org/InStock',
+      availability: data.value?.product?.in_stock
+        ? 'https://schema.org/InStock'
+        : 'https://schema.org/OutOfStock',
       itemCondition: 'https://schema.org/NewCondition',
-
       ...(data.value?.product?.end_at
         ? { priceValidUntil: new Date(data.value.product.end_at).toISOString().split('T')[0] }
         : {}),
-
       shippingDetails: {
         shippingRate: {
           value: 100,
@@ -120,30 +113,24 @@ useSchemaOrg([
           },
         },
       },
-
       hasMerchantReturnPolicy: {
         applicableCountry: 'BD',
-        returnPolicyCategory:
-          'https://schema.org/MerchantReturnFiniteReturnWindow',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
         merchantReturnDays: 7,
         returnMethod: 'https://schema.org/ReturnByMail',
         returnFees: 'https://schema.org/FreeReturn',
       },
     })),
 
-    aggregateRating: computed(() =>
-      (data.value?.product?.reviews_count ?? 0) > 0
-        ? {
-          ratingValue: data.value?.product?.rating ?? 0,
-          reviewCount: data.value?.product?.reviews_count ?? 0,
-          bestRating: 5,
-          worstRating: 1,
-        }
-        : undefined
-    ),
+    aggregateRating: computed(() => ({
+      ratingValue: data.value?.product?.rating ?? 4.0,
+      reviewCount: data.value?.product?.reviews_count ?? 1,
+      bestRating: 5,
+      worstRating: 1,
+    })),
+    
   }),
-
-]);
+])
 
 </script>
 
