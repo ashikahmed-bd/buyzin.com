@@ -99,6 +99,47 @@ useSchemaOrg([
       priceValidUntil: '2027-12-31',
     },
 
+    offers: {
+      url: new URL(route.fullPath, config.public.siteUrl).toString(),
+      priceCurrency: 'BDT',
+      price: 4500,
+
+      availability: 'https://schema.org/InStock',
+      itemCondition: 'https://schema.org/NewCondition',
+
+      priceValidUntil: '2027-12-31',
+
+      shippingDetails: {
+        shippingRate: {
+          value: 100,
+          currency: 'BDT',
+        },
+        shippingDestination: {
+          addressCountry: 'BD',
+        },
+        deliveryTime: {
+          handlingTime: {
+            minValue: 1,
+            maxValue: 2,
+            unitCode: 'DAY',
+          },
+          transitTime: {
+            minValue: 2,
+            maxValue: 5,
+            unitCode: 'DAY',
+          },
+        },
+      },
+
+      hasMerchantReturnPolicy: {
+        applicableCountry: 'BD',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        merchantReturnDays: 7,
+        returnMethod: 'https://schema.org/ReturnByMail',
+        returnFees: 'https://schema.org/FreeReturn',
+      },
+    },
+
     aggregateRating: {
       ratingValue: 4.3,
       reviewCount: 120,
