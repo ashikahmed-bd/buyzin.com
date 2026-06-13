@@ -35,7 +35,7 @@ export const useProductStore = defineStore("product", {
         }
       } catch (error) {
         if (error.response) {
-          return Promise.reject(error.response);
+          return Promise.reject(error.response.data);
         }
       }
     },
