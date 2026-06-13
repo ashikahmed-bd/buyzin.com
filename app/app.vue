@@ -46,7 +46,7 @@ useSchemaOrg([
       },
     ],
 
-    foundingDate: "2025",
+    foundingDate: "2025-01-01"
   }),
 ]);
 </script>
