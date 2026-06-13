@@ -12,7 +12,7 @@ useSchemaOrg([
   }),
 
   defineBreadcrumb({
-    items: [
+    itemListElement: [
       {
         position: 1,
         name: 'Home',

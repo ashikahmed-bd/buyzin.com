@@ -96,14 +96,12 @@ useSchemaOrg([
   }),
 
   defineBreadcrumb({
-    items: [
+    itemListElement: [
       {
-        position: 1,
         name: 'Home',
         item: new URL('/', config.public.siteUrl).toString(),
       },
       {
-        position: 2,
         name: 'Checkout',
         item: new URL(route.fullPath, config.public.siteUrl).toString(),
       },

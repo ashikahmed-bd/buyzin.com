@@ -17,13 +17,13 @@ useSchemaOrg([
   }),
 
   defineBreadcrumb({
-    items: [
+    itemListElement: [
       {
         name: 'Home',
         item: new URL('/', config.public.siteUrl).toString(),
       }
     ]
-  })
+  }),
 ])
 </script>
 
