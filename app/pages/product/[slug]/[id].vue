@@ -28,142 +28,19 @@ const getStars = (rating) => {
   })
 }
 
-const { data, pending, error, refresh } = await useAsyncData(
-  `product-${route.params.slug}-${route.params.id}`,
-  () => productStore.getProduct(route.params.slug, route.params.id),
+const { data, pending, error, refresh } = await useAsyncData(`product-${route.params.slug}-${route.params.id}`, () =>
+  productStore.getProduct(
+    route.params.slug,
+    route.params.id
+  ),
   {
     watch: [
       () => route.params.slug,
-      () => route.params.id,
-    ],
-  }
-)
-
-const product = computed(() => data.value?.product)
-
-const productUrl = computed(() =>
-  new URL(route.fullPath, config.public.siteUrl).toString()
-)
-
-useSchemaOrg(
-  computed(() => {
-    if (!product.value) return []
-
-    return [
-      defineWebPage({
-        name: product.value.name,
-        description: product.value.meta_description || '',
-        url: productUrl.value,
-        inLanguage: 'en-BD',
-      }),
-
-      defineBreadcrumb({
-        itemListElement: [
-          {
-            name: 'Home',
-            item: config.public.siteUrl,
-          },
-          {
-            name: product.value.category?.name || '',
-            item: `${config.public.siteUrl}/categories/${product.value.category?.slug || ''}`,
-          },
-          {
-            name: product.value.name,
-            item: productUrl.value,
-          },
-        ],
-      }),
-
-      defineProduct({
-        name: product.value.name,
-        description: product.value.meta_description || '',
-        image: [
-          product.value.cover_url,
-          ...(product.value.gallery || []),
-        ].filter(Boolean),
-
-        sku: product.value.sku || '',
-        mpn: String(product.value.id),
-
-        category: product.value.category?.name || '',
-
-        brand: product.value.brand?.name
-          ? {
-            name: product.value.brand.name,
-          }
-          : undefined,
-
-        offers: {
-          url: productUrl.value,
-
-          priceCurrency: 'BDT',
-          price: Number(product.value.final_price || 0),
-
-          availability:
-            (product.value.quantity || 0) > 0
-              ? 'https://schema.org/InStock'
-              : 'https://schema.org/OutOfStock',
-
-          itemCondition: 'https://schema.org/NewCondition',
-
-          ...(product.value.end_at && {
-            priceValidUntil: new Date(product.value.end_at)
-              .toISOString()
-              .split('T')[0],
-          }),
-
-          shippingDetails: {
-            shippingRate: {
-              value: 100,
-              currency: 'BDT',
-            },
-
-            shippingDestination: {
-              addressCountry: 'BD',
-            },
-
-            deliveryTime: {
-              handlingTime: {
-                minValue: 1,
-                maxValue: 2,
-                unitCode: 'DAY',
-              },
-
-              transitTime: {
-                minValue: 2,
-                maxValue: 5,
-                unitCode: 'DAY',
-              },
-            },
-          },
-
-          hasMerchantReturnPolicy: {
-            applicableCountry: 'BD',
-            returnPolicyCategory:
-              'https://schema.org/MerchantReturnFiniteReturnWindow',
-
-            merchantReturnDays: 7,
-
-            returnMethod:
-              'https://schema.org/ReturnByMail',
-
-            returnFees:
-              'https://schema.org/FreeReturn',
-          },
-        },
-
-        ...(Number(product.value.review_count || 0) > 0 && {
-          aggregateRating: {
-            ratingValue: Number(product.value.rating_avg || 0),
-            reviewCount: Number(product.value.review_count || 0),
-            bestRating: 5,
-            worstRating: 1,
-          },
-        }),
-      }),
+      () => route.params.id
     ]
-  })
-)
+  }
+
+);
 
 </script>
 
@@ -173,6 +50,8 @@ useSchemaOrg(
     <div v-if="data?.product">
       <SeoMeta :title="data.product?.meta_title" :description="data.product?.meta_description"
         :keywords="data.product?.meta_keywords" :image="data.product?.cover_url" />
+
+      <ProductSchema :product="data?.product" />
 
       <UBreadcrumb :items="[
         { label: 'Home', to: '/' },
