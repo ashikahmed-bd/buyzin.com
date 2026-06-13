@@ -45,31 +45,93 @@ const { data, pending, error, refresh } = await useAsyncData(`product-${route.pa
 
 useSchemaOrg([
   defineWebPage({
-    name: computed(() => data.value?.product?.name ?? ''),
-    description: computed(() => data.value?.product?.summary ?? ''),
-    url: new URL(route.fullPath, config.public.siteUrl).toString(),
+    name: computed(() => data.value?.product?.meta_title ?? ''),
+    description: computed(() => data.value?.product?.meta_description ?? ''),
+    url: computed(() => new URL(route.fullPath, config.public.siteUrl).toString()),
     inLanguage: 'en-BD',
   }),
 
+  defineBreadcrumb({
+    itemListElement: computed(() => [
+      {
+        name: 'Home',
+        item: config.public.siteUrl,
+      },
+      {
+        name: data.value?.product?.category?.name ?? '',
+        item: `${config.public.siteUrl}/categories/${data.value?.product?.category?.slug ?? ''}`,
+      },
+      {
+        name: data.value?.product?.name ?? '',
+        item: new URL(route.fullPath, config.public.siteUrl).toString(),
+      },
+    ]),
+  }),
+
   defineProduct({
-    name: computed(() => data.value?.product?.name ?? ''),
-    description: computed(() => data.value?.product?.summary ?? ''),
-    image: computed(() => data.value?.product?.images?.[0] ?? ''),
+    name: computed(() => data.value?.product?.meta_title ?? ''),
+    description: computed(() => data.value?.product?.meta_description ?? ''),
+    image: computed(() => [
+      data.value?.product?.thumbnail ?? '',
+      ...(data.value?.product?.gallery ?? []),
+    ].filter(Boolean)),
     sku: computed(() => data.value?.product?.sku ?? ''),
-    brand: defineOrganization({
+    mpn: computed(() => data.value?.product?.mpn ?? ''),
+    category: computed(() => data.value?.product?.category?.name ?? ''),
+    brand: {
       name: computed(() => data.value?.product?.brand?.name ?? ''),
-    }),
+    },
     offers: computed(() => ({
-      '@type': 'Offer',
-      price: data.value?.product?.price ?? 0,
+      url: new URL(route.fullPath, config.public.siteUrl).toString(),
       priceCurrency: 'BDT',
-      availability: data.value?.product?.inStock
+      price: data.value?.product?.price ?? 0,
+      availability: data.value?.product?.in_stock
         ? 'https://schema.org/InStock'
         : 'https://schema.org/OutOfStock',
-      url: new URL(route.fullPath, config.public.siteUrl).toString(),
+      itemCondition: 'https://schema.org/NewCondition',
+      priceValidUntil: '2027-12-31',
+      shippingDetails: {
+        shippingRate: {
+          value: data.value?.product?.shipping_cost ?? 100,
+          currency: 'BDT',
+        },
+        shippingDestination: {
+          addressCountry: 'BD',
+        },
+        deliveryTime: {
+          handlingTime: {
+            minValue: 1,
+            maxValue: 2,
+            unitCode: 'DAY',
+          },
+          transitTime: {
+            minValue: 2,
+            maxValue: 5,
+            unitCode: 'DAY',
+          },
+        },
+      },
+      hasMerchantReturnPolicy: {
+        applicableCountry: 'BD',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        merchantReturnDays: 7,
+        returnMethod: 'https://schema.org/ReturnByMail',
+        returnFees: 'https://schema.org/FreeReturn',
+      },
     })),
+
+    aggregateRating: computed(() =>
+      data.value?.product?.reviews_count > 0
+        ? {
+          ratingValue: data.value?.product?.rating ?? 0,
+          reviewCount: data.value?.product?.reviews_count ?? 0,
+          bestRating: 5,
+          worstRating: 1,
+        }
+        : undefined
+    ),
   }),
-])
+]);
 
 </script>
 
