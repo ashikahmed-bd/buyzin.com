@@ -7,8 +7,6 @@ const { link } = useWhatsapp()
 const config = useRuntimeConfig();
 
 
-
-
 const addToCart = async (product) => {
   await cartStore.store({
     product_id: product.id,
@@ -45,119 +43,33 @@ const { data, pending, error, refresh } = await useAsyncData(`product-${route.pa
 );
 
 
-watchEffect(() => {
-  const product = data.value?.product
+useSchemaOrg([
+  defineWebPage({
+    name: computed(() => data.value?.product?.name ?? ''),
+    description: computed(() => data.value?.product?.summary ?? ''),
+    url: new URL(route.fullPath, config.public.siteUrl).toString(),
+    inLanguage: 'en-BD',
+  }),
 
-  if (!product) return
-
-  useSchemaOrg([
-
-    defineWebPage({
-      name: product.name,
-      description: 'Walton RACY-S2200 2200VA Automatic Voltage Stabilizer protects home and office appliances from voltage fluctuations with microcontroller-based automatic regulation and wide input voltage support.',
+  defineProduct({
+    name: computed(() => data.value?.product?.name ?? ''),
+    description: computed(() => data.value?.product?.summary ?? ''),
+    image: computed(() => data.value?.product?.images?.[0] ?? ''),
+    sku: computed(() => data.value?.product?.sku ?? ''),
+    brand: defineOrganization({
+      name: computed(() => data.value?.product?.brand?.name ?? ''),
+    }),
+    offers: computed(() => ({
+      '@type': 'Offer',
+      price: data.value?.product?.price ?? 0,
+      priceCurrency: 'BDT',
+      availability: data.value?.product?.inStock
+        ? 'https://schema.org/InStock'
+        : 'https://schema.org/OutOfStock',
       url: new URL(route.fullPath, config.public.siteUrl).toString(),
-      inLanguage: 'en-BD',
-    }),
-
-    defineBreadcrumb({
-      itemListElement: [
-        {
-          name: 'Home',
-          item: config.public.siteUrl,
-        },
-        {
-          name: 'Voltage Stabilizers',
-          item: `${config.public.siteUrl}/categories/voltage-stabilizer`,
-        },
-        {
-          name: 'Walton RACY-S2200 2200VA Automatic Voltage Stabilizer',
-          item: new URL(route.fullPath, config.public.siteUrl).toString(),
-        },
-      ],
-    }),
-
-    defineProduct({
-      name: 'Walton RACY-S2200 2200VA Automatic Voltage Stabilizer',
-      description:
-        'Microcontroller-based automatic voltage stabilizer with 2200VA capacity, designed to protect electronics from high and low voltage fluctuations with fast response and multi-layer protection system.',
-
-      image: [
-        'https://api.buyzin.com/images/products/walton-racy-s2200-1.jpg',
-        'https://api.buyzin.com/images/products/walton-racy-s2200-2.jpg',
-      ],
-
-      sku: 'WALTON-RACY-S2200',
-      mpn: 'RACY-S2200',
-
-      category: 'Voltage Stabilizer',
-
-      brand: {
-        name: 'Walton',
-      },
-
-      offers: {
-        url: new URL(route.fullPath, config.public.siteUrl).toString(),
-        priceCurrency: 'BDT',
-        price: 4500,
-
-        availability: 'https://schema.org/InStock',
-
-        itemCondition: 'https://schema.org/NewCondition',
-
-        priceValidUntil: '2027-12-31',
-      },
-
-      offers: {
-        url: new URL(route.fullPath, config.public.siteUrl).toString(),
-        priceCurrency: 'BDT',
-        price: 4500,
-
-        availability: 'https://schema.org/InStock',
-        itemCondition: 'https://schema.org/NewCondition',
-
-        priceValidUntil: '2027-12-31',
-
-        shippingDetails: {
-          shippingRate: {
-            value: 100,
-            currency: 'BDT',
-          },
-          shippingDestination: {
-            addressCountry: 'BD',
-          },
-          deliveryTime: {
-            handlingTime: {
-              minValue: 1,
-              maxValue: 2,
-              unitCode: 'DAY',
-            },
-            transitTime: {
-              minValue: 2,
-              maxValue: 5,
-              unitCode: 'DAY',
-            },
-          },
-        },
-
-        hasMerchantReturnPolicy: {
-          applicableCountry: 'BD',
-          returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
-          merchantReturnDays: 7,
-          returnMethod: 'https://schema.org/ReturnByMail',
-          returnFees: 'https://schema.org/FreeReturn',
-        },
-      },
-
-      aggregateRating: {
-        ratingValue: 4.3,
-        reviewCount: 120,
-        bestRating: 5,
-        worstRating: 1,
-      },
-    }),
-  ]);
-});
-
+    })),
+  }),
+])
 
 </script>
 
