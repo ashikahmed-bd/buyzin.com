@@ -51,6 +51,7 @@ useSchemaOrg([
     inLanguage: 'en-BD',
   }),
 
+
   defineBreadcrumb({
     itemListElement: computed(() => [
       {
@@ -69,30 +70,36 @@ useSchemaOrg([
   }),
 
   defineProduct({
-    name: computed(() => data.value?.product?.meta_title ?? ''),
+    name: computed(() => data.value?.product?.name ?? ''),
     description: computed(() => data.value?.product?.meta_description ?? ''),
     image: computed(() => [
-      data.value?.product?.thumbnail ?? '',
+      data.value?.product?.cover_url ?? '',
       ...(data.value?.product?.gallery ?? []),
     ].filter(Boolean)),
+
     sku: computed(() => data.value?.product?.sku ?? ''),
-    mpn: computed(() => data.value?.product?.mpn ?? ''),
+    mpn: computed(() => data.value?.product?.id ?? ''),
+
     category: computed(() => data.value?.product?.category?.name ?? ''),
+
     brand: {
-      name: computed(() => data.value?.product?.brand?.name ?? ''),
+      name: computed(() => data.value?.product?.brand?.name ?? 'Individual'),
     },
+
     offers: computed(() => ({
       url: new URL(route.fullPath, config.public.siteUrl).toString(),
+
       priceCurrency: 'BDT',
       price: data.value?.product?.price ?? 0,
-      availability: data.value?.product?.in_stock
-        ? 'https://schema.org/InStock'
-        : 'https://schema.org/OutOfStock',
+
+      availability: 'https://schema.org/InStock',
       itemCondition: 'https://schema.org/NewCondition',
-      priceValidUntil: '2027-12-31',
+
+      priceValidUntil: new Date(data.value.product.end_at).toISOString().split('T')[0],
+
       shippingDetails: {
         shippingRate: {
-          value: data.value?.product?.shipping_cost ?? 100,
+          value: 100,
           currency: 'BDT',
         },
         shippingDestination: {
@@ -111,9 +118,11 @@ useSchemaOrg([
           },
         },
       },
+
       hasMerchantReturnPolicy: {
         applicableCountry: 'BD',
-        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        returnPolicyCategory:
+          'https://schema.org/MerchantReturnFiniteReturnWindow',
         merchantReturnDays: 7,
         returnMethod: 'https://schema.org/ReturnByMail',
         returnFees: 'https://schema.org/FreeReturn',
@@ -121,7 +130,7 @@ useSchemaOrg([
     })),
 
     aggregateRating: computed(() =>
-      data.value?.product?.reviews_count > 0
+      (data.value?.product?.reviews_count ?? 0) > 0
         ? {
           ratingValue: data.value?.product?.rating ?? 0,
           reviewCount: data.value?.product?.reviews_count ?? 0,
@@ -131,6 +140,7 @@ useSchemaOrg([
         : undefined
     ),
   }),
+
 ]);
 
 </script>
