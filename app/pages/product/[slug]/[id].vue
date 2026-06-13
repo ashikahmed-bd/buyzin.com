@@ -19,7 +19,6 @@ const { data, pending, error, refresh } = await useAsyncData(`product-${route.pa
   }
 );
 
-const product = computed(() => data.value?.product)
 
 const addToCart = async (product) => {
   await cartStore.store({
@@ -42,95 +41,78 @@ const getStars = (rating) => {
   })
 }
 
-useSchemaOrg(
-  computed(() => {
-    const item = product.value
-    if (!item) return []
+useSchemaOrg([
 
-    return [
-      defineWebPage({
-        name: item?.name ?? '',
-        description: item?.meta_description ?? '',
-        url: new URL(route.fullPath, config.public.siteUrl).toString(),
-        inLanguage: 'en-BD',
-      }),
+  defineWebPage({
+    name: 'Walton RACY-S2200 2200VA Automatic Voltage Stabilizer',
+    description:
+      'Walton RACY-S2200 2200VA Automatic Voltage Stabilizer protects home and office appliances from voltage fluctuations with microcontroller-based automatic regulation and wide input voltage support.',
+    url: new URL(route.fullPath, config.public.siteUrl).toString(),
+    inLanguage: 'en-BD',
+  }),
 
-      defineBreadcrumb({
-        itemListElement: [
-          {
-            name: 'Home',
-            item: config.public.siteUrl,
-          },
-          {
-            name: item?.category?.name ?? '',
-            item: `${config.public.siteUrl}/categories/${item?.category?.slug ?? ''}`,
-          },
-          {
-            name: item?.name ?? '',
-            item: new URL(route.fullPath, config.public.siteUrl).toString(),
-          },
-        ],
-      }),
+  defineBreadcrumb({
+    itemListElement: [
+      {
+        name: 'Home',
+        item: config.public.siteUrl,
+      },
+      {
+        name: 'Voltage Stabilizers',
+        item: `${config.public.siteUrl}/categories/voltage-stabilizer`,
+      },
+      {
+        name: 'Walton RACY-S2200 2200VA Automatic Voltage Stabilizer',
+        item: new URL(route.fullPath, config.public.siteUrl).toString(),
+      },
+    ],
+  }),
 
-      defineProduct({
-        name: item?.name ?? '',
-        description:
-          item?.meta_description ??
-          item?.summary ??
-          '',
-        image: [
-          item?.cover_url,
-          ...(item?.gallery ?? [])
-        ],
-        sku: String(item?.sku ?? ''),
-        mpn: String(item?.sku ?? ''),
+  defineProduct({
+    name: 'Walton RACY-S2200 2200VA Automatic Voltage Stabilizer',
+    description:
+      'Microcontroller-based automatic voltage stabilizer with 2200VA capacity, designed to protect electronics from high and low voltage fluctuations with fast response and multi-layer protection system.',
 
-        category: item?.category?.name ?? '',
+    image: [
+      'https://api.buyzin.com/images/products/walton-racy-s2200-1.jpg',
+      'https://api.buyzin.com/images/products/walton-racy-s2200-2.jpg',
+    ],
 
-        brand: {
-          name: item?.brand?.name ?? 'Individual',
-        },
+    sku: 'WALTON-RACY-S2200',
+    mpn: 'RACY-S2200',
 
-        offers: {
-          url: new URL(route.fullPath, config.public.siteUrl).toString(),
-          priceCurrency: 'BDT',
-          price: Number(item?.price ?? item?.base_price ?? 0),
+    category: 'Voltage Stabilizer',
 
-          availability:
-            (item?.quantity ?? 0) > 0
-              ? 'https://schema.org/InStock'
-              : 'https://schema.org/OutOfStock',
+    brand: {
+      name: 'Walton',
+    },
 
-          itemCondition: 'https://schema.org/NewCondition',
+    offers: {
+      url: new URL(route.fullPath, config.public.siteUrl).toString(),
+      priceCurrency: 'BDT',
+      price: 4500,
 
-          ...(item?.end_at
-            ? {
-              priceValidUntil: new Date(item.end_at)
-                .toISOString()
-                .split('T')[0],
-            }
-            : {}),
-        },
+      availability: 'https://schema.org/InStock',
 
-        ...(item?.rating_avg != null
-          ? {
-            aggregateRating: {
-              ratingValue: item.rating_avg,
-              reviewCount: item.review_count ?? 1,
-              bestRating: 5,
-              worstRating: 1,
-            },
-          }
-          : {}),
-      }),
-    ]
-  })
-)
+      itemCondition: 'https://schema.org/NewCondition',
 
+      priceValidUntil: '2027-12-31',
+    },
+
+    aggregateRating: {
+      ratingValue: 4.3,
+      reviewCount: 120,
+      bestRating: 5,
+      worstRating: 1,
+    },
+  }),
+
+]);
 </script>
 
 <template>
   <main class="max-w-7xl mx-auto px-4 py-6 space-y-5">
+
     <div v-if="data?.product">
       <SeoMeta :title="data.product?.meta_title" :description="data.product?.meta_description"
         :keywords="data.product?.meta_keywords" :image="data.product?.cover_url" />
