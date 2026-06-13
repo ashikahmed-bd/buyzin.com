@@ -19,7 +19,6 @@ const { data, pending, error, refresh } = await useAsyncData(`product-${route.pa
   }
 );
 
-const product = computed(() => data.value?.product);
 
 const addToCart = async (product) => {
   await cartStore.store({
@@ -42,82 +41,79 @@ const getStars = (rating) => {
   })
 }
 
-watchEffect(() => {
-  if (!product.value) return;
+watch(() => data.value?.product, (product) => {
+  if (!product) return;
 
   useSchemaOrg([
     defineWebPage({
-      name: product.value?.name ?? '',
-      description: product.value?.meta_description ?? '',
+      name: product?.name ?? '',
+      description: product?.meta_description ?? '',
       url: new URL(route.fullPath, config.public.siteUrl).toString(),
       inLanguage: 'en-BD',
     }),
 
     defineBreadcrumb({
-      items: [
+      itemListElement: [
         {
-          position: 1,
           name: 'Home',
           item: config.public.siteUrl,
         },
         {
-          position: 2,
-          name: product.value?.category?.name ?? '',
-          item: `${config.public.siteUrl}/categories/${product.value?.category?.slug ?? ''}`,
+          name: product?.category?.name ?? '',
+          item: `${config.public.siteUrl}/categories/${product?.category?.slug ?? ''}`,
         },
         {
-          position: 3,
-          name: product.value?.name ?? '',
+          name: product?.name ?? '',
           item: new URL(route.fullPath, config.public.siteUrl).toString(),
         },
       ],
     }),
 
     defineProduct({
-      name: product.value?.name ?? '',
+      name: product?.name ?? '',
       description:
-        product.value?.meta_description ??
-        product.value?.summary ??
+        product?.meta_description ??
+        product?.summary ??
         '',
       image: [
-        product.value?.cover_url,
-        ...(product.value?.gallery ?? [])
+        product?.cover_url,
+        ...(product?.gallery ?? [])
       ],
-      sku: String(product.value?.sku ?? ''),
-      mpn: String(product.value?.sku ?? ''),
+      sku: String(product?.sku ?? ''),
+      mpn: String(product?.sku ?? ''),
 
-      category: product.value?.category?.name ?? '',
+      category: product?.category?.name ?? '',
 
       brand: {
-        name: product.value?.brand?.name ?? 'Individual',
+        name: product?.brand?.name ?? 'Individual',
       },
 
       offers: {
         url: new URL(route.fullPath, config.public.siteUrl).toString(),
         priceCurrency: 'BDT',
-        price: Number(product.value?.price ?? product.value?.base_price ?? 0),
+        price: Number(product?.price ?? product?.base_price ?? 0),
 
         availability:
-          (product.value?.quantity ?? 0) > 0
+          (product?.quantity ?? 0) > 0
             ? 'https://schema.org/InStock'
             : 'https://schema.org/OutOfStock',
 
         itemCondition: 'https://schema.org/NewCondition',
 
-        ...(product.value?.end_at
+        ...(product?.end_at
           ? {
-            priceValidUntil: new Date(product.value.end_at)
+            priceValidUntil: new Date(product.end_at)
               .toISOString()
               .split('T')[0],
           }
           : {}),
       },
 
-      ...(product.value?.rating_avg != null
+      ...(product?.rating_avg != null
         ? {
           aggregateRating: {
-            ratingValue: product.value.rating_avg,
-            reviewCount: product.value.review_count ?? 1,
+            ratingValue: product.rating_avg,
+            reviewCount: product.review_count ?? 1,
             bestRating: 5,
             worstRating: 1,
           },
@@ -125,7 +121,12 @@ watchEffect(() => {
         : {}),
     }),
   ]);
-});
+},
+  {
+    immediate: true,
+    deep: true,
+  }
+);
 
 </script>
 
