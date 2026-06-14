@@ -42,6 +42,43 @@ const { data, pending, error, refresh } = await useAsyncData(`product-${route.pa
 
 );
 
+const product = computed(() => data.value?.product)
+
+useHead(() => {
+  if (!product.value) return {}
+
+  return {
+    script: [
+      {
+        type: 'application/ld+json',
+        children: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            {
+              '@type': 'ListItem',
+              position: 1,
+              name: 'Home',
+              item: 'https://www.buyzin.com'
+            },
+            {
+              '@type': 'ListItem',
+              position: 2,
+              name: product.value.category?.name,
+              item: `https://www.buyzin.com/categories/${product.value.category?.slug}`
+            },
+            {
+              '@type': 'ListItem',
+              position: 3,
+              name: product.value.name,
+              item: `https://www.buyzin.com/products/${product.value.slug}/${product.value.id}`
+            }
+          ]
+        })
+      }
+    ]
+  }
+});
 </script>
 
 <template>
@@ -51,7 +88,6 @@ const { data, pending, error, refresh } = await useAsyncData(`product-${route.pa
       <SeoMeta :title="data.product?.meta_title" :description="data.product?.meta_description"
         :keywords="data.product?.meta_keywords" :image="data.product?.cover_url" />
 
-      <ProductSchema :product="data?.product" />
 
       <UBreadcrumb :items="[
         { label: 'Home', to: '/' },
