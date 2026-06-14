@@ -34,23 +34,21 @@ const { data, pending, error, refresh } = await useAsyncData(`product-${route.pa
     route.params.id
   ),
   {
-    watch: [
-      () => route.params.slug,
-      () => route.params.id
-    ]
+    watch: [() => route.params.slug, () => route.params.id]
   }
 
 );
 
 const product = computed(() => data.value?.product)
 
-useHead(() => {
-  if (!product.value) return {}
+watchEffect(() => {
+  if (!product.value) return
 
-  return {
+  useHead({
     script: [
       {
         type: 'application/ld+json',
+        key: 'schema-breadcrumb',
         children: JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
@@ -75,10 +73,106 @@ useHead(() => {
             }
           ]
         })
+      },
+      {
+        type: 'application/ld+json',
+        key: 'schema-product',
+        children: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'Product',
+          name: product.value.name,
+          description: product.value.summary,
+          sku: product.value.sku,
+          image: [
+            product.value.cover_url,
+            ...(product.value.gallery ?? [])
+          ].filter(Boolean),
+          brand: {
+            '@type': 'Brand',
+            name: product.value.brand?.name
+          },
+          category: product.value.category?.name,
+          url: `https://www.buyzin.com/products/${product.value.slug}/${product.value.id}`,
+          offers: {
+            '@type': 'Offer',
+            url: `https://www.buyzin.com/products/${product.value.slug}/${product.value.id}`,
+            priceCurrency: 'BDT',
+            price: product.value.final_price,
+            priceValidUntil: product.value.end_at
+              ? new Date(product.value.end_at).toISOString().split('T')[0]
+              : new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+                .toISOString()
+                .split('T')[0],
+            availability:
+              (product.value.quantity ?? 0) > 0
+                ? 'https://schema.org/InStock'
+                : 'https://schema.org/OutOfStock',
+            itemCondition: 'https://schema.org/NewCondition',
+            seller: {
+              '@type': 'Organization',
+              name: product.value.store?.name,
+              telephone: product.value.store?.phone
+            },
+            hasMerchantReturnPolicy: {
+              '@type': 'MerchantReturnPolicy',
+              returnPolicyCategory: product.value.is_refundable
+                ? 'https://schema.org/MerchantReturnFiniteReturnWindow'
+                : 'https://schema.org/MerchantReturnNotPermitted',
+              merchantReturnDays: 7,
+              returnMethod: 'https://schema.org/ReturnByMail',
+              returnFees: 'https://schema.org/FreeReturn'
+            },
+            shippingDetails: {
+              '@type': 'OfferShippingDetails',
+              shippingRate: {
+                '@type': 'MonetaryAmount',
+                value: 0,
+                currency: 'BDT'
+              },
+              deliveryTime: {
+                '@type': 'ShippingDeliveryTime',
+                handlingTime: {
+                  '@type': 'QuantitativeValue',
+                  minValue: 0,
+                  maxValue: 0,
+                  unitCode: 'DAY'
+                },
+                transitTime: {
+                  '@type': 'QuantitativeValue',
+                  minValue: 0,
+                  maxValue: 1,
+                  unitCode: 'DAY'
+                }
+              }
+            }
+          },
+          ...(Number(product.value.review_count) > 0 && {
+            aggregateRating: {
+              '@type': 'AggregateRating',
+              ratingValue: product.value.rating_avg,
+              reviewCount: product.value.review_count,
+              bestRating: 5,
+              worstRating: 1
+            }
+          })
+        })
+      },
+      {
+        type: 'application/ld+json',
+        key: 'schema-organization',
+        children: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          name: product.value.store?.name,
+          telephone: product.value.store?.phone,
+          url: `https://www.buyzin.com/stores/${product.value.store?.slug}`
+        })
       }
     ]
-  }
+  })
 });
+
+
 </script>
 
 <template>
