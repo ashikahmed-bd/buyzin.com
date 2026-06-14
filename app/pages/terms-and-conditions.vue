@@ -2,28 +2,7 @@
 const route = useRoute()
 const config = useRuntimeConfig()
 
-useSchemaOrg([
-  defineWebPage({
-    name: 'Terms & Conditions | Buyzin Bangladesh',
-    description:
-      'Read Buyzin Terms & Conditions governing purchases, accounts, payments, deliveries, returns, and website usage.',
-    url: new URL(route.fullPath, config.public.siteUrl).toString(),
-    inLanguage: 'en-BD',
-  }),
 
-  defineBreadcrumb({
-    itemListElement: [
-      {
-        name: 'Home',
-        item: new URL('/', config.public.siteUrl).toString(),
-      },
-      {
-        name: 'Terms & Conditions',
-        item: new URL(route.fullPath, config.public.siteUrl).toString(),
-      },
-    ],
-  }),
-]);
 </script>
 
 <template>

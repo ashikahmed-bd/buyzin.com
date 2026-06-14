@@ -1,94 +1,50 @@
-import { defineStore } from "pinia";
-import apiClient from "~/utils/axios";
-
 export const useProfileStore = defineStore("profile", {
   state: () => ({
     loading: false,
     errors: [],
     user: null,
-    addresses: null,
   }),
 
   getters: {},
 
   actions: {
     async getProfile() {
+      const { $api } = useNuxtApp();
       try {
-        const response = await apiClient.get("/api/profile");
-        if (response.status === 200) {
-          this.user = response.data.data;
-          return Promise.resolve(response.data);
-        }
+        const response = await $api("/api/profile");
+        this.user = response.data;
+        return response;
       } catch (error) {
-        if (error.response) {
-          this.errors = error.response.errors;
-          return Promise.reject(error.response);
-        }
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
 
     async update(payload) {
+      const { $api } = useNuxtApp();
       this.loading = true;
       try {
-        const response = await apiClient.put("/api/profile", payload);
-        if (response.status === 200) {
-          toast.success(response.data.message);
-          return Promise.resolve(response.data);
-        }
+        const response = await $api("/api/profile", payload);
+        toast.success(response.message);
+        return response;
       } catch (error) {
-        if (error.response) {
-          this.errors = error.response.errors;
-          return Promise.reject(error.response);
-        }
-      } finally {
-        this.loading = false;
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
 
     async getOrders() {
       this.loading = true;
+      const { $api } = useNuxtApp();
       try {
-        const response = await apiClient.get("/api/orders");
-        if (response.status === 200) {
-          return Promise.resolve(response.data);
-        }
+        const response = await $api("/api/orders");
+        return response;
       } catch (error) {
-        if (error.response) {
-          return Promise.reject(error.response.data);
-        }
-      } finally {
-        this.loading = false;
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
 
-    async getOrder(order_number) {
-      try {
-        const response = await apiClient.get(`/api/orders/${order_number}`);
-        if (response.status === 200) {
-          return Promise.resolve(response.data);
-        }
-      } catch (error) {
-        if (error.response) {
-          return Promise.reject(error.response);
-        }
-      }
-    },
 
-    async getAddresses() {
-      this.loading = true;
-      try {
-        const response = await apiClient.get(`/api/addresses`);
-        if (response.status === 200) {
-          this.addresses = response.data;
-          return Promise.resolve(response.data);
-        }
-      } catch (error) {
-        if (error.response) {
-          return Promise.reject(error.response);
-        }
-      } finally {
-        this.loading = false;
-      }
-    },
   },
 });

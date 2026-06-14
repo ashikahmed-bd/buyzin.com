@@ -16,16 +16,11 @@ export const useWishlistStore = defineStore("wishlist", {
         const response = await $api.post("/api/wishlist", {
           product_id: product.id,
         });
-        if (response.status === 201) {
-          toast.success(response.data.message);
-          await this.getWishlist();
-        }
+        toast.success(response.message);
+        await this.getWishlist();
       } catch (error) {
-        if (error.response) {
-          toast.error(error.response.data.message);
-        }
-      } finally {
-        this.loading = false;
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
 
@@ -33,15 +28,11 @@ export const useWishlistStore = defineStore("wishlist", {
       const { $api } = useNuxtApp();
       try {
         const response = await $api.delete(`/api/wishlist/${wishlist}`);
-
-        if (response.status === 200) {
-          toast.success(response.data.message);
-          await this.getWishlist();
-        }
+        toast.success(response.message);
+        await this.getWishlist();
       } catch (error) {
-        if (error.response) {
-          toast.error(error.response.data.message);
-        }
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
 
@@ -49,14 +40,11 @@ export const useWishlistStore = defineStore("wishlist", {
       const { $api } = useNuxtApp();
       try {
         const response = await $api.get("/api/wishlist");
-        if (response.status === 200) {
-          this.items = response.data;
-          return Promise.resolve(response.data);
-        }
+        this.items = response;
+        return response;
       } catch (error) {
-        if (error.response) {
-          return Promise.reject(error.response.data);
-        }
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
   },

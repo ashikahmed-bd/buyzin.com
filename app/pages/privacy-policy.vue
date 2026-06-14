@@ -2,30 +2,7 @@
 const route = useRoute()
 const config = useRuntimeConfig()
 
-useSchemaOrg([
-  defineWebPage({
-    name: 'Privacy Policy | Buyzin Bangladesh',
-    description:
-      'Read Buyzin Bangladesh Privacy Policy to understand how we collect, use, store, protect, and process your personal information, orders, payments, and account data when using our website and services.',
-    url: new URL(route.fullPath, config.public.siteUrl).toString(),
-    inLanguage: 'en-BD',
-  }),
 
-  defineBreadcrumb({
-    itemListElement: [
-      {
-        position: 1,
-        name: 'Home',
-        item: new URL('/', config.public.siteUrl).toString(),
-      },
-      {
-        position: 2,
-        name: 'Privacy Policy',
-        item: new URL(route.fullPath, config.public.siteUrl).toString(),
-      },
-    ],
-  }),
-])
 </script>
 
 <template>

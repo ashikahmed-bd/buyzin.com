@@ -1,13 +1,12 @@
 <script setup>
 const authStore = useAuthStore()
 const cartStore = useCartStore();
+const categoryStore = useCategoryStore();
 
 const open = ref(false);
 
-const categoryStore = useCategoryStore();
-
-const { data: categories } = await useAsyncData("categories", async () => {
-  return await categoryStore.getCategories();
+const { data: categories, error, pending } = useAsyncData("categories", async () => {
+  return categoryStore.getCategories();
 });
 
 </script>
@@ -48,32 +47,35 @@ const { data: categories } = await useAsyncData("categories", async () => {
             class="relative inline-flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-200 text-primary hover:bg-gray-50 transition-all">
             <UIcon name="i-lucide-shopping-cart" class="size-5" />
 
-            <span
-              class="absolute -top-1 -right-1 min-w-5 h-5 px-1 flex items-center justify-center text-[10px] font-bold text-white bg-primary rounded-full">
-              {{ cartStore.items?.length ?? 0 }}
+            <span class="absolute -top-1 -right-1 min-w-5 h-5 px-1 flex items-center justify-center text-[10px] font-bold text-white bg-primary rounded-full">
+              0
             </span>
           </NuxtLink>
 
-          <NuxtLink :to="authStore.loggedIn ? '/account' : '/auth/login'"
-            class="group flex items-center gap-3 px-2 py-1.5 rounded-xl hover:bg-gray-50 transition-all">
-            <div
-              class="size-10 rounded-full border border-gray-200 bg-white flex items-center justify-center text-primary shrink-0">
-              <UIcon name="i-lucide-user-round" class="size-5" />
-            </div>
+          <ClientOnly>
+            <NuxtLink :to="authStore.loggedIn ? '/account' : '/auth/login'"
+              class="group flex items-center gap-3 px-2 py-1.5 rounded-xl hover:bg-gray-50 transition-all">
+              <div
+                class="size-10 rounded-full border border-gray-200 bg-white flex items-center justify-center text-primary shrink-0">
+                <UIcon name="i-lucide-user-round" class="size-5" />
+              </div>
+              <div class="hidden md:flex flex-col leading-tight min-w-0">
+                <span class="text-xs text-gray-500">
+                  {{ authStore.loggedIn ? 'Welcome back' : 'Hello, Sign in' }}
+                </span>
+                <span class="font-semibold text-gray-900 truncate">
+                  {{ authStore.loggedIn ? authStore.user?.name : 'Account & Lists' }}
+                </span>
+              </div>
+              <UIcon name="i-lucide-chevron-down"
+                class="hidden md:block size-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
+            </NuxtLink>
 
-            <div class="hidden md:flex flex-col leading-tight min-w-0">
-              <span class="text-xs text-gray-500">
-                {{ authStore.loggedIn ? 'Welcome back' : 'Hello, Sign in' }}
-              </span>
-
-              <span class="font-semibold text-gray-900 truncate">
-                {{ authStore.loggedIn ? authStore.user?.name : 'Account & Lists' }}
-              </span>
-            </div>
-
-            <UIcon name="i-lucide-chevron-down"
-              class="hidden md:block size-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
-          </NuxtLink>
+            <!-- fallback -->
+            <template #fallback>
+              <div class="size-10 rounded-full bg-gray-200 animate-pulse" />
+            </template>
+          </ClientOnly>
         </div>
       </div>
 
@@ -89,9 +91,21 @@ const { data: categories } = await useAsyncData("categories", async () => {
     </div>
   </header>
 
+
   <nav class="hidden md:block bg-white">
     <div class="max-w-7xl mx-auto px-4">
-      <nav v-if="categories?.data" class="scrollbar flex items-center overflow-x-auto whitespace-nowrap">
+      <!-- Loading -->
+      <div v-if="pending" class="flex gap-2 py-2">
+        <div v-for="i in 6" :key="i" class="h-8 w-24 bg-gray-200 rounded animate-pulse" />
+      </div>
+
+      <!-- Error -->
+      <div v-else-if="error" class="py-2 text-center text-sm text-red-500">
+        Failed to load categories
+      </div>
+
+      <!-- Data -->
+      <nav v-else-if="categories?.data" class="scrollbar flex items-center overflow-x-auto whitespace-nowrap">
         <UDropdownMenu v-for="parent in categories?.data" :key="parent.id" :items="parent.children.map((item) => ({
           label: item.name,
           to: `/categories/${parent.slug}/${item.slug}`,
@@ -124,6 +138,7 @@ const { data: categories } = await useAsyncData("categories", async () => {
   </nav>
 
   <MobileNavigation :categories="categories" v-if="open" :open="open" @close="open = false" />
+
 </template>
 
 <style scoped></style>

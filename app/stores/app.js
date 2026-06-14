@@ -1,8 +1,6 @@
-import apiClient from "~/utils/axios";
-
 export const useAppStore = defineStore("app", {
   state: () => ({
-    errors: {},
+    errors: null,
     loading: false,
   }),
 
@@ -10,18 +8,15 @@ export const useAppStore = defineStore("app", {
 
   actions: {
     async getHome() {
+      const { $api } = useNuxtApp()
       try {
-        const response = await apiClient.get("/api/home");
-        if (response.status === 200) {
-          return Promise.resolve(response.data);
-        }
+        return await $api("/api/home")
       } catch (error) {
-        if (error.response) {
-          return Promise.reject(error.response);
-        }
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
 
-    
+
   },
 });

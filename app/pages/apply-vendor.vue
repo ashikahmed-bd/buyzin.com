@@ -10,28 +10,6 @@ const form = ref({
   message: "",
 });
 
-useSchemaOrg([
-  defineWebPage({
-    name: "Become a Vendor | Buyzin.com Bangladesh",
-    description: "Join Buyzin as a vendor and start selling your products online. Register your store, manage listings, and reach customers across Bangladesh with secure payments and reliable order fulfillment.",
-    url: new URL(route.fullPath, config.public.siteUrl).toString(),
-    inLanguage: "en-US",
-  }),
-
-  defineBreadcrumb({
-    itemListElement: [
-      {
-        name: 'Home',
-        item: new URL('/', config.public.siteUrl).toString(),
-      },
-      {
-        name: 'Become a Vendor',
-        item: new URL(route.fullPath, config.public.siteUrl).toString(),
-      },
-    ],
-  }),
-
-]);
 </script>
 
 <template>

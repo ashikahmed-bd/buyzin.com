@@ -2,29 +2,7 @@
 const route = useRoute()
 const config = useRuntimeConfig()
 
-useSchemaOrg([
-  defineWebPage({
-    name: 'Shipping & Delivery Policy | Buyzin Bangladesh',
-    description:
-      'Learn about Buyzin shipping methods, delivery coverage, estimated delivery times, shipping charges, and order tracking.',
-    url: new URL(route.fullPath, config.public.siteUrl).toString(),
-    inLanguage: 'en-BD',
-  }),
 
-  defineBreadcrumb({
-    itemListElement: [
-      {
-        name: 'Home',
-        item: new URL('/', config.public.siteUrl).toString(),
-      },
-      {
-        name: 'Shipping & Delivery',
-        item: new URL(route.fullPath, config.public.siteUrl).toString(),
-      },
-    ],
-  }),
-
-]);
 </script>
 
 <template>

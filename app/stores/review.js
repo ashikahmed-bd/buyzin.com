@@ -1,5 +1,3 @@
-import apiClient from "~/utils/axios";
-
 export const useReviewStore = defineStore("review", {
   state: () => ({
     loading: false,
@@ -11,43 +9,37 @@ export const useReviewStore = defineStore("review", {
 
   actions: {
     async getReviews(sku) {
+      const { $api } = useNuxtApp();
       try {
-        const response = await apiClient.get(`/api/products/${sku}/reviews`);
-        if (response.status === 200) {
-          return Promise.resolve(response);
-        }
+        const response = await $api(`/api/products/${sku}/reviews`);
+        return response;
       } catch (error) {
-        if (error.response) {
-          return Promise.reject(error.response);
-        }
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
 
     async like(review) {
+      const { $api } = useNuxtApp();
       try {
-        const response = await apiClient.post(`/api/reviews/${review}/like`);
-        if (response.status === 200) {
-          review.helpful_count++;
-          return Promise.resolve(response);
-        }
+        const response = await $api(`/api/reviews/${review}/like`);
+        review.helpful_count++;
+        return response;
       } catch (error) {
-        if (error.response) {
-          return Promise.reject(error.response);
-        }
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
 
     async unlike(review) {
+      const { $api } = useNuxtApp();
       try {
-        const response = await apiClient.post(`/api/reviews/${review}/unlike`);
-        if (response.status === 200) {
-          review.not_helpful_count++;
-          return Promise.resolve(response);
-        }
+        const response = await $api(`/api/reviews/${review}/unlike`);
+        review.not_helpful_count++;
+        return response;
       } catch (error) {
-        if (error.response) {
-          return Promise.reject(error.response);
-        }
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
   },

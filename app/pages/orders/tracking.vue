@@ -6,7 +6,7 @@ const order = ref("");
 const loading = ref(false);
 const error = ref(null);
 
-// Load order based on order_number
+
 const loadOrder = async () => {
   if (!order_number.value) return;
 

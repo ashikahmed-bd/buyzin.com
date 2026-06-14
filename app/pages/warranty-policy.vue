@@ -2,28 +2,6 @@
 const route = useRoute()
 const config = useRuntimeConfig()
 
-useSchemaOrg([
-    defineWebPage({
-        name: 'Warranty Policy | Buyzin Bangladesh - Buyzin.com',
-        description:
-            'Buyzin.com Warranty Policy explains product coverage, warranty conditions, claim process, exclusions, and support guidelines for customers in Bangladesh.',
-        url: new URL(route.fullPath, config.public.siteUrl).toString(),
-        inLanguage: 'en-BD',
-    }),
-
-    defineBreadcrumb({
-        itemListElement: [
-            {
-                name: 'Home',
-                item: new URL('/', config.public.siteUrl).toString(),
-            },
-            {
-                name: 'Warranty Policy',
-                item: new URL(route.fullPath, config.public.siteUrl).toString(),
-            },
-        ],
-    }),
-])
 </script>
 
 <template>

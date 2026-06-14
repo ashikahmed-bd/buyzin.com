@@ -26,28 +26,7 @@ const goToCheckout = () => {
   }
 }
 
-useSchemaOrg([
-  defineWebPage({
-    name: "Shopping Cart | Buyzin.com Bangladesh",
-    description: "Review and manage products in your Buyzin shopping cart. Update quantities, apply coupons, and proceed to secure checkout.",
-    url: new URL(route.fullPath, config.public.siteUrl).toString(),
-    inLanguage: "en-US",
-  }),
 
-  defineBreadcrumb({
-    itemListElement: [
-      {
-        name: 'Home',
-        item: new URL('/', config.public.siteUrl).toString(),
-      },
-      {
-        name: 'Shopping Cart',
-        item: new URL(route.fullPath, config.public.siteUrl).toString(),
-      },
-    ],
-  }),
-
-]);
 </script>
 
 <template>

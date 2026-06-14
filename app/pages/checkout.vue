@@ -86,29 +86,7 @@ watch([() => form.country, () => form.delivery_type], async () => {
 )
 
 
-useSchemaOrg([
-  defineWebPage({
-    name: "Secure Checkout",
-    description:
-      "Complete your purchase securely. Enter shipping details, choose a payment method, and place your order online.",
-    url: new URL(route.fullPath, config.public.siteUrl).toString(),
-    inLanguage: "en-US",
-  }),
 
-  defineBreadcrumb({
-    itemListElement: [
-      {
-        name: 'Home',
-        item: new URL('/', config.public.siteUrl).toString(),
-      },
-      {
-        name: 'Checkout',
-        item: new URL(route.fullPath, config.public.siteUrl).toString(),
-      },
-    ],
-  }),
-
-]);
 </script>
 
 <template>

@@ -1,5 +1,3 @@
-import apiClient from "~/utils/axios";
-
 export const useOrderStore = defineStore("order", {
   state: () => ({
     loading: false,
@@ -13,34 +11,13 @@ export const useOrderStore = defineStore("order", {
   actions: {
     async all() {
       this.loading = true;
+      const { $api } = useNuxtApp();
       try {
-        const response = await apiClient.get("/api/orders");
-        if (response.status === 200) {
-          return Promise.resolve(response);
-        }
+        const response = await $api("/api/orders");
+        return response;
       } catch (error) {
-        return Promise.reject(error.response);
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    
-
-    
-    async tracking(order_number) {
-      try {
-        const response = await apiClient.get(
-          `api/orders/${order_number}/tracking`
-        );
-
-        if (response.status === 200) {
-          return Promise.resolve(response.data);
-        }
-      } catch (error) {
-        if (error.response) {
-          return Promise.reject(error.response);
-        }
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
   },

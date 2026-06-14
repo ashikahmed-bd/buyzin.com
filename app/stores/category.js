@@ -1,31 +1,20 @@
-import apiClient from "~/utils/axios";
-
 export const useCategoryStore = defineStore("category", {
   state: () => ({
+    errors: null,
     loading: false,
-    errors: {},
-    categories: [],
   }),
-
-  persist: {
-    pick: ["categories"],
-  },
 
   getters: {},
 
   actions: {
     async getCategories() {
+      const { $api } = useNuxtApp()
       try {
-        const response = await apiClient.get("/api/categories");
-        if (response.status === 200) {
-          this.categories = response.data;
-          return Promise.resolve(response.data);
-        }
+        return await $api("/api/categories")
       } catch (error) {
-        if (error.response) {
-          return Promise.reject(error.response);
-        }
+        this.errors = error?.response?._data?.errors
+        throw error
       }
-    }
+    },
   },
 });

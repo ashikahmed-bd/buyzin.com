@@ -1,5 +1,3 @@
-import apiClient from "~/utils/axios";
-
 export const useProductStore = defineStore("product", {
   state: () => ({
     loading: false,
@@ -12,51 +10,24 @@ export const useProductStore = defineStore("product", {
 
   actions: {
     async index(params = {}) {
-      this.loading = true;
+      const { $api } = useNuxtApp()
       try {
-        const response = await apiClient.get("/api/products", { params });
-        if (response.status === 200) {
-          return Promise.resolve(response.data);
-        }
+        return await $api("/api/products", { params });
       } catch (error) {
-        if (error.response.data) {
-          return Promise.reject(error.response.data);
-        }
-      } finally {
-        this.loading = false;
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
 
-    async getProduct(slug, sku) {
+    async getProduct(slug, id) {
+      const { $api } = useNuxtApp();
       try {
-        const response = await apiClient.get(`/api/products/${slug}/${sku}`);
-        if (response.status === 200) {
-          return Promise.resolve(response.data);
-        }
+        return await await $api(`/api/products/${slug}/${id}`);
       } catch (error) {
-        if (error.response) {
-          return Promise.reject(error.response.data);
-        }
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
 
-
-    async getSearch(query) {
-      this.loading = true;
-      try {
-        const response = await apiClient.get("api/products/search", {
-          params: { query: query },
-        });
-        if (response.status === 200) {
-          return Promise.resolve(response.data);
-        }
-      } catch (error) {
-        if (error.response) {
-          return Promise.reject(error.response.data);
-        }
-      } finally {
-        this.loading = false;
-      }
-    },
   },
 });

@@ -1,6 +1,4 @@
 <script setup>
-import { computed, defineProps, defineEmits } from "vue";
-
 const props = defineProps({
   label: String,
   modelValue: [String, Number],

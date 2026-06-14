@@ -1,24 +1,30 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
-
 import tailwindcss from "@tailwindcss/vite";
 
+// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
 
-  devtools: { enabled: false },
-
-  ssr: true,
-
-  css: ['~/assets/css/main.css'],
+  devtools: { enabled: true },
 
   runtimeConfig: {
     public: {
-      apiBase: 'https://api.buyzin.com',
+      apiBase: "https://api.buyzin.com",
       siteUrl: 'https://buyzin.com'
-    }
+    },
   },
 
-  modules: ['@nuxt/image', '@pinia/nuxt', 'pinia-plugin-persistedstate/nuxt', '@nuxtjs/sitemap', 'nuxt-schema-org', '@nuxt/ui', 'nuxt-gtag', '@nuxtjs/mdc'],
+  modules: [
+    '@nuxt/image',
+    '@nuxt/ui',
+    '@nuxtjs/mdc',
+    '@nuxtjs/sitemap',
+    '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
+    'nuxt-gtag',
+    'nuxt-schema-org'
+  ],
+
+  css: ['~/assets/css/main.css'],
 
   mdc: {
     components: {
@@ -46,27 +52,12 @@ export default defineNuxtConfig({
     plugins: [
       tailwindcss(),
     ],
-  },
 
-  app: {
-    head: {
-      charset: 'utf-8',
-      viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
-      htmlAttrs: {
-        lang: 'en',
-      },
-      link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      ],
-      meta: [
-        { name: 'google-site-verification', content: 'JawtWsibWxTQgLvmhhHn4_5QAO8wTX9Ny98IvWnxaTE' },
-      ],
-
-      bodyAttrs: {
-        class: 'antialiased min-h-screen font-sans',
-      },
+    build: {
+      sourcemap: false,
     },
   },
+
 
   site: {
     url: 'https://www.buyzin.com',
@@ -90,6 +81,26 @@ export default defineNuxtConfig({
       products: {
         sources: ['/api/__sitemap__/urls/products']
       }
+    },
+  },
+
+  app: {
+    head: {
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
+      htmlAttrs: {
+        lang: 'en',
+      },
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      ],
+      meta: [
+        { name: 'google-site-verification', content: 'JawtWsibWxTQgLvmhhHn4_5QAO8wTX9Ny98IvWnxaTE' },
+      ],
+
+      bodyAttrs: {
+        class: 'antialiased min-h-screen font-sans text-sm',
+      },
     },
   },
 })

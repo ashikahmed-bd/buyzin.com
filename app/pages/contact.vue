@@ -15,27 +15,7 @@ const handleSubmit = () => {
   form.value = { name: "", email: "", subject: "", message: "" };
 };
 
-useSchemaOrg([
-  defineWebPage({
-    name: 'Contact Us | Buyzin.com Bangladesh',
-    description: 'Get in touch with Buyzin for support, business inquiries, and customer service assistance in Bangladesh.',
-    url: new URL(route.fullPath, config.public.siteUrl).toString(),
-    inLanguage: 'en-BD',
-  }),
 
-  defineBreadcrumb({
-    itemListElement: [
-      {
-        name: 'Home',
-        item: new URL('/', config.public.siteUrl).toString(),
-      },
-      {
-        name: 'Contact Us',
-        item: new URL(route.fullPath, config.public.siteUrl).toString(),
-      },
-    ],
-  }),
-]);
 </script>
 
 <template>

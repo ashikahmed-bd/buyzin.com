@@ -1,5 +1,3 @@
-import apiClient from "~/utils/axios";
-
 export const useCartStore = defineStore("cart", {
   state: () => ({
     loading: false,
@@ -17,29 +15,26 @@ export const useCartStore = defineStore("cart", {
   actions: {
 
     async getItems() {
+      const { $api } = useNuxtApp();
       try {
-        const response = await apiClient.get("/api/cart");
-        if (response.status === 200) {
-          return Promise.resolve(response.data?.data);
-        }
+        const response = await $api("/api/cart");
+        return response.data;
       } catch (error) {
-        console.log(error?.response?.data);
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
 
     async store(payload) {
       this.loading = true;
+      const { $api } = useNuxtApp();
       try {
-        const response = await apiClient.post("/api/cart/items", payload);
-        if (response.status === 201) {
-          this.dialog = true;
-          
-          return Promise.resolve(response.data);
-        }
+        const response = await $api("/api/cart/items", payload);
+        this.dialog = true;
+        return response.data;
       } catch (error) {
-
-      } finally {
-        this.loading = false;
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
 
@@ -67,14 +62,13 @@ export const useCartStore = defineStore("cart", {
 
 
     async getShippingCost(payload) {
+      const { $api } = useNuxtApp();
       try {
-        const response = await apiClient.put("/api/cart/shipping/calculate", payload);
-
-        if (response.status === 200) {
-          return Promise.resolve(response.data)
-        }
+        const response = await $api("/api/cart/shipping/calculate", payload);
+        return response;
       } catch (error) {
-        return Promise.reject(error?.response?.data)
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
 
@@ -82,42 +76,32 @@ export const useCartStore = defineStore("cart", {
      * Apply coupon
      */
     async couponApply(code) {
+      const { $api } = useNuxtApp();
       this.loading = true;
 
       try {
-        const response = await apiClient.post("/api/cart/coupon/apply", {
+        const response = await $api("/api/cart/coupon/apply", {
           code: code
         });
-
-        if (response.status === 200) {
-
-        }
+        return response;
       } catch (error) {
-        this.errors = error.response.data;
-
-      } finally {
-        this.loading = false;
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
 
 
-    async checkout(payload) {  
+    async checkout(payload) {
+      const { $api } = useNuxtApp();
       this.loading = true;
       try {
-        const response = await apiClient.post("/api/cart/checkout", payload);
-        console.log(response)
-
-        if (response.status === 200) {
-          return navigateTo(response.data?.redirect_url, {
-            external: true,
-          });
-        }
+        const response = await $api("/api/cart/checkout", payload);
+        return navigateTo(response.redirect_url, {
+          external: true,
+        });
       } catch (error) {
-        if (error.response) {
-          this.errors = error.response.errors;
-        }
-      } finally {
-        this.loading = false;
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
   },

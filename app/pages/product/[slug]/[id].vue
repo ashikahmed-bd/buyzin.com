@@ -1,11 +1,12 @@
 <script setup>
-const productStore = useProductStore();
-const wishlistStore = useWishlistStore();
-const cartStore = useCartStore();
-const route = useRoute();
-const { link } = useWhatsapp()
-const config = useRuntimeConfig();
+const route = useRoute()
+const config = useRuntimeConfig()
 
+const wishlistStore = useWishlistStore();
+const productStore = useProductStore();
+const cartStore = useCartStore();
+
+const { link } = useWhatsapp();
 
 const addToCart = async (product) => {
   await cartStore.store({
@@ -14,7 +15,6 @@ const addToCart = async (product) => {
     variant_id: null,
   });
 }
-
 
 const addToWishlist = async (product) => {
   await wishlistStore.addItem(product);
@@ -36,143 +36,35 @@ const { data, pending, error, refresh } = await useAsyncData(`product-${route.pa
   {
     watch: [() => route.params.slug, () => route.params.id]
   }
-
 );
 
-const product = computed(() => data.value?.product)
+useSchemaOrg([
 
-watchEffect(() => {
-  if (!product.value) return
+  defineWebPage({
+    name: computed(() => data.value?.product?.meta_title ?? ''),
+    description: computed(() => data.value?.product?.meta_description ?? ''),
+    url: computed(() => new URL(route.fullPath, config.public.siteUrl).toString()),
+    inLanguage: 'en-BD',
+  }),
 
-  useHead({
-    script: [
+  defineBreadcrumb({
+    itemListElement: computed(() => [
       {
-        type: 'application/ld+json',
-        key: 'schema-breadcrumb',
-        children: JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'BreadcrumbList',
-          itemListElement: [
-            {
-              '@type': 'ListItem',
-              position: 1,
-              name: 'Home',
-              item: 'https://www.buyzin.com'
-            },
-            {
-              '@type': 'ListItem',
-              position: 2,
-              name: product.value.category?.name,
-              item: `https://www.buyzin.com/categories/${product.value.category?.slug}`
-            },
-            {
-              '@type': 'ListItem',
-              position: 3,
-              name: product.value.name,
-              item: `https://www.buyzin.com/products/${product.value.slug}/${product.value.id}`
-            }
-          ]
-        })
+        name: 'Home',
+        item: config.public.siteUrl,
       },
       {
-        type: 'application/ld+json',
-        key: 'schema-product',
-        children: JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'Product',
-          name: product.value.name,
-          description: product.value.summary,
-          sku: product.value.sku,
-          image: [
-            product.value.cover_url,
-            ...(product.value.gallery ?? [])
-          ].filter(Boolean),
-          brand: {
-            '@type': 'Brand',
-            name: product.value.brand?.name
-          },
-          category: product.value.category?.name,
-          url: `https://www.buyzin.com/products/${product.value.slug}/${product.value.id}`,
-          offers: {
-            '@type': 'Offer',
-            url: `https://www.buyzin.com/products/${product.value.slug}/${product.value.id}`,
-            priceCurrency: 'BDT',
-            price: product.value.final_price,
-            priceValidUntil: product.value.end_at
-              ? new Date(product.value.end_at).toISOString().split('T')[0]
-              : new Date(new Date().setFullYear(new Date().getFullYear() + 1))
-                .toISOString()
-                .split('T')[0],
-            availability:
-              (product.value.quantity ?? 0) > 0
-                ? 'https://schema.org/InStock'
-                : 'https://schema.org/OutOfStock',
-            itemCondition: 'https://schema.org/NewCondition',
-            seller: {
-              '@type': 'Organization',
-              name: product.value.store?.name,
-              telephone: product.value.store?.phone
-            },
-            hasMerchantReturnPolicy: {
-              '@type': 'MerchantReturnPolicy',
-              returnPolicyCategory: product.value.is_refundable
-                ? 'https://schema.org/MerchantReturnFiniteReturnWindow'
-                : 'https://schema.org/MerchantReturnNotPermitted',
-              merchantReturnDays: 7,
-              returnMethod: 'https://schema.org/ReturnByMail',
-              returnFees: 'https://schema.org/FreeReturn'
-            },
-            shippingDetails: {
-              '@type': 'OfferShippingDetails',
-              shippingRate: {
-                '@type': 'MonetaryAmount',
-                value: 0,
-                currency: 'BDT'
-              },
-              deliveryTime: {
-                '@type': 'ShippingDeliveryTime',
-                handlingTime: {
-                  '@type': 'QuantitativeValue',
-                  minValue: 0,
-                  maxValue: 0,
-                  unitCode: 'DAY'
-                },
-                transitTime: {
-                  '@type': 'QuantitativeValue',
-                  minValue: 0,
-                  maxValue: 1,
-                  unitCode: 'DAY'
-                }
-              }
-            }
-          },
-          ...(Number(product.value.review_count) > 0 && {
-            aggregateRating: {
-              '@type': 'AggregateRating',
-              ratingValue: product.value.rating_avg,
-              reviewCount: product.value.review_count,
-              bestRating: 5,
-              worstRating: 1
-            }
-          })
-        })
+        name: data.value?.product?.category?.name ?? '',
+        item: `${config.public.siteUrl}/categories/${data.value?.product?.category?.slug ?? ''}`,
       },
       {
-        type: 'application/ld+json',
-        key: 'schema-organization',
-        children: JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'Organization',
-          name: product.value.store?.name,
-          telephone: product.value.store?.phone,
-          url: `https://www.buyzin.com/stores/${product.value.store?.slug}`
-        })
-      }
-    ]
-  })
-});
+        name: data.value?.product?.name ?? '',
+        item: new URL(route.fullPath, config.public.siteUrl).toString(),
+      },
+    ]),
+  }),
 
-
+]);
 </script>
 
 <template>
@@ -181,7 +73,6 @@ watchEffect(() => {
     <div v-if="data?.product">
       <SeoMeta :title="data.product?.meta_title" :description="data.product?.meta_description"
         :keywords="data.product?.meta_keywords" :image="data.product?.cover_url" />
-
 
       <UBreadcrumb :items="[
         { label: 'Home', to: '/' },

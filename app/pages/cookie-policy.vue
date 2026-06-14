@@ -24,29 +24,6 @@ const savePreferences = () => {
   // API Call
 }
 
-useSchemaOrg([
-  defineWebPage({
-    name: 'Cookie Settings | Buyzin Bangladesh',
-    description:
-      'Manage your cookie preferences and understand how Buyzin uses cookies and similar technologies.',
-    url: new URL(route.fullPath, config.public.siteUrl).toString(),
-    inLanguage: 'en-BD',
-  }),
-
-  defineBreadcrumb({
-    itemListElement: [
-      {
-        name: 'Home',
-        item: new URL('/', config.public.siteUrl).toString(),
-      },
-      {
-        name: 'Cookie Policy',
-        item: new URL(route.fullPath, config.public.siteUrl).toString(),
-      },
-    ],
-  }),
-
-]);
 </script>
 
 <template>

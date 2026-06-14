@@ -30,28 +30,7 @@ const faqs = ref([
     },
 ])
 
-useSchemaOrg([
-  defineWebPage({
-    name: "Help Center | Buyzin Bangladesh",
-    description: "Find answers to common questions, support articles, and guidance for shopping, orders, payments, and account management on Buyzin.",
-    url: new URL(route.fullPath, config.public.siteUrl).toString(),
-    inLanguage: "en-US",
-  }),
 
-  defineBreadcrumb({
-    itemListElement: [
-      {
-        name: 'Home',
-        item: new URL('/', config.public.siteUrl).toString(),
-      },
-      {
-        name: 'Help Center',
-        item: new URL(route.fullPath, config.public.siteUrl).toString(),
-      },
-    ],
-  }),
-
-]);
 </script>
 
 <template>

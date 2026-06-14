@@ -2,31 +2,7 @@
 const route = useRoute()
 const config = useRuntimeConfig()
 
-useSchemaOrg([
-  defineWebPage({
-    name: 'Return Policy | Buyzin Bangladesh',
-    description:
-      'Learn about Buyzin return eligibility, return periods, product exchanges, damaged items, and return procedures.',
-    url: new URL(route.fullPath, config.public.siteUrl).toString(),
-    inLanguage: 'en-BD',
-  }),
 
-  defineBreadcrumb({
-    itemListElement: [
-      {
-        position: 1,
-        name: 'Home',
-        item: new URL('/', config.public.siteUrl).toString(),
-      },
-      {
-        position: 2,
-        name: 'Return & Refund Policy',
-        item: new URL(route.fullPath, config.public.siteUrl).toString(),
-      },
-    ],
-  }),
-
-]);
 </script>
 
 <template>

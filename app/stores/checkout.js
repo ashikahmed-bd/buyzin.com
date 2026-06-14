@@ -1,5 +1,3 @@
-import apiClient from "~/utils/axios";
-
 export const useCheckoutStore = defineStore("checkout", {
   state: () => ({
     loading: false,
@@ -10,15 +8,13 @@ export const useCheckoutStore = defineStore("checkout", {
 
   actions: {
     async getShippings() {
+      const { $api } = useNuxtApp();
       try {
-        const response = await apiClient.get("/api/shippings");
-        if (response.status === 200) {
-          return Promise.resolve(response.data);
-        }
+        const response = await $api("/api/shippings");
+        return response;
       } catch (error) {
-        if (error.response) {
-          return Promise.reject(error.response);
-        }
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
   },

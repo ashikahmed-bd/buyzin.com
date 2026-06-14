@@ -1,5 +1,3 @@
-import apiClient from "~/utils/axios";
-
 export const useBrandStore = defineStore("brand", {
   state: () => ({
     loading: false,
@@ -12,39 +10,33 @@ export const useBrandStore = defineStore("brand", {
 
   actions: {
     async getBrands() {
-
+      const { $api } = useNuxtApp();
       try {
-        const response = await apiClient.get(`/api/brands`);
-        if (response.status === 200) {
-          this.brands = response.data;
-          return Promise.resolve(response.data);
-        }
+        const response = await $api(`/api/brands`);
+        this.brands = response;
+        return response;
       } catch (error) {
-        if (error.response) {
-          return Promise.reject(error.response.data);
-        }
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
 
     async getProducts(brand, params = {}) {
       this.loading = true;
+      const { $api } = useNuxtApp();
       try {
-        const response = await apiClient.get(`/api/brands/${brand}/products`, {
+        const response = await $api(`/api/brands/${brand}/products`, {
           params: {
             page: params.page,
             limit: params.limit,
             sort: params.sort,
           },
         });
-        if (response.status === 200) {
-          return Promise.resolve(response.data);
-        }
+
+        return response;
       } catch (error) {
-        if (error.response) {
-          return Promise.reject(error.response.data);
-        }
-      } finally {
-        this.loading = false;
+        this.errors = error?.response?._data?.errors
+        throw error
       }
     },
   },
