@@ -1,15 +1,9 @@
 <script setup>
-import LoadingState from '~/components/LoadingState.vue';
-
 const brandStore = useBrandStore();
 
-const { data: brands, pending, error, refresh } = await useAsyncData(
-    "brands",
-    async () => {
-        return await brandStore.getBrands()
-    }
-)
-
+const { data: brands, pending, error, refresh } = await useAsyncData("brands", async () => {
+    return await brandStore.getBrands()
+});
 
 </script>
 

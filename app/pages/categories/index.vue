@@ -1,14 +1,10 @@
 <script setup>
 const categoryStore = useCategoryStore();
-const { categories } = storeToRefs(categoryStore);
 
-const loadCategories = async () => {
-    await categoryStore.getCategories();
-}
-
-onMounted(() => {
-    loadCategories();
+const { data: categories, pending } = await useAsyncData("categories", async () => {
+  return await categoryStore.getCategories();
 });
+
 </script>
 
 <template>
@@ -25,7 +21,6 @@ onMounted(() => {
                 </p>
             </div>
 
-            <!-- Categories Grid -->
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
                 <NuxtLink v-for="cat in categories.data" :key="cat.id" :to="`/category/${cat.slug}`"
                     class="group bg-white rounded-2xl transition overflow-hidden">
