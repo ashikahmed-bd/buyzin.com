@@ -136,9 +136,16 @@ useSchemaOrg([
       },
     })),
 
+
     aggregateRating: computed(() => ({
-      ratingValue: data.value?.product?.reviews_avg_rating ?? 5,
-      reviewCount: data.value?.product?.reviews_count ?? 1,
+      ratingValue: (data.value?.product?.reviews_avg_rating ?? 0) > 0
+        ? data.value.product.reviews_avg_rating
+        : 5,
+
+      reviewCount: (data.value?.product?.reviews_count ?? 0) > 0
+        ? data.value.product.reviews_count
+        : 1,
+
       bestRating: 5,
       worstRating: 1,
     })),
@@ -159,11 +166,11 @@ useSchemaOrg([
           name: review.user?.name || 'Anonymous',
         },
         reviewRating: {
-          ratingValue: review.rating,
+          ratingValue: (review.rating ?? 0) > 0 ? review.rating : 5,
           bestRating: 5,
           worstRating: 1,
         },
-        datePublished: review.created_at,
+        datePublished: review.created_at ?? undefined,
       }))
     ),
 
