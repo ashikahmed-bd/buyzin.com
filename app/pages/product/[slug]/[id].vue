@@ -152,33 +152,20 @@ useSchemaOrg([
       availability: 'https://schema.org/InStock',
     })),
 
-    review: [
-      {
-        name: 'Excellent quality, highly recommended!',
-        author: { name: 'Rahim Uddin' },
-        reviewRating: { ratingValue: 5 },
-      },
-      {
-        name: 'Great value for the price.',
-        author: { name: 'Karim Hossain' },
-        reviewRating: { ratingValue: 4 },
-      },
-      {
-        name: 'Fast delivery and product as described.',
-        author: { name: 'Nasrin Akter' },
-        reviewRating: { ratingValue: 5 },
-      },
-      {
-        name: 'Good product, satisfied with the purchase.',
-        author: { name: 'Farhan Ahmed' },
-        reviewRating: { ratingValue: 4 },
-      },
-      {
-        name: 'Decent quality but packaging could be better.',
-        author: { name: 'Sumaiya Begum' },
-        reviewRating: { ratingValue: 3 },
-      },
-    ],
+    review: computed(() =>
+      (data.value?.product?.reviews ?? []).map(review => ({
+        name: review.review,
+        author: {
+          name: review.user?.name || 'Anonymous',
+        },
+        reviewRating: {
+          ratingValue: review.rating,
+          bestRating: 5,
+          worstRating: 1,
+        },
+        datePublished: review.created_at,
+      }))
+    ),
 
   }),
 
