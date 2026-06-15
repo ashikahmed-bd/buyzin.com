@@ -137,7 +137,7 @@ useSchemaOrg([
     })),
 
     aggregateRating: computed(() => ({
-      ratingValue: data.value?.product?.rating ?? 5,
+      ratingValue: data.value?.product?.reviews_avg_rating ?? 5,
       reviewCount: data.value?.product?.reviews_count ?? 1,
       bestRating: 5,
       worstRating: 1,
