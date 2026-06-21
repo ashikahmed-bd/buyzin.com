@@ -221,7 +221,7 @@ useSchemaOrg([
                   </div>
 
                   <span class="font-semibold text-gray-900">
-                    {{ data.product?.reviews_count?.toFixed(1) }}
+                    {{ data.product?.reviews_count }}
                   </span>
 
                   <span class="text-gray-500 text-sm">
