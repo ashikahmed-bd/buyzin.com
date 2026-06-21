@@ -1,8 +1,5 @@
 <template>
-  <li class="flex items-center gap-2">
-    <UIcon name="i-lucide-circle-check-big" class="size-4" />
-    <span class="text-sm text-body">
-      <slot />
-    </span>
+  <li class="ml-5 list-disc text-sm leading-6 text-gray-700 marker:text-green-600">
+    <slot />
   </li>
 </template>

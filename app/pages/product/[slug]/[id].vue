@@ -207,7 +207,7 @@ useSchemaOrg([
               <div class="flex flex-wrap items-center gap-4 text-sm">
                 <div class="flex items-center gap-2">
                   <div class="flex items-center">
-                    <UIcon v-for="(type, i) in getStars(data.product?.rating_avg)" :key="i" :name="type === 'full'
+                    <UIcon v-for="(type, i) in getStars(data.product?.reviews_avg_rating)" :key="i" :name="type === 'full'
                       ? 'i-heroicons:star-solid'
                       : type === 'half'
                         ? 'i-heroicons:star-half-solid'
@@ -221,7 +221,7 @@ useSchemaOrg([
                   </div>
 
                   <span class="font-semibold text-gray-900">
-                    {{ data.product?.rating_avg?.toFixed(1) }}
+                    {{ data.product?.reviews_count?.toFixed(1) }}
                   </span>
 
                   <span class="text-gray-500 text-sm">
@@ -344,27 +344,35 @@ useSchemaOrg([
               </button>
             </div>
 
-            <div
-              class="mt-5 rounded-xl border border-gray-200 bg-gradient-to-r from-green-50 to-white p-4 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center">
-                  <UIcon name="i-lucide-message-circle" class="text-white size-5" />
+            <div class="mt-5 overflow-hidden rounded-2xl border border-border bg-white p-4 transition-all">
+              <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+                <div class="flex items-start gap-4">
+                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded bg-primary">
+                    <UIcon name="i-lucide-messages-square" class="size-6 text-white" />
+                  </div>
+
+                  <div>
+                    <h3 class="font-semibold text-gray-900">
+                      Need Help Before Ordering?
+                    </h3>
+
+                    <p class="mt-1 text-sm text-gray-500">
+                      Get instant answers about product details, stock availability, delivery, and pricing.
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p class="text-sm font-semibold text-gray-900">Need Help?</p>
-                  <p class="text-xs text-gray-600">
-                    Chat with us on WhatsApp before ordering
-                  </p>
-                </div>
+
+                <a :href="link(
+                  data.product?.store?.whatsapp,
+                  `Hi, I'm interested in this product: ${config.public.siteUrl}${route.fullPath}`
+                )" target="_blank"
+                  class="group inline-flex w-full items-center justify-center gap-2 rounded bg-green-600 px-4 py-2.5 font-medium text-white transition-all hover:bg-green-700 sm:w-auto">
+                  <UIcon name="i-mdi-whatsapp" class="size-4" />
+                  <span class="whitespace-nowrap">Chat Now</span>
+                  <UIcon name="i-lucide-arrow-right" class="size-4 transition-transform group-hover:translate-x-1" />
+                </a>
               </div>
-              <a :href="link(
-                data.product?.store?.phone,
-                `Hi, I'm interested in this product: ${config.public.siteUrl}${route.fullPath}`
-              )" target="_blank"
-                class="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-white text-sm font-medium hover:bg-green-700 transition">
-                <UIcon name="i-lucide-message-square" class="size-4" />
-                Chat
-              </a>
             </div>
           </div>
         </div>
@@ -437,12 +445,12 @@ useSchemaOrg([
             </div>
 
             <div class="min-w-0 flex-1">
-              <h4 class="font-semibold text-gray-900">
+              <h4 class="font-semibold text-body">
                 Authorized Seller
               </h4>
 
-              <p class="mt-1 text-sm text-gray-600 line-clamp-2">
-                Sold by {{ data.product?.store?.name }}
+              <p class="mt-1 text-sm text-body line-clamp-2">
+                Sold by <span class="text-primary">{{ data.product?.store?.name }}</span>
               </p>
 
               <NuxtLink :to="`/stores/${data.product?.store?.slug}`"

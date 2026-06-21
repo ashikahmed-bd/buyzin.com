@@ -47,15 +47,15 @@ const addToWishlist = async (product) => {
 
       <div class="flex items-center gap-2 py-2">
         <div class="flex items-center gap-0.5">
-          <UIcon v-for="i in 5" :key="i" :name="i <= Math.round(product.rating_avg ?? 0)
+          <UIcon v-for="i in 5" :key="i" :name="i <= Math.round(product.reviews_avg_rating ?? 0)
             ? 'heroicons:star-solid'
-            : 'heroicons:star'" class="size-4" :class="i <= Math.round(product.rating_avg ?? 0)
-      ? 'text-yellow-400'
-      : 'text-gray-300'" />
+            : 'heroicons:star'" class="size-4" :class="i <= Math.round(product.reviews_avg_rating ?? 0)
+              ? 'text-yellow-400'
+              : 'text-gray-300'" />
         </div>
 
         <span class="text-xs text-black">
-          ({{ product.review_count }})
+          ({{ product.reviews_count }})
         </span>
       </div>
 
