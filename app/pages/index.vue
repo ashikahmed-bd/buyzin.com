@@ -9,8 +9,6 @@ const { data: home, pending, error, refresh } = await useAsyncData("home", async
 const { data: categories } = useAsyncData("categories", async () => {
     return categoryStore.getCategories();
 });
-
-
 </script>
 
 <template>
@@ -63,8 +61,8 @@ const { data: categories } = useAsyncData("categories", async () => {
             </div>
         </section>
 
-        <section class="bg-gray-100 py-6 md:py-10">
-            <div class="container mx-auto px-4">
+        <section class="bg-gray-50 py-6 md:py-10">
+            <div class="container mx-auto px-4 mb-4">
                 <UCarousel v-if="home?.categories?.length" v-slot="{ item }" loop :autoplay="{ delay: 3500 }"
                     :items="home?.categories" :ui="{
                         item: 'basis-1/3 sm:basis-1/4 md:basis-1/6 lg:basis-1/8'
@@ -80,11 +78,9 @@ const { data: categories } = useAsyncData("categories", async () => {
                     </NuxtLink>
                 </UCarousel>
             </div>
-        </section>
 
-        <section class="py-6 bg-gray-50">
-            <div class="container mx-auto px-4">
-                <div class="flex items-center justify-between mb-5">
+            <div class="container mx-auto px-4 ">
+                <div class="flex items-center justify-between py-6">
                     <div class="block">
                         <h2 class="text-2xl font-bold text-gray-900">
                             {{ home?.promotions?.title }}
@@ -111,44 +107,18 @@ const { data: categories } = useAsyncData("categories", async () => {
                     Popular Stores
                 </h3>
 
-                <a href="#" class="flex items-center gap-2 text-sm font-medium text-primary">
+                <NuxtLink to="/stores" class="flex items-center gap-2 text-sm font-medium text-primary">
                     View All Stores
                     <UIcon name="i-lucide-arrow-right" />
-                </a>
+                </NuxtLink>
             </div>
 
             <div class="block">
                 <UCarousel v-if="home?.stores?.length" v-slot="{ item }" loop :autoplay="{ delay: 3500 }"
                     :items="home?.stores" :ui="{
-                        item: 'basis-1/1 sm:basis-1/3 md:basis-1/4 lg:basis-1/5'
+                        item: 'basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5'
                     }">
-                    <NuxtLink :to="`/stores/${item.slug}`" class="flex items-center gap-4 rounded-2xl border border-border bg-white
-               transition duration-300 hover:border-primary p-2.5">
-                        <div class="size-16 flex items-center justify-center rounded-2xl bg-slate-100 shrink-0">
-                            <NuxtImg :src="item.logo_url" :alt="item.name" class="size-12 object-contain" />
-                        </div>
-
-                        <div class="min-w-0 flex-1">
-                            <div class="flex items-center gap-1">
-                                <h4 class="font-semibold text-title truncate">
-                                    {{ item.name }}
-                                </h4>
-
-                                <UIcon v-if="item.verified" name="i-heroicons-check-badge"
-                                    class="text-green-600 w-4 h-4" />
-                            </div>
-
-                            <div class="mt-1 flex items-center gap-1 text-xs">
-                                <UIcon name="i-heroicons-star-solid" class="text-yellow-500 w-4 h-4" />
-
-                                <span class="font-medium">{{ item.rating }}</span>
-
-                                <span class="text-body">
-                                    ({{ item.reviews_count }} reviews)
-                                </span>
-                            </div>
-                        </div>
-                    </NuxtLink>
+                    <StoreCard :store="item" />
                 </UCarousel>
             </div>
         </section>
@@ -261,7 +231,6 @@ const { data: categories } = useAsyncData("categories", async () => {
             </div>
         </section>
     </main>
-
 </template>
 
 <style scoped></style>

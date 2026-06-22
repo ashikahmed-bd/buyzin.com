@@ -115,12 +115,15 @@ const handleSubmit = () => {
             </div>
           </div>
         </div>
-
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3650.844207395304!2d90.3671!3d23.7891!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c76f9f90bb7d%3A0xb7d3ef2b9f03c6df!2sDhanmondi%2C%20Dhaka!5e0!3m2!1sen!2sbd!4v1709838299230!5m2!1sen!2sbd"
-          width="100%" height="250" style="border: 0" allowfullscreen="" loading="lazy"
-          class="rounded-2xl shadow-md"></iframe>
       </div>
+
+
+    </div>
+    <div class="block w-full">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387104.6627038464!2d89.56361373786567!3d25.655850323265962!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39fd4d5b81736cc1%3A0xa9d91fc3a0f822ea!2sBuyzin.com%20-%20Online%20Shopping%20in%20Bangladesh!5e0!3m2!1sen!2sbd!4v1782129768268!5m2!1sen!2sbd"
+        class="w-full h-dvh border-0" allowfullscreen loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
   </main>
 </template>
