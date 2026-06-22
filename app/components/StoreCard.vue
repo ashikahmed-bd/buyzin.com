@@ -8,7 +8,7 @@ defineProps({
 </script>
 
 <template>
-    <NuxtLink :to="`/stores/${store.slug}`"
+    <a :href="`/stores/${store.slug}`"
         class="flex flex-col items-center gap-3 rounded-2xl border border-border bg-white p-3 text-center transition duration-300 hover:border-primary sm:flex-row sm:text-left">
         <div class="size-16 flex shrink-0 items-center justify-center rounded-2xl bg-slate-100">
             <NuxtImg :src="store.logo_url" :alt="store.name" class="size-12 object-contain" />
@@ -35,5 +35,5 @@ defineProps({
                 </span>
             </div>
         </div>
-    </NuxtLink>
+    </a>
 </template>

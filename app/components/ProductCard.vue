@@ -29,14 +29,14 @@ const addToWishlist = async (product) => {
       </button>
     </div>
 
-    <NuxtLink :to="`/product/${product.slug}/${product.id}`">
+    <a :href="`/product/${product.slug}/${product.id}`">
       <div
         class="relative shine__img__wrapper aspect-square bg-gray-50 overflow-hidden flex items-center justify-center">
         <NuxtImg :src="product.cover_url" :alt="product.meta_title"
           class="w-full h-full object-contain shine__img group-hover:scale-105 transition-transform duration-300"
           loading="lazy" />
       </div>
-    </NuxtLink>
+    </a>
 
     <div class="p-2.5">
       <NuxtLink :to="`/product/${product.slug}/${product.id}`">

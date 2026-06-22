@@ -107,10 +107,10 @@ const { data: categories } = useAsyncData("categories", async () => {
                     Popular Stores
                 </h3>
 
-                <NuxtLink to="/stores" class="flex items-center gap-2 text-sm font-medium text-primary">
+                <a href="/stores" class="flex items-center gap-2 text-sm font-medium text-primary">
                     View All Stores
                     <UIcon name="i-lucide-arrow-right" />
-                </NuxtLink>
+                </a>
             </div>
 
             <div class="block">
@@ -165,7 +165,7 @@ const { data: categories } = useAsyncData("categories", async () => {
                             class="w-20 h-20 object-contain mb-2" />
                         <span class="text-sm font-medium line-clamp-1">{{
                             item.name
-                        }}</span>
+                            }}</span>
                     </NuxtLink>
                 </UCarousel>
             </div>
