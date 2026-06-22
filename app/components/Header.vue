@@ -12,6 +12,20 @@ const { data: categories, error, pending } = useAsyncData("categories", async ()
 </script>
 
 <template>
+  <div class="w-full hidden md:block bg-gray-100 text-xs text-gray-600 border-b">
+    <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-9">
+      <div class="flex items-center gap-6">
+        <span>Free Shipping on orders over $50</span>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <a href="#" class="hover:text-black">Sell on Buyzin</a>
+        <a href="#" class="hover:text-black">Track Order</a>
+        <a href="#" class="hover:text-black">Help & Support</a>
+        <span>English / BDT</span>
+      </div>
+    </div>
+  </div>
   <header class="sticky top-0 z-30 border-b border-border bg-white">
     <div class="max-w-7xl mx-auto px-4 py-2.5">
       <div class="flex items-center justify-between">
@@ -26,56 +40,58 @@ const { data: categories, error, pending } = useAsyncData("categories", async ()
         </div>
 
         <div class="hidden lg:block grow max-w-2xl mx-12">
-          <div class="relative w-full mx-auto">
-            <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <LazyUIcon name="i-lucide-search" class="size-5 text-muted" />
-            </div>
+          <div class="flex w-full items-center bg-white border border-border rounded-full transition">
+            <select class="max-w-40 bg-transparent px-4 py-2 text-sm text-body focus:outline-none">
+              <option value="">All Categories</option>
+              <template v-for="parent in categories.data" :key="parent.id">
+                <optgroup :label="parent.name">
+                  <option :value="parent.slug">
+                    All {{ parent.name }}
+                  </option>
+                  <option v-for="child in parent.children" :key="child.id" :value="child.slug">
+                    {{ child.name }}
+                  </option>
+                  <template v-for="child in parent.children">
+                    <option v-for="item in child.children" :key="item.id" :value="item.slug">
+                      — {{ item.name }}
+                    </option>
+                  </template>
+                </optgroup>
+              </template>
+            </select>
 
-            <input type="search" placeholder="Enter search keywords..."
-              class="w-full pl-10 pr-24 py-2.5 rounded-full border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-200 text-gray-700 placeholder-gray-400" />
-
+            <input type="search" placeholder="Search products..."
+              class="flex-1 px-4 py-2 text-sm text-body placeholder-gray-400 bg-transparent focus:outline-none" />
             <button
-              class="absolute right-1.5 top-1.5 bottom-1.5 bg-primary text-white px-5 rounded-full text-sm font-medium hover:bg-primary/90 transition-all duration-200">
+              class="m-1 px-5 py-2 bg-primary text-white text-sm font-medium rounded-full hover:bg-primary/90 active:scale-[0.98] transition">
               Search
             </button>
+
           </div>
         </div>
 
-        <div class="flex items-center gap-3">
-          <!-- Cart -->
-          <NuxtLink to="/cart"
-            class="relative inline-flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-200 text-primary hover:bg-gray-50 transition-all">
-            <UIcon name="i-lucide-shopping-cart" class="size-5" />
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-2 cursor-pointer">
+            <UIcon name="i-lucide-user-round" class="size-6 text-body" />
+            <div class="leading-tight">
+              <p class="text-xs text-gray-500">Account</p>
+              <p class="font-medium">Sign in</p>
+            </div>
+          </div>
 
-            <span class="absolute -top-1 -right-1 min-w-5 h-5 px-1 flex items-center justify-center text-[10px] font-bold text-white bg-primary rounded-full">
+          <div class="relative hidden md:block cursor-pointer">
+            <UIcon name="i-lucide-heart" class="size-6 text-body" />
+            <span class="absolute -top-2 -right-2 bg-danger text-white text-xs px-1 rounded-full">
               0
             </span>
-          </NuxtLink>
+          </div>
 
-          <ClientOnly>
-            <NuxtLink :to="authStore.loggedIn ? '/account' : '/auth/login'"
-              class="group flex items-center gap-3 px-2 py-1.5 rounded-xl hover:bg-gray-50 transition-all">
-              <div
-                class="size-10 rounded-full border border-gray-200 bg-white flex items-center justify-center text-primary shrink-0">
-                <UIcon name="i-lucide-user-round" class="size-5" />
-              </div>
-              <div class="hidden md:flex flex-col leading-tight min-w-0">
-                <span class="text-xs text-gray-500">
-                  {{ authStore.loggedIn ? 'Welcome back' : 'Hello, Sign in' }}
-                </span>
-                <span class="font-semibold text-gray-900 truncate">
-                  {{ authStore.loggedIn ? authStore.user?.name : 'Account & Lists' }}
-                </span>
-              </div>
-              <UIcon name="i-lucide-chevron-down"
-                class="hidden md:block size-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
-            </NuxtLink>
-
-            <!-- fallback -->
-            <template #fallback>
-              <div class="size-10 rounded-full bg-gray-200 animate-pulse" />
-            </template>
-          </ClientOnly>
+          <div class="relative hidden md:block cursor-pointer">
+            <UIcon name="i-lucide-shopping-cart" class="size-6 text-body" />
+            <span class="absolute -top-2 -right-2 bg-primary text-white text-xs px-1 rounded-full">
+              0
+            </span>
+          </div>
         </div>
       </div>
 
@@ -90,52 +106,6 @@ const { data: categories, error, pending } = useAsyncData("categories", async ()
       </form>
     </div>
   </header>
-
-
-  <nav class="hidden md:block bg-white">
-    <div class="max-w-7xl mx-auto px-4">
-      <!-- Loading -->
-      <div v-if="pending" class="flex gap-2 py-2">
-        <div v-for="i in 6" :key="i" class="h-8 w-24 bg-gray-200 rounded animate-pulse" />
-      </div>
-
-      <!-- Error -->
-      <div v-else-if="error" class="py-2 text-center text-sm text-red-500">
-        Failed to load categories
-      </div>
-
-      <!-- Data -->
-      <nav v-else-if="categories?.data" class="scrollbar flex items-center overflow-x-auto whitespace-nowrap">
-        <UDropdownMenu v-for="parent in categories?.data" :key="parent.id" :items="parent.children.map((item) => ({
-          label: item.name,
-          to: `/categories/${parent.slug}/${item.slug}`,
-          trailingIcon: item.children?.length
-            ? 'i-lucide-chevron-right'
-            : undefined,
-
-          children: item.children?.map((child) => ({
-            label: child.name,
-            to: `/categories/${parent.slug}/${item.slug}/${child.slug}`,
-            trailingIcon: child.children?.length
-              ? 'i-lucide-chevron-right'
-              : undefined,
-
-            children: child.children?.map((sub) => ({
-              label: sub.name,
-              to: `/categories/${parent.slug}/${item.slug}/${child.slug}/${sub.slug}`,
-            })),
-          })),
-        }))" :ui="{
-          content: 'w-60'
-        }">
-
-          <UButton color="neutral" variant="ghost" trailing-icon="i-lucide-chevron-down">
-            {{ parent.name }}
-          </UButton>
-        </UDropdownMenu>
-      </nav>
-    </div>
-  </nav>
 
   <MobileNavigation :categories="categories" v-if="open" :open="open" @close="open = false" />
 

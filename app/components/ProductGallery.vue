@@ -1,111 +1,91 @@
 <script setup>
 const props = defineProps({
-  product: {
-    type: Object,
-    default: () => ({}),
+  images: {
+    type: Array,
+    default: () => []
   },
+  video: {
+    type: String,
+    default: ''
+  }
 });
 
-const carousel = useTemplateRef("carousel");
-const activeIndex = ref(0);
+const carousel = useTemplateRef('carousel')
+const activeIndex = ref(0)
 
 function onClickPrev() {
-  activeIndex.value--;
+  activeIndex.value--
 }
 function onClickNext() {
-  activeIndex.value++;
+  activeIndex.value++
 }
 function onSelect(index) {
-  activeIndex.value = index;
+  activeIndex.value = index
 }
 
 function select(index) {
-  activeIndex.value = index;
+  activeIndex.value = index
 
-  carousel.value?.emblaApi?.scrollTo(index);
+  carousel.value?.emblaApi?.scrollTo(index)
 }
 
 const isVideoOpen = ref(false)
-const videoUrl = ref('')
 
-const videoPlay = (url) => {
-  const id = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^?&]+)/)?.[1]
-
-  if (!id) return
-
-  videoUrl.value = `https://www.youtube.com/embed/${id}?autoplay=1`
+const openVideo = async () => {
+  if (!props.video) return
+  await nextTick()
   isVideoOpen.value = true
+}
+
+const closeVideo = async () => {
+  isVideoOpen.value = false
+  await nextTick()
 }
 </script>
 
 <template>
-  <div>
-    <div class="w-full">
-      <div class="overflow-hidden">
-        <UCarousel v-if="product.gallery" ref="carousel" v-slot="{ item }" arrows :items="product.gallery"
-          :prev="{ onClick: onClickPrev }" :next="{ onClick: onClickNext }" prev-icon="i-lucide-chevron-left"
-          next-icon="i-lucide-chevron-right" :ui="{
-            container: 'gap-0',
-            item: 'basis-full',
-            prev: 'start-3 size-9 rounded-full bg-white/90 shadow border border-gray-200',
-            next: 'end-3 size-9 rounded-full bg-white/90 shadow border border-gray-200',
-          }" class="w-full" @select="onSelect">
-          <div class="relative aspect-square rounded-2xl overflow-hidden">
-            <NuxtImg :src="item" :alt="product.meta_title" loading="lazy" class="w-full h-full object-cover" />
-            <button v-if="product.video_url" @click="videoPlay(product.video_url)"
-              class="absolute inset-0 flex items-center justify-center">
-              <div class="size-16 rounded-full bg-black/70 flex items-center justify-center">
-                <UIcon name="i-heroicons-play-solid" class="size-8 text-white ml-1" />
-              </div>
-            </button>
+  <div class="group">
+    <div class="w-full space-y-4">
+      <div class="relative overflow-hidden rounded-2xl border border-border bg-white">
+        <button v-if="video" @click="openVideo" class="absolute inset-0 z-10 flex items-center justify-center">
+          <div
+            class="flex h-14 w-14 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80 transition">
+            <UIcon name="i-lucide-play" class="h-6 w-6" />
+          </div>
+        </button>
+
+        <UCarousel ref="carousel" v-slot="{ item }" :items="props.images" :prev="{ onClick: onClickPrev }"
+          :next="{ onClick: onClickNext }" class="w-full" @select="onSelect">
+          <div class="aspect-square overflow-hidden bg-gray-50">
+            <NuxtImg :src="item" class="h-full w-full object-contain transition duration-300 hover:scale-105"
+              loading="lazy" />
           </div>
         </UCarousel>
-
-        <div v-else class="relative aspect-square rounded-2xl overflow-hidden">
-          <NuxtImg :src="product.cover_url" :alt="product.meta_title" loading="lazy"
-            class="w-full h-full object-cover" />
-          <button v-if="product.video_url" @click="videoPlay(product.video_url)"
-            class="absolute inset-0 flex items-center justify-center">
-            <div class="size-16 rounded-full bg-black/70 flex items-center justify-center">
-              <UIcon name="i-heroicons-play-solid" class="size-8 text-white ml-1" />
-            </div>
-          </button>
-        </div>
       </div>
 
-      <div v-if="product.gallery" class="mt-3 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-        <button v-for="(item, index) in product.gallery" :key="index" type="button"
-          class="shrink-0 overflow-hidden rounded-xl border-2 bg-white transition-all" :class="activeIndex === index
-            ? 'border-primary ring-2 ring-primary/15'
-            : 'border-gray-200'
-            " @click="select(index)">
-          <NuxtImg :src="item" :alt="product.meta_title" loading="lazy" class="size-20 sm:size-28 object-cover p-2" />
+      <div class="flex gap-3 overflow-x-auto pb-1 scrollbar-thin scrollbar-thumb-gray-300">
+        <button v-for="(img, index) in props.images" :key="index" @click="select(index)"
+          class="relative size-20 shrink-0 overflow-hidden rounded-xl border-2 bg-white transition-all" :class="activeIndex === index
+            ? 'border-primary ring-2 ring-primary/20'
+            : 'border-gray-200 hover:border-gray-300'
+            ">
+          <NuxtImg :src="img" alt="" class="h-full w-full object-cover" loading="lazy" />
+
+          <div v-if="activeIndex === index" class="absolute inset-0 bg-primary/10" />
         </button>
       </div>
     </div>
 
-    <UModal v-model:open="isVideoOpen" @update:open="(open) => !open && (videoUrl = '')" :ui="{
-      content: 'max-w-5xl p-0 overflow-hidden'
-    }">
+    <UModal v-model:open="isVideoOpen" @update:open="(open) => !open && closeVideo()">
       <template #content>
         <div class="aspect-video w-full bg-black">
-          <iframe :src="videoUrl" class="w-full h-full" frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen />
+          <iframe :src="props.video.includes('watch?v=')
+            ? props.video.replace('watch?v=', 'embed/')
+            : props.video" class="w-full h-full" frameborder="0" allowfullscreen />
         </div>
       </template>
     </UModal>
   </div>
-
 </template>
 
-<style scoped>
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-</style>
+<style scoped></style>

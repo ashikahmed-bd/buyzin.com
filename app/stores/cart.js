@@ -29,12 +29,17 @@ export const useCartStore = defineStore("cart", {
       this.loading = true;
       const { $api } = useNuxtApp();
       try {
-        const response = await $api("/api/cart/items", payload);
+        const response = await $api("/api/cart/items", {
+          method: "POST",
+          body: payload,
+        });
         this.dialog = true;
         return response.data;
       } catch (error) {
         this.errors = error?.response?._data?.errors
         throw error
+      } finally {
+        this.loading = false
       }
     },
 

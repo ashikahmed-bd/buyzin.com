@@ -177,6 +177,11 @@ useSchemaOrg([
   }),
 
 ]);
+
+const images = computed(() => [
+  product.value?.data?.cover_url,
+  ...(product.value?.data?.gallery || [])
+].filter(Boolean))
 </script>
 
 <template>
@@ -194,7 +199,10 @@ useSchemaOrg([
 
       <section class="grid grid-cols-1 lg:grid-cols-[1.05fr_.95fr] gap-6">
         <div class="w-full">
-          <ProductGallery :product="data.product" class="w-full" />
+          <ProductGallery :images="[
+            data?.product?.cover_url,
+            ...(data?.product?.gallery || [])
+          ].filter(Boolean)" :video="data?.product?.video_url" />
         </div>
 
         <div class="w-full">
@@ -368,7 +376,7 @@ useSchemaOrg([
                   `Hi, I'm interested in this product: ${config.public.siteUrl}${route.fullPath}`
                 )" target="_blank"
                   class="group inline-flex w-full items-center justify-center gap-2 rounded bg-green-600 px-4 py-2.5 font-medium text-white transition-all hover:bg-green-700 sm:w-auto">
-                  <UIcon name="i-mdi-whatsapp" class="size-4" />
+                  <UIcon name="i-mdi-whatsapp" class="size-5" />
                   <span class="whitespace-nowrap">Chat Now</span>
                   <UIcon name="i-lucide-arrow-right" class="size-4 transition-transform group-hover:translate-x-1" />
                 </a>

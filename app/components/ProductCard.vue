@@ -21,7 +21,7 @@ const addToWishlist = async (product) => {
 <template>
   <article class="group relative bg-white border border-border rounded overflow-hidden">
     <div class="absolute top-2 left-2 right-2 z-10 flex justify-between items-start">
-      <span v-if="product.has_discount" class="text-[11px] font-semibold px-2 py-1 bg-danger text-white rounded-full">
+      <span v-if="product.has_discount" class="text-xs font-semibold px-2 py-1 bg-danger text-white rounded-full">
         -{{ product.discount_percentage }} OFF
       </span>
       <button @click="addToWishlist(product)" type="button">

@@ -173,13 +173,6 @@ onMounted(() => {
                 <li class="flex items-center group">
                   <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
                   <NuxtLink to="/" class="hover:text-primary transition-colors duration-200">
-                    Order Tracking
-                  </NuxtLink>
-                </li>
-
-                <li class="flex items-center group">
-                  <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
-                  <NuxtLink to="/" class="hover:text-primary transition-colors duration-200">
                     About Us
                   </NuxtLink>
                 </li>
@@ -193,7 +186,7 @@ onMounted(() => {
                 <li class="flex items-center group">
                   <LazyUIcon name="i-lucide-chevrons-right" class="size-4 mr-1 group-hover:text-primary transition" />
                   <NuxtLink to="/apply-vendor" class="hover:text-primary transition-colors duration-200">
-                    Become an Vendor
+                    Sell on Buyzin
                   </NuxtLink>
                 </li>
               </ul>
