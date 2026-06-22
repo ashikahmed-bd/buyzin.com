@@ -22,7 +22,7 @@ const { data: store, pending, error, refresh } = await useAsyncData(`store-${rou
         :keywords="store.data?.meta_keywords" :image="store.data?.logo_url" />
 
       <section class="relative overflow-hidden rounded-xl border bg-white">
-        <div class="h-56 md:h-72 w-full overflow-hidden">
+        <div class="w-full h-auto overflow-hidden">
           <img :src="store.data?.banner_url" class="h-full w-full object-cover" />
         </div>
 
