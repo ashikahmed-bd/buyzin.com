@@ -23,56 +23,58 @@ const { data: categories } = useAsyncData("categories", async () => {
             description="Buyzin is Bangladesh’s trusted online shopping platform offering authentic fashion, electronics, gadgets, and lifestyle products with fast delivery and secure payments."
             keywords="ecommerce, online shopping, buy online, fashion, gadgets, electronics, Bangladesh, best price, quick delivery, Buyzin" />
 
-        <section class="container mx-auto px-4 py-4">
-            <div class="flex items-start gap-6">
-                <aside class="hidden md:block w-72 shrink-0">
-                    <nav v-if="categories?.data">
-                        <UDropdownMenu v-for="parent in categories?.data" :key="parent.id" :items="parent.children.map((item) => ({
-                            label: item.name,
-                            to: `/categories/${parent.slug}/${item.slug}`,
-                            children: item.children?.map((child) => ({
-                                label: child.name,
-                                to: `/categories/${parent.slug}/${item.slug}/${child.slug}`,
-                                children: child.children?.map((sub) => ({
-                                    label: sub.name,
-                                    to: `/categories/${parent.slug}/${item.slug}/${child.slug}/${sub.slug}`,
+        <section class="bg-white py-4">
+            <div class="container mx-auto px-4">
+                <div class="flex items-start gap-6">
+                    <aside class="hidden md:block w-72 shrink-0">
+                        <nav v-if="categories?.data">
+                            <UDropdownMenu v-for="parent in categories?.data" :key="parent.id" :items="parent.children.map((item) => ({
+                                label: item.name,
+                                to: `/categories/${parent.slug}/${item.slug}`,
+                                children: item.children?.map((child) => ({
+                                    label: child.name,
+                                    to: `/categories/${parent.slug}/${item.slug}/${child.slug}`,
+                                    children: child.children?.map((sub) => ({
+                                        label: sub.name,
+                                        to: `/categories/${parent.slug}/${item.slug}/${child.slug}/${sub.slug}`,
+                                    })),
                                 })),
-                            })),
-                        }))" :ui="{ content: 'w-60' }" class="w-full">
-                            <UButton color="neutral" variant="ghost" class="w-full flex items-center gap-2">
-                                <NuxtImg :src="parent.icon_url" :alt="parent.name" class="size-4 shrink-0" />
-                                <span class="flex-1 text-left"> {{ parent.name }} </span>
-                                <UIcon name="i-lucide-chevron-right" class="size-4 shrink-0" />
-                            </UButton>
-                        </UDropdownMenu>
-                    </nav>
-                </aside>
+                            }))" :ui="{ content: 'w-60' }" class="w-full">
+                                <UButton color="neutral" variant="ghost" class="w-full flex items-center gap-2">
+                                    <NuxtImg :src="parent.icon_url" :alt="parent.name" class="size-4 shrink-0" />
+                                    <span class="flex-1 text-left"> {{ parent.name }} </span>
+                                    <UIcon name="i-lucide-chevron-right" class="size-4 shrink-0" />
+                                </UButton>
+                            </UDropdownMenu>
+                        </nav>
+                    </aside>
 
-                <main class="flex-1">
-                    <UCarousel v-slot="{ item }" loop wheel-gestures fade :items="home?.banners"
-                        :autoplay="{ delay: 3000, pauseOnHover: true }" class="w-full">
-                        <a :href="item?.target_url" target="_blank" rel="noopener noreferrer"
-                            class="relative block overflow-hidden rounded group">
-                            <NuxtImg :src="item.image_url" :alt="item.title?.trim()" loading="eager"
-                                class="w-full h-full object-cover object-center" />
-                        </a>
-                    </UCarousel>
-                </main>
+                    <main class="flex-1">
+                        <UCarousel v-slot="{ item }" loop wheel-gestures fade :items="home?.banners"
+                            :autoplay="{ delay: 3000, pauseOnHover: true }" class="w-full">
+                            <a :href="item?.target_url" target="_blank" rel="noopener noreferrer"
+                                class="relative block overflow-hidden rounded group">
+                                <NuxtImg :src="item.image_url" :alt="item.title?.trim()" loading="eager"
+                                    class="w-full h-full object-cover object-center" />
+                            </a>
+                        </UCarousel>
+                    </main>
+                </div>
             </div>
         </section>
 
-        <section class="py-6 bg-gray-50">
+        <section class="bg-gray-100 py-6 md:py-10">
             <div class="container mx-auto px-4">
                 <UCarousel v-if="home?.categories?.length" v-slot="{ item }" loop :autoplay="{ delay: 3500 }"
                     :items="home?.categories" :ui="{
-                        item: 'basis-1/3 sm:basis-1/4 md:basis-1/6 lg:basis-1/8 px-2'
+                        item: 'basis-1/3 sm:basis-1/4 md:basis-1/6 lg:basis-1/8'
                     }">
                     <NuxtLink :to="`/categories/${item.slug}`"
-                        class="group relative block overflow-hidden border border-border rounded-xl bg-white transition-all duration-300 hover:-translate-y-1 h-40 text-center p-2.5">
+                        class="group relative block overflow-hidden border border-border rounded-xl bg-white transition-all duration-300 hover:-translate-y-1 text-center p-2.5">
                         <NuxtImg :src="item.image_url" :alt="item.name" loading="lazy"
-                            class="mx-auto object-cover rounded-xl transition-transform duration-500 group-hover:scale-110" />
+                            class="mx-auto object-cover rounded-xl transition-transform duration-500" />
 
-                        <h3 class="mt-2 text-sm font-semibold truncate w-full">
+                        <h3 class="text-sm font-semibold truncate w-full mt-2.5">
                             {{ item.name }}
                         </h3>
                     </NuxtLink>
@@ -104,8 +106,8 @@ const { data: categories } = useAsyncData("categories", async () => {
 
 
         <section class="container mx-auto px-4 py-8">
-            <div class="flex items-center justify-between py-2.5">
-                <h3 class="text-2xl font-bold text-slate-900">
+            <div class="flex items-center justify-between py-3.5">
+                <h3 class="text-2xl font-bold text-title">
                     Popular Stores
                 </h3>
 
@@ -118,7 +120,7 @@ const { data: categories } = useAsyncData("categories", async () => {
             <div class="block">
                 <UCarousel v-if="home?.stores?.length" v-slot="{ item }" loop :autoplay="{ delay: 3500 }"
                     :items="home?.stores" :ui="{
-                        item: 'basis-1/2 sm:basis-1/4 md:basis-1/4 lg:basis-1/5'
+                        item: 'basis-1/1 sm:basis-1/3 md:basis-1/4 lg:basis-1/5'
                     }">
                     <NuxtLink :to="`/stores/${item.slug}`" class="flex items-center gap-4 rounded-2xl border border-border bg-white
                transition duration-300 hover:border-primary p-2.5">
@@ -154,7 +156,7 @@ const { data: categories } = useAsyncData("categories", async () => {
 
         <section class="py-4">
             <div class="container mx-auto px-4">
-                <div class="block">
+                <div class="block py-4">
                     <h2 class="text-2xl font-bold text-gray-800">
                         {{ home?.top_sales?.title }}
                     </h2>
@@ -172,7 +174,7 @@ const { data: categories } = useAsyncData("categories", async () => {
 
         <section class="py-4">
             <div class="container mx-auto px-4">
-                <div class="block">
+                <div class="block py-4">
                     <h2 class="text-2xl font-bold text-gray-800">
                         {{ home?.brands?.title }}
                     </h2>
@@ -201,24 +203,22 @@ const { data: categories } = useAsyncData("categories", async () => {
 
         <section class="py-4">
             <div class="container mx-auto px-4">
-                <div class="flex items-center justify-between gap-4 py-6">
-                    <div class="max-w-2xl">
-                        <div
-                            class="mb-2 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                            <span class="h-2 w-2 rounded-full bg-primary"></span>
-                            Trending Now
-                        </div>
-
-                        <h2 class="text-2xl font-bold tracking-tight text-gray-900 md:text-3xl">
-                            {{ home?.trending?.title }}
-                        </h2>
-
-                        <p class="mt-2 text-sm leading-6 text-gray-600 md:text-base">
-                            {{ home?.trending?.subtitle }}
-                        </p>
+                <div class="max-w-2xl py-4">
+                    <div
+                        class="mb-2 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                        <span class="h-2 w-2 rounded-full bg-primary"></span>
+                        Trending Now
                     </div>
+
+                    <h2 class="text-2xl font-bold tracking-tight text-gray-900 md:text-3xl">
+                        {{ home?.trending?.title }}
+                    </h2>
+
+                    <p class="mt-2 text-sm leading-6 text-gray-600 md:text-base">
+                        {{ home?.trending?.subtitle }}
+                    </p>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 py-6">
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     <ProductCard v-for="(product, index) in home?.trending?.items" :key="index" :product="product" />
                 </div>
 
