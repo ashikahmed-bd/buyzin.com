@@ -102,19 +102,19 @@ const { data: categories, error, pending } = useAsyncData("categories", async ()
             </template>
           </NuxtLink>
 
-          <div class="relative hidden md:block cursor-pointer">
+          <NuxtLink to="/wishlist" class="relative hidden md:block cursor-pointer transition-transform hover:scale-110">
             <UIcon name="i-lucide-heart" class="size-6 text-body" />
             <span class="absolute -top-2 -right-2 bg-danger text-white text-xs px-1 rounded-full">
               0
             </span>
-          </div>
+          </NuxtLink>
 
-          <div class="relative hidden md:block cursor-pointer">
+          <NuxtLink to="/cart" class="relative hidden md:block cursor-pointer transition-transform hover:scale-110">
             <UIcon name="i-lucide-shopping-cart" class="size-6 text-body" />
             <span class="absolute -top-2 -right-2 bg-primary text-white text-xs px-1 rounded-full">
               0
             </span>
-          </div>
+          </NuxtLink>
         </div>
       </div>
 
