@@ -1,6 +1,4 @@
 <script setup>
-const route = useRoute()
-const config = useRuntimeConfig()
 const cartStore = useCartStore()
 
 const couponCode = ref("")
@@ -26,6 +24,20 @@ const goToCheckout = () => {
   }
 }
 
+const increase = async (item) => {
+  await cartStore.increase(item)
+  await refresh()
+}
+
+const decrease = async (item) => {
+  await cartStore.decrease(item)
+  await refresh()
+}
+
+const remove = async (item) => {
+  await cartStore.remove(item)
+  await refresh()
+}
 
 </script>
 
@@ -65,7 +77,7 @@ const goToCheckout = () => {
 
         <template v-else-if="cart?.items?.length">
 
-          <div class="px-4 py-3 border-b flex justify-between items-center">
+          <div class="px-4 py-3 border-b border-dashed flex justify-between items-center">
             <h3 class="text-lg font-semibold">
               Shopping Cart ({{ cart.items.length }})
             </h3>
@@ -77,49 +89,58 @@ const goToCheckout = () => {
 
           <div class="p-4">
             <ul class="divide-y divide-gray-100">
-              <li v-for="item in cart.items" :key="item.id" class="flex gap-4 py-4">
-                <div class="w-20 h-20 shrink-0 rounded-lg overflow-hidden border">
-                  <NuxtImg :src="item.cover_url" :alt="item.name" class="w-full h-full object-cover" />
-                </div>
+              <li v-for="item in cart.items" :key="item.id"
+                class="group flex gap-4 rounded-2xl border border-border bg-white p-4 transitiond">
+                <NuxtLink :to="`/products/${item.slug}`"
+                  class="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-gray-100">
+                  <NuxtImg :src="item.cover_url" :alt="item.name"
+                    class="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
+                </NuxtLink>
 
-                <div class="flex-1 flex flex-col justify-between">
-                  <div class="flex justify-between">
-                    <div>
-                      <h3 class="text-sm font-semibold">
+                <div class="flex min-w-0 flex-1 flex-col">
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="min-w-0">
+                      <NuxtLink :to="`/products/${item.slug}`"
+                        class="line-clamp-2 text-sm font-semibold text-gray-900 hover:text-primary">
                         {{ item.name }}
-                      </h3>
-                      <p class="text-xs text-gray-500">
+                      </NuxtLink>
+
+                      <p v-if="item.sku" class="mt-1 text-xs text-gray-500">
                         SKU: {{ item.sku }}
                       </p>
                     </div>
 
-                    <button class="text-xs text-red-500" @click="cartStore.remove(item.id)">
-                      Remove
+                    <button class="rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-500"
+                      @click="remove(item)">
+                      <UIcon name="i-lucide-trash-2" class="h-4 w-4" />
                     </button>
                   </div>
 
-                  <div class="flex items-center justify-between mt-2">
-                    <span class="text-xs text-gray-500 flex gap-1 items-center">
-                      <del v-if="item.base_price > item.price">
-                        {{ item.base_price_formatted }}
-                      </del>
+                  <div class="mt-auto flex items-end justify-between pt-4">
+                    <div class="block">
+                      <div class="flex items-center gap-2">
+                        <span class="text-lg font-bold text-gray-900">
+                          {{ item.price_formatted }}
+                        </span>
+                        <del v-if="item.base_price > item.price" class="text-sm text-gray-400">
+                          {{ item.base_price_formatted }}
+                        </del>
+                      </div>
+                    </div>
 
-                      <span>{{ item.price_formatted }}</span>
-
-                      <span>× {{ item.quantity }}</span>
-                    </span>
-
-                    <div class="flex border rounded overflow-hidden">
-                      <button class="px-2" @click="cartStore.decrease(item.id)">
-                        -
+                    <div class="flex items-center overflow-hidden rounded-xl border border-gray-200">
+                      <button class="flex h-10 w-10 items-center justify-center transition hover:bg-gray-100"
+                        :disabled="loading" @click="decrease(item)">
+                        <UIcon name="i-lucide-minus" class="size-4" />
                       </button>
 
-                      <span class="w-8 text-center text-sm">
+                      <span class="flex h-10 min-w-12 items-center justify-center border-x text-sm font-semibold">
                         {{ item.quantity }}
                       </span>
 
-                      <button class="px-2" @click="cartStore.increase(item.id)">
-                        +
+                      <button class="flex h-10 w-10 items-center justify-center transition hover:bg-gray-100"
+                        :disabled="cartStore.loading" @click="increase(item)">
+                        <UIcon name="i-lucide-plus" class="size-4" />
                       </button>
                     </div>
                   </div>
@@ -138,7 +159,7 @@ const goToCheckout = () => {
 
         <div class="bg-white rounded-xl">
 
-          <div class="px-4 py-3 border-b">
+          <div class="px-4 py-3 border-b border-dashed">
             <h3 class="text-lg font-semibold">Cart Summary</h3>
           </div>
 

@@ -23,7 +23,14 @@ export default defineNuxtPlugin(() => {
         },
 
         onResponseError({ response }) {
-            console.error("API Error:", response)
+            const authStore = useAuthStore();
+
+            if (response.status === 401) {
+                authStore.$reset()
+                navigateTo('/auth/login')
+            }
+
+            console.error('API Error:', response)
         }
     })
 

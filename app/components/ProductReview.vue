@@ -1,22 +1,24 @@
 <script setup>
-const route = useRoute();
-const reviewStore = useReviewStore();
+const route = useRoute()
+const reviewStore = useReviewStore()
 
-const reviews = ref([]);
-
-const loadReviews = async () => {
-  const response = await reviewStore.getReviews(route.params.id);
-  reviews.value = response.data;
-};
-
-onMounted(() => {
-  loadReviews();
-});
+const { data: reviews, pending, error, refresh } = await useAsyncData(
+  () => `reviews-${route.params.slug}-${route.params.id}`,
+  () => reviewStore.getReviews(route.params.id)
+)
 </script>
 
 <template>
   <div class="max-w-4xl bg-white">
-    <template v-if="reviews.data">
+    <template v-if="pending">
+      <LoadingState />
+    </template>
+
+    <template v-else-if="error">
+      <ErrorState :retry="refresh" />
+    </template>
+
+    <template v-else-if="reviews">
       <h2 class="text-2xl font-bold mb-6">Reviews</h2>
       <div class="flex items-start gap-8">
         <div class="text-center">
@@ -106,39 +108,8 @@ onMounted(() => {
         </div>
       </div>
     </template>
-    <!-- skeleton -->
     <template v-else>
-      <div class="max-w-4xl bg-white p-6 rounded-lg shadow space-y-6">
-        <div class="flex items-start gap-8 mb-8">
-          <div class="text-center">
-            <div class="h-10 w-16 bg-gray-200 rounded animate-pulse mb-2"></div>
-            <div class="flex gap-1 justify-center mt-1">
-              <div class="h-4 w-4 bg-gray-200 rounded-full animate-pulse" v-for="i in 5" :key="i"></div>
-            </div>
-            <div class="h-3 w-24 bg-gray-200 rounded animate-pulse mt-1"></div>
-          </div>
-
-          <div class="flex-1 space-y-1">
-            <div v-for="i in 5" :key="i" class="flex items-center gap-2">
-              <span class="h-3 w-4 bg-gray-200 rounded animate-pulse"></span>
-              <div class="h-2 w-full bg-gray-200 rounded animate-pulse"></div>
-              <span class="h-3 w-4 bg-gray-200 rounded animate-pulse"></span>
-            </div>
-          </div>
-        </div>
-
-        <div v-for="i in 3" :key="i" class="border border-gray-200 rounded-xl p-4 animate-pulse space-y-3">
-          <div class="flex items-center gap-3">
-            <div class="h-10 w-10 bg-gray-200 rounded-full"></div>
-            <div class="flex-1 space-y-1">
-              <div class="h-3 w-1/3 bg-gray-200 rounded"></div>
-              <div class="h-2 w-1/4 bg-gray-200 rounded"></div>
-            </div>
-          </div>
-          <div class="h-4 bg-gray-200 rounded w-full"></div>
-          <div class="h-4 bg-gray-200 rounded w-5/6"></div>
-        </div>
-      </div>
+      <EmptyState />
     </template>
   </div>
 </template>

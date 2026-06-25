@@ -8,10 +8,10 @@ export const useReviewStore = defineStore("review", {
   getters: {},
 
   actions: {
-    async getReviews(sku) {
+    async getReviews(product) {
       const { $api } = useNuxtApp();
       try {
-        const response = await $api(`/api/products/${sku}/reviews`);
+        const response = await $api(`/api/products/${product}/reviews`);
         return response;
       } catch (error) {
         this.errors = error?.response?._data?.errors

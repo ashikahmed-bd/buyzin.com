@@ -21,7 +21,7 @@ const { data: categories } = useAsyncData("categories", async () => {
             description="Buyzin is Bangladesh’s trusted online shopping platform offering authentic fashion, electronics, gadgets, and lifestyle products with fast delivery and secure payments."
             keywords="ecommerce, online shopping, buy online, fashion, gadgets, electronics, Bangladesh, best price, quick delivery, Buyzin" />
 
-        <section class="bg-white py-4">
+        <section class="bg-white py-2.5">
             <div class="container mx-auto px-4">
                 <div class="flex items-start gap-6">
                     <aside class="hidden md:block w-72 shrink-0">
@@ -165,7 +165,7 @@ const { data: categories } = useAsyncData("categories", async () => {
                             class="w-20 h-20 object-contain mb-2" />
                         <span class="text-sm font-medium line-clamp-1">{{
                             item.name
-                            }}</span>
+                        }}</span>
                     </NuxtLink>
                 </UCarousel>
             </div>

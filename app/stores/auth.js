@@ -16,20 +16,25 @@ export const useAuthStore = defineStore("auth", {
   },
 
   actions: {
-    async login(formData) {
+    async login(payload) {
       this.loading = true;
       const { $api } = useNuxtApp();
       try {
-        const response = await $api("/api/auth/login", formData);
+        const response = await $api("/api/auth/login", {
+          method: "POST",
+          body: payload,
+        });
         this.token = response.token;
         this.user = response.user;
         toast.success(response.message);
         setTimeout(() => {
           navigateTo("/account");
-        }, 3000);
+        }, 2000);
       } catch (error) {
         this.errors = error?.response?._data?.errors
         throw error
+      } finally {
+        this.loading = false;
       }
     },
 
@@ -41,7 +46,7 @@ export const useAuthStore = defineStore("auth", {
         const token = this.token;
         if (!token) throw new Error("No token found");
         const response = await $api("/api/profile");
-        this.user = response;
+        return response;
       } catch (error) {
         this.errors = error?.response?._data?.errors
         throw error
@@ -54,9 +59,9 @@ export const useAuthStore = defineStore("auth", {
       try {
         const response = await $api("/api/auth/register", formData);
         toast.success(response.data.message);
-          setTimeout(() => {
-            navigateTo("/auth/login");
-          }, 2000);
+        setTimeout(() => {
+          navigateTo("/auth/login");
+        }, 2000);
       } catch (error) {
         this.errors = error?.response?._data?.errors
         throw error

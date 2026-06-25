@@ -1,6 +1,5 @@
 <script setup>
 const authStore = useAuthStore()
-const cartStore = useCartStore();
 const categoryStore = useCategoryStore();
 
 const open = ref(false);
@@ -15,7 +14,7 @@ const { data: categories, error, pending } = useAsyncData("categories", async ()
   <div class="w-full hidden md:block bg-gray-100 text-xs text-gray-600 border-b">
     <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-9">
       <div class="flex items-center gap-6">
-        <span>Free Shipping on orders over $50</span>
+        <span>Free delivery on orders over 2999 BDT.</span>
       </div>
 
       <div class="flex items-center gap-4">
@@ -71,13 +70,36 @@ const { data: categories, error, pending } = useAsyncData("categories", async ()
         </div>
 
         <div class="flex items-center gap-6">
-          <div class="flex items-center gap-2 cursor-pointer">
-            <UIcon name="i-lucide-user-round" class="size-6 text-body" />
-            <div class="leading-tight">
-              <p class="text-xs text-gray-500">Account</p>
-              <p class="font-medium">Sign in</p>
-            </div>
-          </div>
+          <NuxtLink :to="authStore.user ? '/account' : '/login'" class="flex items-center gap-2.5 rounded-xl px-2.5">
+            <template v-if="authStore.user">
+              <NuxtImg :src="authStore.user.photo_url" :alt="authStore.user.name"
+                class="h-10 w-10 rounded-full border object-cover" />
+
+              <div class="leading-tight">
+                <p class="text-xs text-gray-500">
+                  Welcome back
+                </p>
+
+                <p class="max-w-2xs truncate text-sm font-semibold text-title">
+                  {{ authStore.user.name }}
+                </p>
+              </div>
+            </template>
+
+            <template v-else>
+              <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
+                <UIcon name="i-lucide-user-round" class="size-5 text-gray-600" />
+              </div>
+              <div class="leading-tight">
+                <p class="text-xs text-gray-500">
+                  Account
+                </p>
+                <p class="text-sm font-semibold text-gray-900">
+                  Sign In
+                </p>
+              </div>
+            </template>
+          </NuxtLink>
 
           <div class="relative hidden md:block cursor-pointer">
             <UIcon name="i-lucide-heart" class="size-6 text-body" />

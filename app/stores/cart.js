@@ -44,32 +44,104 @@ export const useCartStore = defineStore("cart", {
     },
 
     /**
-     * Increase item quantity
-     */
-    increase(item) { },
+ * Increase item quantity
+ */
+    async increase(item) {
+      const { $api } = useNuxtApp()
+
+      try {
+        const response = await $api(`/api/cart/items/${item.id}`, {
+          method: 'PUT',
+          body: {
+            quantity: item.quantity + 1
+          }
+        })
+
+        await this.getItems()
+
+        return response
+      } catch (error) {
+        this.errors = error?.response?._data?.errors || {}
+
+        throw error
+      }
+    },
 
     /**
      * Decrease item quantity
      */
-    decrease(item) { },
+    async decrease(item) {
+      const { $api } = useNuxtApp()
+
+      try {
+        if (item.quantity <= 1) {
+          return this.remove(item.id)
+        }
+
+        const response = await $api(`/api/cart/items/${item.id}`, {
+          method: 'PUT',
+          body: {
+            quantity: item.quantity - 1
+          }
+        })
+
+        await this.getItems()
+
+        return response
+      } catch (error) {
+        this.errors = error?.response?._data?.errors || {}
+
+        throw error
+      }
+    },
 
     /**
      * Remove item
      */
-    remove(item) { },
+    async remove(item) {
+      const { $api } = useNuxtApp()
+
+      try {
+
+        const response = await $api(`/api/cart/items/${item.id}`, {
+          method: 'DELETE',
+        });
+
+        await this.getItems()
+
+        return response
+      } catch (error) {
+        this.errors = error?.response?._data?.errors || {}
+        throw error
+      }
+    },
 
     /**
      * Clear cart
      */
-    clear() {
-      this.$reset();
+    async clear() {
+      const { $api } = useNuxtApp()
+      try {
+        const response = await $api('/api/cart/clear', {
+          method: 'DELETE'
+        })
+
+        await this.getItems()
+        return response
+      } catch (error) {
+        this.errors = error?.response?._data?.errors || {}
+        throw error
+      }
     },
 
 
     async getShippingCost(payload) {
       const { $api } = useNuxtApp();
       try {
-        const response = await $api("/api/cart/shipping/calculate", payload);
+        const response = await $api("/api/cart/shipping/calculate", {
+          method: "PUT",
+          body: payload,
+        });
         return response;
       } catch (error) {
         this.errors = error?.response?._data?.errors
@@ -86,7 +158,10 @@ export const useCartStore = defineStore("cart", {
 
       try {
         const response = await $api("/api/cart/coupon/apply", {
-          code: code
+          method: "POST",
+          body: {
+            code: code
+          }
         });
         return response;
       } catch (error) {
@@ -100,7 +175,10 @@ export const useCartStore = defineStore("cart", {
       const { $api } = useNuxtApp();
       this.loading = true;
       try {
-        const response = await $api("/api/cart/checkout", payload);
+        const response = await $api("/api/cart/checkout", {
+          method: "POST",
+          body: payload,
+        });
         return navigateTo(response.redirect_url, {
           external: true,
         });

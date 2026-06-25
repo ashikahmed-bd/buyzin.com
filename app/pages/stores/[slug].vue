@@ -13,7 +13,9 @@ const { data: store, pending, error, refresh } = await useAsyncData(`store-${rou
 
 <template>
   <main class="max-w-7xl mx-auto px-4 py-6">
-    <template v-if="pending"></template>
+    <template v-if="pending">
+      <LoadingState />
+    </template>
     <template v-else-if="error">
       <ErrorState :retry="refresh" />
     </template>

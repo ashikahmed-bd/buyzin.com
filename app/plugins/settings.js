@@ -6,7 +6,7 @@ export default defineNuxtPlugin(() => {
       address: "Tapur Char, Rowmari Sadar,<br>Rowmari, Kurigram 5640, Bangladesh",
       contact: {
         sales_phone: "09649-492233",
-        support_phone: "01516-598533",
+        support_phone: "01911-588858",
 
         sales_email: "sales@buyzin.com",
         support_email: "support@buyzin.com",

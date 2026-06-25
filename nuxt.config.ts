@@ -8,7 +8,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: "https://api.buyzin.com",
+      apiBase: "http://127.0.0.1:8000", // http://127.0.0.1:8000 https://api.buyzin.com
       siteUrl: 'https://buyzin.com'
     },
   },
@@ -99,7 +99,7 @@ export default defineNuxtConfig({
       ],
 
       bodyAttrs: {
-        class: 'antialiased min-h-screen font-sans text-sm',
+        class: 'antialiased bg-background min-h-screen font-sans text-sm',
       },
     },
   },

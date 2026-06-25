@@ -178,10 +178,6 @@ useSchemaOrg([
 
 ]);
 
-const images = computed(() => [
-  product.value?.data?.cover_url,
-  ...(product.value?.data?.gallery || [])
-].filter(Boolean))
 </script>
 
 <template>
@@ -197,7 +193,7 @@ const images = computed(() => [
         { label: data.product?.name },
       ]" class="mb-5 md:mb-8" />
 
-      <section class="grid grid-cols-1 lg:grid-cols-[1.05fr_.95fr] gap-6">
+      <section class="grid grid-cols-1 lg:grid-cols-[1.05fr_.95fr] gap-4">
         <div class="w-full">
           <ProductGallery :images="[
             data?.product?.cover_url,
@@ -205,8 +201,8 @@ const images = computed(() => [
           ].filter(Boolean)" :video="data?.product?.video_url" />
         </div>
 
-        <div class="w-full">
-          <div class="sticky top-24 bg-white space-y-3">
+        <div class="w-full bg-white p-4 rounded-xl">
+          <div class="sticky top-24 space-y-3">
             <div class="space-y-2">
               <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight text-dark leading-tight">
                 {{ data.product?.name }}
@@ -233,7 +229,7 @@ const images = computed(() => [
                   </span>
 
                   <span class="text-gray-500 text-sm">
-                    ({{ data.product?.review_count }} Reviews)
+                    ({{ data.product?.reviews_count }} Reviews)
                   </span>
                 </div>
 
@@ -268,6 +264,9 @@ const images = computed(() => [
             </div>
 
             <div v-if="data.product?.features" class="text-body py-4">
+              <h2 class="text-base font-bold text-title">
+                Features:
+              </h2>
               <MDC :value="data.product?.features" class="prose max-w-none" />
             </div>
 
@@ -356,7 +355,7 @@ const images = computed(() => [
               <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
                 <div class="flex items-start gap-4">
-                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded bg-primary">
+                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded bg-success">
                     <UIcon name="i-lucide-messages-square" class="size-6 text-white" />
                   </div>
 
