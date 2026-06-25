@@ -185,6 +185,8 @@ export const useCartStore = defineStore("cart", {
       } catch (error) {
         this.errors = error?.response?._data?.errors
         throw error
+      } finally {
+        this.loading = false;
       }
     },
   },

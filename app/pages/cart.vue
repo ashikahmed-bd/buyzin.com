@@ -3,13 +3,9 @@ const cartStore = useCartStore()
 
 const couponCode = ref("")
 
-const { data: cart, pending, refresh } = await useAsyncData(
-  'cart',
-  () => cartStore.getItems(),
-  {
-    server: false
-  }
-)
+const { data: cart, pending, refresh } = await useAsyncData('cart', () => {
+  return cartStore.getItems();
+});
 
 const couponApply = async () => {
   if (!couponCode.value) return
@@ -91,7 +87,7 @@ const remove = async (item) => {
             <ul class="divide-y divide-gray-100">
               <li v-for="item in cart.items" :key="item.id"
                 class="group flex gap-4 rounded-2xl border border-border bg-white p-4 transitiond">
-                <NuxtLink :to="`/products/${item.slug}`"
+                <NuxtLink :to="`/product/${item.slug}/${item.id}`"
                   class="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-gray-100">
                   <NuxtImg :src="item.cover_url" :alt="item.name"
                     class="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
@@ -100,7 +96,7 @@ const remove = async (item) => {
                 <div class="flex min-w-0 flex-1 flex-col">
                   <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0">
-                      <NuxtLink :to="`/products/${item.slug}`"
+                      <NuxtLink :to="`/product/${item.slug}/${item.id}`"
                         class="line-clamp-2 text-sm font-semibold text-gray-900 hover:text-primary">
                         {{ item.name }}
                       </NuxtLink>
@@ -130,7 +126,7 @@ const remove = async (item) => {
 
                     <div class="flex items-center overflow-hidden rounded-xl border border-gray-200">
                       <button class="flex h-10 w-10 items-center justify-center transition hover:bg-gray-100"
-                        :disabled="loading" @click="decrease(item)">
+                        :disabled="cartStore.loading" @click="decrease(item)">
                         <UIcon name="i-lucide-minus" class="size-4" />
                       </button>
 

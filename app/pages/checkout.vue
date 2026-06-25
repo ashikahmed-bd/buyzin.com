@@ -1,6 +1,4 @@
 <script setup>
-const route = useRoute();
-const config = useRuntimeConfig();
 const { getLocation } = useLocation()
 
 const cartStore = useCartStore();
@@ -84,9 +82,6 @@ watch([() => form.country, () => form.delivery_type], async () => {
 },
   { immediate: true }
 )
-
-
-
 </script>
 
 <template>

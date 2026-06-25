@@ -39,11 +39,11 @@ const addToWishlist = async (product) => {
     </a>
 
     <div class="p-2.5">
-      <NuxtLink :to="`/product/${product.slug}/${product.id}`">
+      <a :href="`/product/${product.slug}/${product.id}`">
         <h3 class="text-sm font-semibold text-heading line-clamp-2 group-hover:text-primary transition">
           {{ product.name }}
         </h3>
-      </NuxtLink>
+      </a>
 
       <div class="flex items-center gap-2 py-2">
         <div class="flex items-center gap-0.5">
