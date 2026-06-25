@@ -70,7 +70,8 @@ const { data: categories, error, pending } = useAsyncData("categories", async ()
         </div>
 
         <div class="flex items-center gap-6">
-          <NuxtLink :to="authStore.user ? '/account' : '/login'" class="flex items-center gap-2.5 rounded-xl px-2.5">
+          <NuxtLink :to="authStore.user ? '/account' : '/auth/login'"
+            class="flex items-center gap-2.5 rounded-xl px-2.5">
             <template v-if="authStore.user">
               <NuxtImg :src="authStore.user.photo_url" :alt="authStore.user.name"
                 class="h-10 w-10 rounded-full border object-cover" />

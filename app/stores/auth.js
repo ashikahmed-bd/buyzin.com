@@ -26,10 +26,12 @@ export const useAuthStore = defineStore("auth", {
         });
         this.token = response.token;
         this.user = response.user;
+
         toast.success(response.message);
         setTimeout(() => {
           navigateTo("/account");
         }, 2000);
+        return response
       } catch (error) {
         this.errors = error?.response?._data?.errors
         throw error
