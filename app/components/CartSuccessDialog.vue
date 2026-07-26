@@ -2,15 +2,18 @@
 const props = defineProps({
   show: Boolean,
 });
+
 const emit = defineEmits(["close"]);
 
 const router = useRouter();
 
 const close = () => emit("close");
+
 const goToCart = () => {
   router.push("/cart");
   close();
 };
+
 const confirmOrder = () => {
   router.push("/checkout");
   close();
@@ -18,50 +21,80 @@ const confirmOrder = () => {
 </script>
 
 <template>
-  <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-    <div class="relative bg-white rounded-xl w-full max-w-sm p-6 text-center animate__animated animate__fadeIn">
-      <h2 class="text-xl font-semibold mb-2 text-primary">
-        Product Added to Cart!
-      </h2>
-      <p class="text-gray-500 mb-6">
-        Your item has been successfully added to your shopping cart.
-      </p>
+  <Transition name="dialog">
+    <div
+      v-if="show"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur p-4"
+    >
+      <div class="relative w-full max-w-xl rounded-xl bg-white overflow-hidden">
+        <button
+          @click="close"
+          class="absolute right-5 top-5 text-gray-400 hover:text-red-500 transition"
+        >
+          <LazyUIcon name="i-lucide-x" class="w-7 h-7" />
+        </button>
 
-      <div class="flex items-center justify-center gap-3">
-        <button @click="goToCart" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-          View Cart
-        </button>
-        <button @click="confirmOrder" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">
-          Confirm Order
-        </button>
+        <div class="flex flex-col items-center bg-primary/5 px-8 py-8 border-b">
+          <div
+            class="flex h-20 w-20 items-center justify-center rounded-full bg-primary text-white"
+          >
+            <LazyUIcon name="i-lucide-shopping-cart" class="w-10 h-10" />
+          </div>
+
+          <h2 class="mt-5 text-3xl font-bold text-gray-900">Added to Cart</h2>
+          <p class="mt-3 max-w-md text-center text-gray-500">
+            Your selected product has been successfully added to your shopping
+            cart. You can continue shopping or proceed directly to checkout.
+          </p>
+        </div>
+
+        <div class="p-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <button
+              @click="goToCart"
+              class="rounded-xl border border-gray-300 py-3.5 font-semibold text-gray-700 transition hover:bg-gray-100"
+            >
+              View Cart
+            </button>
+
+            <button
+              @click="confirmOrder"
+              class="rounded-xl bg-primary py-3.5 font-semibold text-white transition hover:opacity-90"
+            >
+              Checkout Now
+            </button>
+          </div>
+
+          <button
+            @click="close"
+            class="mt-5 w-full rounded-xl bg-gray-100 py-3 font-medium text-gray-700 transition hover:bg-gray-200"
+          >
+            Continue Shopping
+          </button>
+        </div>
       </div>
-
-      <button @click="close" class="absolute top-3 right-4 text-body hover:text-primary">
-        <LazyUIcon name="i-lucide-circle-x" class="size-5" />
-      </button>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <style scoped>
-.animate__animated {
-  animation-duration: 0.6s;
-  animation-fill-mode: both;
+.dialog-enter-active,
+.dialog-leave-active {
+  transition: all 0.3s ease;
 }
 
-.animate__fadeInDown {
-  animation-name: fadeInDown;
+.dialog-enter-from,
+.dialog-leave-to {
+  opacity: 0;
 }
 
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translate3d(0, -40px, 0);
-  }
+.dialog-enter-from .relative,
+.dialog-leave-to .relative {
+  transform: scale(0.92) translateY(20px);
+}
 
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
+.dialog-enter-to .relative,
+.dialog-leave-from .relative {
+  transform: scale(1) translateY(0);
 }
 </style>

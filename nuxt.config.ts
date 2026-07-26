@@ -24,6 +24,8 @@ export default defineNuxtConfig({
     'nuxt-schema-org'
   ],
 
+  
+
   css: ['~/assets/css/main.css'],
 
   mdc: {

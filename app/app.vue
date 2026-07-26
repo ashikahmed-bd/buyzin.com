@@ -3,19 +3,18 @@ useSchemaOrg([
   defineWebSite({
     name: "Buyzin",
     url: "https://buyzin.com",
-    description: "Buyzin is a modern online shopping platform in Bangladesh offering authentic fashion, gadgets, electronics, lifestyle products, and everyday essentials with fast delivery and secure shopping.",
+    description:
+      "Buyzin is a modern online shopping platform in Bangladesh offering authentic fashion, gadgets, electronics, lifestyle products, and everyday essentials with fast delivery and secure shopping.",
     inLanguage: "en-US",
   }),
 
   defineOrganization({
     name: "Buyzin",
-    description: "Buyzin is Bangladesh’s trusted ecommerce platform for fashion, electronics, gadgets, lifestyle products, and everyday essentials.",
+    description:
+      "Buyzin is Bangladesh’s trusted ecommerce platform for fashion, electronics, gadgets, lifestyle products, and everyday essentials.",
     url: "https://buyzin.com",
     logo: "https://buyzin.com/logo.svg",
-    image: [
-      "https://buyzin.com/logo.svg",
-      "https://buyzin.com/og-image.jpg",
-    ],
+    image: ["https://buyzin.com/logo.svg", "https://buyzin.com/og-image.jpg"],
     email: "support@buyzin.com",
     telephone: "+880-9649-492233",
     sameAs: [
@@ -39,14 +38,14 @@ useSchemaOrg([
     contactPoint: [
       {
         "@type": "ContactPoint",
-        telephone: "+880-1911-742233",
+        telephone: "+880-1911-588858",
         contactType: "customer support",
         areaServed: "Bangladesh",
         availableLanguage: ["English", "Bengali"],
       },
     ],
 
-    foundingDate: "2025-01-01"
+    foundingDate: "2025-01-01",
   }),
 ]);
 </script>
