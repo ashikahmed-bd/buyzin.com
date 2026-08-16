@@ -11,16 +11,20 @@ export const useWishlistStore = defineStore("wishlist", {
     async addItem(product) {
       const { $api } = useNuxtApp();
       this.loading = product.id;
-
       try {
-        const response = await $api.post("/api/wishlist", {
-          product_id: product.id,
+        const response = await $api("/api/wishlist", {
+          method: "POST",
+          body: {
+            product_id: product.id,
+          },
         });
-        toast.success(response.message);
-        await this.getWishlist();
+
+        return response;
       } catch (error) {
-        this.errors = error?.response?._data?.errors
-        throw error
+        this.errors = error?.response?._data;
+        return error?.response?._data;
+      } finally {
+        this.loading = false;
       }
     },
 
@@ -31,8 +35,8 @@ export const useWishlistStore = defineStore("wishlist", {
         toast.success(response.message);
         await this.getWishlist();
       } catch (error) {
-        this.errors = error?.response?._data?.errors
-        throw error
+        this.errors = error?.response?._data?.errors;
+        throw error;
       }
     },
 
@@ -43,8 +47,8 @@ export const useWishlistStore = defineStore("wishlist", {
         this.items = response;
         return response;
       } catch (error) {
-        this.errors = error?.response?._data?.errors
-        throw error
+        this.errors = error?.response?._data?.errors;
+        throw error;
       }
     },
   },

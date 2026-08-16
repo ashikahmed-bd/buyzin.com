@@ -1,5 +1,5 @@
 <script setup>
-const { getLocation } = useLocation()
+const { getLocation } = useLocation();
 
 const cartStore = useCartStore();
 
@@ -10,13 +10,12 @@ const form = reactive({
   city: "",
   state: "",
   postcode: "",
-  country: 'BD',
+  country: "BD",
   note: "",
   payment_method: "",
 });
 
 const submit = async () => {
-
   if (!form.name) {
     toast.error("Please enter your name.");
     return;
@@ -59,7 +58,7 @@ const submit = async () => {
     country: form.country,
     latitude: location.latitude,
     longitude: location.longitude,
-    delivery_type: 'regular',
+    delivery_type: "regular",
     note: form.note,
     payment_method: form.payment_method,
   };
@@ -68,34 +67,35 @@ const submit = async () => {
 };
 
 const { data, pending, refresh } = await useAsyncData("checkout", async () => {
-  return await cartStore.getItems()
+  return await cartStore.getItems();
 });
 
+watch(
+  [() => form.country, () => form.delivery_type],
+  async () => {
+    await cartStore.getShippingCost({
+      country: form.country,
+      delivery_type: form.delivery_type,
+    });
 
-watch([() => form.country, () => form.delivery_type], async () => {
-  await cartStore.getShippingCost({
-    country: form.country,
-    delivery_type: form.delivery_type,
-  })
-
-  await refresh()
-},
-  { immediate: true }
-)
+    await refresh();
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
-
-  <main v-if="pending">
-
-  </main>
+  <main v-if="pending"></main>
 
   <main v-else class="max-w-7xl mx-auto px-4 py-4">
-
     <Head>
-      <Title>Checkout | Buyzin - Secure Payment & Fast Delivery in Bangladesh</Title>
-      <Meta name="description"
-        content="Complete your order securely. Review billing details, shipping address, and choose a payment method." />
+      <Title
+        >Checkout | Buyzin - Secure Payment & Fast Delivery in Bangladesh</Title
+      >
+      <Meta
+        name="description"
+        content="Complete your order securely. Review billing details, shipping address, and choose a payment method."
+      />
       <Meta name="robots" content="noindex, nofollow" />
       <Meta name="referrer" content="no-referrer-when-downgrade" />
     </Head>
@@ -104,9 +104,7 @@ watch([() => form.country, () => form.delivery_type], async () => {
       <div class="lg:col-span-2 space-y-6">
         <div class="bg-white rounded-xl border border-border overflow-hidden">
           <div class="border-b px-5 py-4">
-            <h6 class="font-semibold text-lg">
-              Shipping Address
-            </h6>
+            <h6 class="font-semibold text-lg">Shipping Address</h6>
           </div>
 
           <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -115,8 +113,12 @@ watch([() => form.country, () => form.delivery_type], async () => {
                 Full Name *
               </label>
 
-              <input v-model="form.name" type="text" placeholder="Enter your full name"
-                class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none" />
+              <input
+                v-model="form.name"
+                type="text"
+                placeholder="Enter your full name"
+                class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none"
+              />
             </div>
 
             <div>
@@ -124,26 +126,34 @@ watch([() => form.country, () => form.delivery_type], async () => {
                 Phone Number *
               </label>
 
-              <input v-model="form.phone" type="tel" placeholder="01XXXXXXXXX"
-                class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none" />
+              <input
+                v-model="form.phone"
+                type="tel"
+                placeholder="01XXXXXXXXX"
+                class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none"
+              />
             </div>
 
             <div class="md:col-span-2">
-              <label class="block mb-2 text-sm font-medium">
-                Address *
-              </label>
+              <label class="block mb-2 text-sm font-medium"> Address * </label>
 
-              <input v-model="form.address" type="text" placeholder="House, Road, Area, Thana"
-                class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none" />
+              <input
+                v-model="form.address"
+                type="text"
+                placeholder="House, Road, Area, Thana"
+                class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none"
+              />
             </div>
 
             <div>
-              <label class="block mb-2 text-sm font-medium">
-                City *
-              </label>
+              <label class="block mb-2 text-sm font-medium"> City * </label>
 
-              <input v-model="form.city" type="text" placeholder="e.g. Dhaka"
-                class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none" />
+              <input
+                v-model="form.city"
+                type="text"
+                placeholder="e.g. Dhaka"
+                class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none"
+              />
             </div>
 
             <div>
@@ -151,8 +161,12 @@ watch([() => form.country, () => form.delivery_type], async () => {
                 State / Province
               </label>
 
-              <input v-model="form.state" type="text" placeholder="e.g. Dhaka Division"
-                class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none" />
+              <input
+                v-model="form.state"
+                type="text"
+                placeholder="e.g. Dhaka Division"
+                class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none"
+              />
             </div>
 
             <div>
@@ -160,62 +174,55 @@ watch([() => form.country, () => form.delivery_type], async () => {
                 Postal Code
               </label>
 
-              <input v-model="form.postcode" type="text" placeholder="e.g. 1207"
-                class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none" />
+              <input
+                v-model="form.postcode"
+                type="text"
+                placeholder="e.g. 1207"
+                class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none"
+              />
             </div>
 
             <div>
-              <label class="block mb-2 text-sm font-medium">
-                Country
-              </label>
+              <label class="block mb-2 text-sm font-medium"> Country </label>
 
-              <select v-model="form.country"
-                class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none">
-                <option value="">Select Country</option>
+              <select
+                v-model="form.country"
+                class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none"
+              >
+                <option value="" disabled>Select Country</option>
                 <option value="BD">Bangladesh</option>
-                <option value="IN">India</option>
-                <option value="PK">Pakistan</option>
-                <option value="NP">Nepal</option>
-                <option value="LK">Sri Lanka</option>
-                <option value="AE">United Arab Emirates</option>
-                <option value="SA">Saudi Arabia</option>
-                <option value="MY">Malaysia</option>
-                <option value="SG">Singapore</option>
-                <option value="TH">Thailand</option>
-                <option value="GB">United Kingdom</option>
-                <option value="DE">Germany</option>
-                <option value="FR">France</option>
-                <option value="CA">Canada</option>
-                <option value="AU">Australia</option>
-                <option value="US">United States</option>
               </select>
             </div>
 
             <div class="md:col-span-2">
-              <label class="block mb-2 text-sm font-medium">
-                Notes
-              </label>
+              <label class="block mb-2 text-sm font-medium"> Notes </label>
 
-              <input v-model="form.note" type="text" placeholder="Additional delivery instructions (optional)"
-                class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none" />
+              <input
+                v-model="form.note"
+                type="text"
+                placeholder="Additional delivery instructions (optional)"
+                class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none"
+              />
             </div>
           </div>
         </div>
 
         <div class="bg-white rounded-xl border border-border overflow-hidden">
           <div class="border-b px-5 py-4">
-            <h6 class="font-semibold text-lg">
-              Payment Method
-            </h6>
+            <h6 class="font-semibold text-lg">Payment Method</h6>
           </div>
 
           <div class="p-5 space-y-3">
-            <label class="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:border-primary">
+            <label
+              class="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:border-primary"
+            >
               <span>Cash on Delivery</span>
               <input v-model="form.payment_method" type="radio" value="cod" />
             </label>
 
-            <label class="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:border-primary">
+            <label
+              class="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:border-primary"
+            >
               <span>BKash</span>
               <input v-model="form.payment_method" type="radio" value="bkash" />
             </label>
@@ -226,32 +233,42 @@ watch([() => form.country, () => form.delivery_type], async () => {
       <aside>
         <div class="bg-white rounded-xl border border-border sticky top-24">
           <div class="border-b p-4">
-            <h6 class="font-semibold text-lg">
-              Order Summary
-            </h6>
+            <h6 class="font-semibold text-lg">Order Summary</h6>
           </div>
 
           <div class="space-y-2 p-4">
-            <div v-for="item in data?.items" :key="item.id" class="flex items-center justify-between">
+            <div
+              v-for="item in data?.items"
+              :key="item.id"
+              class="flex items-center justify-between"
+            >
               <div class="w-full flex items-center gap-2">
-                <NuxtImg :src="item.cover_url" :alt="item.name" class="w-12 h-12 object-cover rounded border" />
+                <NuxtImg
+                  :src="item.cover_url"
+                  :alt="item.name"
+                  class="w-12 h-12 object-cover rounded border"
+                />
 
                 <div class="grow">
-                  <h2 class="text-sm font-medium">
+                  <h2 class="text-sm font-medium line-clamp-1">
                     {{ item.name }}
                   </h2>
-
-                  <div v-if="item.variant" class="flex flex-wrap gap-2 text-xs text-gray-600">
-                    <span v-for="(value, key) in item.variant.options" :key="key"
-                      class="px-2 py-0.5 bg-gray-100 rounded-md">
+                  <span class="text-sm">
+                    {{ item.price }}x {{ item.quantity }}
+                  </span>
+                  <div
+                    v-if="item.variant"
+                    class="flex flex-wrap gap-2 text-xs text-gray-600"
+                  >
+                    <span
+                      v-for="(value, key) in item.variant.options"
+                      :key="key"
+                      class="px-2 py-0.5 bg-gray-100 rounded-md"
+                    >
                       {{ key }}: {{ value }}
                     </span>
                   </div>
                 </div>
-
-                <span class="text-sm">
-                  × {{ item.quantity }}
-                </span>
               </div>
             </div>
           </div>
@@ -284,13 +301,17 @@ watch([() => form.country, () => form.delivery_type], async () => {
               </div>
             </div>
 
-            <BaseButton class="w-full" :disabled="!data?.items?.length" :loading="cartStore.loading" @click="submit">
+            <BaseButton
+              class="w-full"
+              :disabled="!data?.items?.length"
+              :loading="cartStore.loading"
+              @click="submit"
+            >
               Place Order
             </BaseButton>
           </div>
         </div>
       </aside>
     </div>
-
   </main>
 </template>

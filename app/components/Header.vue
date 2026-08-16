@@ -149,11 +149,13 @@ const {
             class="relative hidden md:block cursor-pointer transition-transform hover:scale-110"
           >
             <UIcon name="i-lucide-shopping-cart" class="size-6 text-body" />
-            <span
-              class="absolute -top-2 -right-2 bg-primary text-white text-xs px-1 rounded-full"
-            >
-              {{ cartStore.itemsCount ?? 0 }}
-            </span>
+            <ClientOnly>
+              <span
+                class="absolute -top-2 -right-2 bg-primary text-white text-xs px-1 rounded-full"
+              >
+                {{ cartStore.itemsCount ?? 0 }}
+              </span>
+            </ClientOnly>
           </NuxtLink>
         </div>
       </div>

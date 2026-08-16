@@ -40,10 +40,10 @@ export const useCartStore = defineStore("cart", {
           body: payload,
         });
         this.dialog = true;
-        return response.data;
+        return response;
       } catch (error) {
-        this.errors = error?.response?._data?.errors;
-        throw error;
+        this.errors = error?.response?._data;
+        return error?.response?._data;
       } finally {
         this.loading = false;
       }
