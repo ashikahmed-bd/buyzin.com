@@ -61,7 +61,7 @@ const confirmOrder = () => {
               @click="confirmOrder"
               class="rounded-xl bg-primary py-3.5 font-semibold text-white transition hover:opacity-90"
             >
-              Checkout Now
+              Checkout
             </button>
           </div>
 

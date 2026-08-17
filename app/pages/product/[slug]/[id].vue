@@ -7,7 +7,14 @@ const wishlistStore = useWishlistStore();
 const productStore = useProductStore();
 const cartStore = useCartStore();
 
+const { shipping, calculate } = useShipping();
 const { link } = useWhatsapp();
+
+await calculate({
+  state_id: 7,
+  city_id: 60,
+  area_id: 365,
+});
 
 const quantity = ref(1);
 
@@ -209,7 +216,7 @@ useSchemaOrg([
 </script>
 
 <template>
-  <main class="bg-white px-4 py-6">
+  <main class="max-w-7xl mx-auto bg-white px-4 py-6">
     <LoadingState v-if="pending" />
 
     <ErrorState v-else-if="error" :retry="refresh" />
@@ -264,35 +271,33 @@ useSchemaOrg([
                       class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm"
                     >
                       <div class="flex items-center gap-2">
-                        <div class="flex items-center">
+                        <!-- Stars -->
+                        <div class="flex items-center gap-0.5">
                           <UIcon
-                            v-for="(type, i) in getStars(
-                              product?.reviews_avg_rating,
-                            )"
+                            v-for="i in 5"
                             :key="i"
                             :name="
-                              type === 'full'
+                              i <= Math.round(product?.reviews_avg_rating ?? 0)
                                 ? 'i-heroicons:star-solid'
-                                : type === 'half'
-                                  ? 'i-heroicons:star-half-solid'
-                                  : 'i-heroicons:star'
+                                : 'i-heroicons:star'
                             "
                             class="size-4"
                             :class="
-                              type === 'full' || type === 'half'
+                              i <= Math.round(product?.reviews_avg_rating ?? 0)
                                 ? 'text-amber-400'
-                                : 'text-gray-300'
+                                : 'text-gray-200'
                             "
                           />
                         </div>
 
                         <span class="font-semibold text-gray-900">
-                          {{ product?.reviews_avg_rating ?? 0 }}
+                          {{
+                            Number(product?.reviews_avg_rating ?? 0).toFixed(1)
+                          }}
                         </span>
 
                         <span class="text-gray-500">
-                          ({{ product?.reviews_count ?? 0 }}
-                          Reviews)
+                          ({{ product?.reviews_count ?? 0 }} Reviews)
                         </span>
                       </div>
 
@@ -339,45 +344,52 @@ useSchemaOrg([
                     />
                   </div>
 
-                  <div v-if="product?.dimensions" class="flex flex-wrap gap-2">
+                  <div
+                    v-if="product?.dimensions"
+                    class="flex flex-wrap items-center gap-2 py-4"
+                  >
                     <div
                       v-if="product?.dimensions?.weight"
-                      class="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600"
+                      class="inline-flex items-center gap-2 text-xs leading-none"
                     >
-                      <span class="font-semibold text-gray-900"> Weight: </span>
-
-                      {{ product.dimensions.weight }}
-                      {{ product.dimensions.unit?.weight }}
+                      <span class="text-gray-500">Weight</span>
+                      <span class="font-semibold text-gray-900">
+                        {{ product.dimensions.weight
+                        }}{{ product.dimensions.unit?.weight }}
+                      </span>
                     </div>
 
                     <div
                       v-if="product?.dimensions?.length"
-                      class="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600"
+                      class="inline-flex items-center gap-2 text-xs leading-none"
                     >
-                      <span class="font-semibold text-gray-900"> Length: </span>
-
-                      {{ product.dimensions.length }}
-                      {{ product.dimensions.unit?.dimension }}
+                      <span class="text-gray-500">Length</span>
+                      <span class="font-semibold text-gray-900">
+                        {{ product.dimensions.length
+                        }}{{ product.dimensions.unit?.dimension }}
+                      </span>
                     </div>
 
                     <div
                       v-if="product?.dimensions?.width"
-                      class="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600"
+                      class="inline-flex items-center gap-2 text-xs leading-none"
                     >
-                      <span class="font-semibold text-gray-900"> Width: </span>
-
-                      {{ product.dimensions.width }}
-                      {{ product.dimensions.unit?.dimension }}
+                      <span class="text-gray-500">Width</span>
+                      <span class="font-semibold text-gray-900">
+                        {{ product.dimensions.width
+                        }}{{ product.dimensions.unit?.dimension }}
+                      </span>
                     </div>
 
                     <div
                       v-if="product?.dimensions?.height"
-                      class="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600"
+                      class="inline-flex items-center gap-2 text-xs leading-none"
                     >
-                      <span class="font-semibold text-gray-900"> Height: </span>
-
-                      {{ product.dimensions.height }}
-                      {{ product.dimensions.unit?.dimension }}
+                      <span class="text-gray-500">Height</span>
+                      <span class="font-semibold text-gray-900">
+                        {{ product.dimensions.height
+                        }}{{ product.dimensions.unit?.dimension }}
+                      </span>
                     </div>
                   </div>
 
@@ -508,9 +520,9 @@ useSchemaOrg([
                     </p>
 
                     <div class="mt-0.5 flex items-center gap-1.5">
-                      <p class="truncate text-sm font-bold text-gray-900">
-                        Kafela Store
-                      </p>
+                      <h2 class="truncate text-sm font-bold text-title">
+                        {{ product?.store?.name }}
+                      </h2>
 
                       <UIcon
                         name="i-heroicons:check-badge"
@@ -535,30 +547,34 @@ useSchemaOrg([
                     </div>
                   </div>
 
-                  <button
-                    type="button"
+                  <a
+                    :href="
+                      link(
+                        product?.store?.whatsapp,
+                        `Hi, I'm interested in this product: ${config.public.siteUrl}${route.fullPath}`,
+                      )
+                    "
+                    target="_blank"
                     class="flex shrink-0 items-center gap-1.5 rounded border border-border px-3 py-2 text-xs font-semibold"
                   >
-                    <UIcon
-                      name="i-heroicons:chat-bubble-left-ellipsis"
-                      class="size-4"
-                    />
+                    <UIcon name="i-lucide-messages-square" class="size-4" />
                     Chat
-                  </button>
+                  </a>
                 </div>
 
-                <button
-                  type="button"
+                <NuxtLink
+                  :to="`/stores/${product.store?.slug}`"
                   class="flex w-full items-center justify-center gap-1.5 rounded border border-border bg-gray-50 py-2.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-100"
                 >
                   Visit Store
 
                   <UIcon name="i-heroicons:arrow-up-right" class="size-3.5" />
-                </button>
+                </NuxtLink>
               </div>
 
               <div class="border-b border-border p-4">
                 <div class="mt-3 space-y-3">
+                  <!-- Delivery Location -->
                   <div class="flex items-start gap-3">
                     <UIcon
                       name="i-heroicons:map-pin"
@@ -571,13 +587,22 @@ useSchemaOrg([
                       </p>
 
                       <div class="mt-1 flex items-center justify-between gap-2">
-                        <p class="truncate text-sm font-semibold text-gray-900">
-                          Dhaka City North
+                        <p
+                          v-if="shipping?.location"
+                          class="truncate text-xs font-semibold text-body"
+                        >
+                          {{ shipping.location.state }},
+                          {{ shipping.location.city }},
+                          {{ shipping.location.area }}
+                        </p>
+
+                        <p v-else class="text-xs text-gray-400">
+                          Select location
                         </p>
 
                         <button
                           type="button"
-                          class="shrink-0 text-xs font-bold text-blue-600 hover:text-blue-700"
+                          class="shrink-0 text-xs font-bold text-primary hover:text-primary/80"
                         >
                           Change
                         </button>
@@ -585,19 +610,33 @@ useSchemaOrg([
                     </div>
                   </div>
 
+                  <!-- Delivery Time -->
                   <div class="flex items-center gap-3">
                     <UIcon
                       name="i-heroicons:clock"
                       class="size-4 shrink-0 text-gray-400"
                     />
+
                     <div class="min-w-0 flex-1">
                       <p class="text-xs text-gray-400">Delivery time</p>
-                      <p class="mt-0.5 text-xs font-semibold text-gray-800">
-                        2-3 working days
+
+                      <p
+                        v-if="shipping?.delivery"
+                        class="mt-0.5 text-xs font-semibold text-gray-800"
+                      >
+                        {{ shipping.delivery.min_days }}-{{
+                          shipping.delivery.max_days
+                        }}
+                        working days
+                      </p>
+
+                      <p v-else class="mt-0.5 text-xs text-gray-400">
+                        Select location
                       </p>
                     </div>
                   </div>
 
+                  <!-- Shipping Charge -->
                   <div class="flex items-center gap-3">
                     <UIcon
                       name="i-heroicons:banknotes"
@@ -607,8 +646,24 @@ useSchemaOrg([
                     <div class="min-w-0 flex-1">
                       <p class="text-xs text-gray-400">Shipping charge</p>
 
-                      <p class="mt-0.5 text-xs font-bold text-green-600">
-                        Free Shipping
+                      <template v-if="shipping">
+                        <p
+                          v-if="subtotal >= shipping.free_shipping"
+                          class="mt-0.5 text-xs font-bold text-green-600"
+                        >
+                          Free Shipping
+                        </p>
+
+                        <p
+                          v-else
+                          class="mt-0.5 text-xs font-bold text-gray-800"
+                        >
+                          ৳{{ shipping.price }}
+                        </p>
+                      </template>
+
+                      <p v-else class="mt-0.5 text-xs text-gray-400">
+                        Select location
                       </p>
                     </div>
                   </div>
