@@ -284,13 +284,13 @@ useSchemaOrg([
                             class="size-4"
                             :class="
                               i <= Math.round(product?.reviews_avg_rating ?? 0)
-                                ? 'text-amber-400'
-                                : 'text-gray-200'
+                                ? 'text-yellow-500'
+                                : 'text-body'
                             "
                           />
                         </div>
 
-                        <span class="font-semibold text-gray-900">
+                        <span class="font-semibold text-body">
                           {{
                             Number(product?.reviews_avg_rating ?? 0).toFixed(1)
                           }}
