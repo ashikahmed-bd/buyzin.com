@@ -7,14 +7,14 @@ const wishlistStore = useWishlistStore();
 const productStore = useProductStore();
 const cartStore = useCartStore();
 
-const { shipping, calculate } = useShipping();
+const { shipping } = useShipping();
 const { link } = useWhatsapp();
 
-await calculate({
-  state_id: 7,
-  city_id: 60,
-  area_id: 365,
-});
+const locationDialog = ref(false);
+
+const updateLocation = (location) => {
+  shipping.value.location = location;
+};
 
 const quantity = ref(1);
 
@@ -44,14 +44,8 @@ const addToWishlist = async (product) => {
   const response = await wishlistStore.addItem(product);
   toast.add({
     title: response.message,
-  });
-};
-
-const getStars = (rating) => {
-  return Array.from({ length: 5 }, (_, i) => {
-    if (i < Math.floor(rating)) return "full";
-    if (i === Math.floor(rating) && rating % 1 >= 0.5) return "half";
-    return "empty";
+    color: response.success ? "success" : "error",
+    icon: response.success ? "i-lucide-circle-check-big" : "i-lucide-x",
   });
 };
 
@@ -602,11 +596,18 @@ useSchemaOrg([
 
                         <button
                           type="button"
+                          @click="locationDialog = true"
                           class="shrink-0 text-xs font-bold text-primary hover:text-primary/80"
                         >
                           Change
                         </button>
                       </div>
+
+                      <DialogLocation
+                        v-model:open="locationDialog"
+                        :location="shipping?.location"
+                        @update="updateLocation"
+                      />
                     </div>
                   </div>
 
@@ -648,7 +649,7 @@ useSchemaOrg([
 
                       <template v-if="shipping">
                         <p
-                          v-if="subtotal >= shipping.free_shipping"
+                          v-if="shipping.free_shipping"
                           class="mt-0.5 text-xs font-bold text-green-600"
                         >
                           Free Shipping

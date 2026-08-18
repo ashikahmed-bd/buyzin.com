@@ -1,36 +1,22 @@
-export const useWishlistStore = defineStore("wishlist", {
+export const useLocationStore = defineStore("location", {
   state: () => ({
     loading: false,
     errors: [],
+    states: [],
+    cities: [],
+    areas: [],
   }),
 
   getters: {},
 
   actions: {
-    async getWishlist() {
+    async getStates() {
       const { $api } = useNuxtApp();
+      this.loading = true;
       try {
-        const response = await $api("/api/wishlist");
-        return response;
-      } catch (error) {
-        this.errors = error?.response?._data;
-        return error?.response?._data;
-      } finally {
-        this.loading = false;
-      }
-    },
-    async addItem(product) {
-      const { $api } = useNuxtApp();
-      this.loading = product.id;
-      try {
-        const response = await $api("/api/wishlist", {
-          method: "POST",
-          body: {
-            product_id: product.id,
-          },
-        });
-
-        return response;
+        const response = await $api(`/api/locations/states`);
+        this.states = response.data;
+        return response.data;
       } catch (error) {
         this.errors = error?.response?._data;
         return error?.response?._data;
@@ -39,13 +25,26 @@ export const useWishlistStore = defineStore("wishlist", {
       }
     },
 
-    async remove(wishlist) {
+    async getCities(state) {
       const { $api } = useNuxtApp();
       try {
-        const response = await $api(`/api/wishlist/${wishlist}`, {
-          method: "DELETE",
-        });
-        return response;
+        const response = await $api(`/api/locations/states/${state}/cities`);
+        this.cities = response.data;
+        return response.data;
+      } catch (error) {
+        this.errors = error?.response?._data;
+        return error?.response?._data;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async getAreas(city) {
+      const { $api } = useNuxtApp();
+      try {
+        const response = await $api(`/api/locations/cities/${city}/areas`);
+        this.areas = response.data;
+        return response.data;
       } catch (error) {
         this.errors = error?.response?._data;
         return error?.response?._data;

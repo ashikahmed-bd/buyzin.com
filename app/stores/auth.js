@@ -26,47 +26,29 @@ export const useAuthStore = defineStore("auth", {
         });
         this.token = response.token;
         this.user = response.user;
-
-        toast.success(response.message);
-        setTimeout(() => {
-          navigateTo("/account");
-        }, 2000);
-        return response
+        return response;
       } catch (error) {
-        this.errors = error?.response?._data?.errors
-        throw error
+        this.errors = error?.response?._data;
+        return error?.response?._data;
       } finally {
         this.loading = false;
       }
     },
 
-    async getProfile() {
-      const { $api } = useNuxtApp();
-
-      if (this.user) return this.user;
-      try {
-        const token = this.token;
-        if (!token) throw new Error("No token found");
-        const response = await $api("/api/profile");
-        return response;
-      } catch (error) {
-        this.errors = error?.response?._data?.errors
-        throw error
-      }
-    },
-
-    async register(formData) {
+    async register(payload) {
       const { $api } = useNuxtApp();
       this.loading = true;
       try {
-        const response = await $api("/api/auth/register", formData);
-        toast.success(response.data.message);
-        setTimeout(() => {
-          navigateTo("/auth/login");
-        }, 2000);
+        const response = await $api("/api/auth/register", {
+          method: "POST",
+          body: payload,
+        });
+        return response;
       } catch (error) {
-        this.errors = error?.response?._data?.errors
-        throw error
+        this.errors = error?.response?._data;
+        return error?.response?._data;
+      } finally {
+        this.loading = false;
       }
     },
 
@@ -82,8 +64,8 @@ export const useAuthStore = defineStore("auth", {
           }, 2000);
         }
       } catch (error) {
-        this.errors = error?.response?._data?.errors
-        throw error
+        this.errors = error?.response?._data;
+        return error?.response?._data;
       }
     },
 
@@ -97,8 +79,23 @@ export const useAuthStore = defineStore("auth", {
           return navigateTo("/");
         }
       } catch (error) {
-        this.errors = error?.response?._data?.errors
-        throw error
+        this.errors = error?.response?._data;
+        return error?.response?._data;
+      }
+    },
+
+    async getProfile() {
+      const { $api } = useNuxtApp();
+
+      if (this.user) return this.user;
+      try {
+        const token = this.token;
+        if (!token) throw new Error("No token found");
+        const response = await $api("/api/profile");
+        return response;
+      } catch (error) {
+        this.errors = error?.response?._data;
+        return error?.response?._data;
       }
     },
   },

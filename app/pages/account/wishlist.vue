@@ -1,89 +1,141 @@
 <script setup>
-const wishlistStore = useWishlistStore()
+const wishlistStore = useWishlistStore();
 
-const { data: wishlist, pending, refresh } = await useAsyncData(
-  'wishlist',
-  () => wishlistStore.getWishlist()
-)
+const {
+  data: wishlist,
+  pending,
+  error,
+  refresh,
+} = await useAsyncData("wishlist", () => wishlistStore.getWishlist());
 
-const removeWishlist = async (id) => {
-  if (!confirm("Are you sure you want to remove from wishlist?")) return
+const remove = async (id) => {
+  if (!confirm("Are you sure you want to remove from wishlist?")) return;
 
   await wishlistStore.remove(id);
   await refresh();
-}
+};
 </script>
 
 <template>
   <Dashboard>
-
     <Head>
       <Title>My Wishlist | Buyzin</Title>
       <Meta name="description" content="Wishlist page" />
     </Head>
 
-    <div class="bg-white rounded-xl">
+    <LoadingState v-if="pending" />
 
-      <div class="px-4 py-3 border-b">
-        <h3 class="text-lg font-semibold">Wishlist</h3>
-      </div>
+    <ErrorState v-else-if="error" :retry="refresh" />
 
-      <div class="p-4">
-        <div v-if="pending" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div v-for="n in 4" :key="n" class="border p-3 animate-pulse">
-            <div class="h-40 bg-gray-200 rounded"></div>
-            <div class="mt-3 h-4 bg-gray-200 w-3/4"></div>
-          </div>
+    <template v-if="wishlist">
+      <div class="bg-white rounded-xl">
+        <div class="px-4 py-3 border-b">
+          <h3 class="text-lg font-semibold">Wishlist</h3>
         </div>
 
-        <div v-else-if="wishlist?.data?.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          <article v-for="item in wishlist.data" :key="item.id"
-            class="group relative bg-white border border-gray-200 rounded-2xl overflow-hidden transition-all duration-300">
-            <button @click="removeWishlist(item.id)"
-              class="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition bg-red-500 hover:bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center">
-              ✕
-            </button>
+        <div class="p-4">
+          <article
+            v-for="item in wishlist.data"
+            :key="item.id"
+            class="group rounded-2xl border border-border bg-white p-3 transition-all duration-200 hover:border-primary sm:p-3.5"
+          >
+            <div
+              class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3.5"
+            >
+              <!-- Product -->
+              <div class="flex min-w-0 flex-1 items-center gap-3">
+                <NuxtLink
+                  :to="`/products/${item.product?.slug}`"
+                  class="size-20 shrink-0 overflow-hidden rounded-xl bg-gray-50 sm:size-24 lg:size-28"
+                >
+                  <NuxtImg
+                    :src="item.product?.cover_url"
+                    :alt="item.product?.name"
+                    class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                </NuxtLink>
 
-            <NuxtLink :to="`/product/${item.product?.slug}/${item.product?.sku}`"
-              class="block relative overflow-hidden">
-              <NuxtImg :src="item.product?.cover_url" :alt="item.product?.name"
-                class="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
-                loading="lazy" />
-            </NuxtLink>
+                <div class="min-w-0 flex-1 space-y-1.5 sm:space-y-2">
+                  <!-- Name + Rating -->
+                  <div class="min-w-0">
+                    <NuxtLink
+                      :to="`/products/${item.product?.slug}`"
+                      class="line-clamp-2 text-sm font-semibold leading-5 text-gray-primary transition-colors hover:text-primary-main sm:text-base sm:leading-6"
+                    >
+                      {{ item.product?.name }}
+                    </NuxtLink>
 
-            <div class="p-4 space-y-2">
-              <NuxtLink :to="`/product/${item.product?.slug}/${item.product?.sku}`"
-                class="block text-sm font-semibold text-gray-800 line-clamp-2 hover:text-primary transition">
-                {{ item.product?.name }}
-              </NuxtLink>
+                    <div class="mt-1.5 flex flex-wrap items-center gap-1.5">
+                      <div class="flex items-center gap-0.5">
+                        <UIcon
+                          v-for="i in 5"
+                          :key="i"
+                          name="i-lucide-star"
+                          class="size-3.5 fill-yellow-400 text-yellow-400"
+                        />
+                      </div>
 
-              <div class="flex items-center gap-2">
+                      <span class="text-xs text-gray-secondary">
+                        4.8 (118)
+                      </span>
+                    </div>
+                  </div>
 
-                <span v-if="item.product?.price" class="text-primary font-semibold text-base">
-                  {{ item.product?.currency_symbol }}{{ item.product?.price }}
-                </span>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="text-base font-bold text-primary">
+                      {{ item.product?.price_formatted }}
+                    </span>
 
-                <span v-if="item.product?.base_price && item.product?.price" class="text-gray-400 line-through text-sm">
-                  {{ item.product?.currency_symbol }}{{ item.product?.base_price }}
-                </span>
+                    <span
+                      v-if="item.product?.base_price > item.product?.price"
+                      class="text-xs text-gray-tertiary line-through"
+                    >
+                      {{ item.product?.base_price_formatted }}
+                    </span>
 
-                <span v-else class="text-gray-700 font-medium">
-                  {{ item.product?.currency_symbol }}{{ item.product?.base_price }}
-                </span>
-
+                    <span
+                      v-if="item.product?.base_price > item.product?.price"
+                      class="rounded bg-red-50 px-2 py-1 text-xs font-medium text-red-500"
+                    >
+                      -{{
+                        Math.round(
+                          ((item.product.base_price - item.product.price) /
+                            item.product.base_price) *
+                            100,
+                        )
+                      }}%
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              <button class="w-full bg-primary hover:opacity-90 text-white text-sm py-2 rounded transition">
-                View Product
-              </button>
+              <div
+                class="flex md:flex-col w-full shrink-0 gap-2 border-t border-border pt-3 sm:w-auto sm:border-0 sm:pt-0"
+              >
+                <button
+                  type="button"
+                  class="inline-flex h-9 flex-1 items-center justify-center gap-1.5 rounded-lg bg-red-50 px-3 text-xs font-medium text-red-500 transition-colors hover:bg-red-100 hover:text-red-600 active:bg-red-100 sm:flex-none"
+                  title="Remove"
+                >
+                  <UIcon name="i-lucide-trash-2" class="size-3.5" />
+                  <span>Remove</span>
+                </button>
+
+                <button
+                  type="button"
+                  class="inline-flex h-9 flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-semibold text-white transition hover:bg-primary/90 active:bg-primary/80 sm:flex-none"
+                >
+                  <UIcon name="i-lucide-shopping-cart" class="size-3.5" />
+                  <span>Add to Cart</span>
+                </button>
+              </div>
             </div>
           </article>
         </div>
-
-        <UEmpty v-else title="Your wishlist is empty" description="Start adding products" />
       </div>
-    </div>
+    </template>
 
+    <EmptyState v-else />
   </Dashboard>
 </template>
 
