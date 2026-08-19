@@ -34,7 +34,7 @@ const menu = [
   },
   {
     label: "Address",
-    to: "/account/address",
+    to: "/account/addresses",
     icon: "i-lucide-map-pin",
   },
   {
