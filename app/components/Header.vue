@@ -104,7 +104,7 @@ const {
               <NuxtImg
                 :src="authStore.user.photo_url"
                 :alt="authStore.user.name"
-                class="h-10 w-10 rounded-full border object-cover"
+                class="h-10 w-10 rounded-full border object-cover p-1.5"
               />
 
               <div class="leading-tight">

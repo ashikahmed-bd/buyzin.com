@@ -254,6 +254,11 @@ useSchemaOrg([
 
               <div class="min-w-0">
                 <div class="space-y-2">
+                  <ProductOfferCountdown
+                    v-if="product.end_at"
+                    :end-date="product.end_at"
+                    title="Discount 20 OFF!"
+                  />
                   <div>
                     <h1
                       class="text-2xl font-bold leading-tight tracking-tight text-title"
@@ -456,6 +461,7 @@ useSchemaOrg([
                   { label: 'Description', slot: 'description' },
                   { label: 'Specifications', slot: 'specifications' },
                   { label: 'Reviews', slot: 'reviews' },
+                  { label: 'FAQ', slot: 'faq' },
                 ]"
               >
                 <template #description>
@@ -488,6 +494,9 @@ useSchemaOrg([
                 </template>
                 <template #reviews>
                   <ProductReview />
+                </template>
+                <template #faq>
+                  <ProductFaq />
                 </template>
               </Tabs>
             </section>

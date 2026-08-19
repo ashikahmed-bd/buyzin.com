@@ -1,128 +1,183 @@
 <script setup>
-const profileStore = useProfileStore()
+const orderStore = useOrderStore();
 
-const { data: orders, pending } = await useAsyncData('orders', async () => {
-  return await profileStore.getOrders()
-})
+const page = ref(1);
 
+const {
+  data: orders,
+  pending,
+  error,
+  refresh,
+} = await useAsyncData("orders", async () => {
+  return await orderStore.getOrders(page.value);
+});
 </script>
 
 <template>
   <Dashboard>
-
     <Head>
       <Title>My Orders | Buyzin</Title>
-      <Meta name="description" content="Track and manage your Buyzin orders easily." />
+      <Meta
+        name="description"
+        content="Track and manage your Buyzin orders easily."
+      />
       <Meta name="robots" content="noindex, nofollow" />
     </Head>
 
-    <div class="bg-white p-5">
-      <div class="px-6 py-4 border-b border-border mb-3">
-        <h2 class="text-lg font-semibold text-gray-800">My Orders</h2>
-      </div>
+    <LoadingState v-if="pending" />
 
-      <div v-if="pending" class="p-6">
-        <DataTableSkeleton />
-      </div>
+    <ErrorState v-else-if="error" :retry="refresh" />
 
-      <div v-else-if="!orders?.data?.length" class="p-12 text-center">
-        <p class="text-gray-500">No orders found yet.</p>
-      </div>
+    <template v-else-if="orders">
+      <div class="bg-white rounded-2xl px-4">
+        <div class="mb-3 border-b border-border border-dashed py-2.5">
+          <h2 class="text-lg font-semibold text-title">My Orders</h2>
 
-      <div v-else class="space-y-4">
-        <div v-for="order in orders.data" :key="order.id" class="bg-white rounded-2xl p-5 border py-2.5">
-          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <p class="mt-1 text-sm text-body">
+            Track and manage all your orders in one place.
+          </p>
+        </div>
 
-            <div>
-              <p class="text-sm text-gray-500">
-                Order
-                <span class="font-semibold text-gray-800">
-                  #{{ order.order_no }}
-                </span>
-              </p>
+        <div class="space-y-3">
+          <article
+            v-for="order in orders.data"
+            :key="order.id"
+            class="group rounded-xl border border-border border-dashed bg-white p-4 transition hover:border-primary/30"
+          >
+            <div
+              class="flex flex-col gap-3 border-b border-dashed border-border sm:flex-row sm:items-center sm:justify-between py-2"
+            >
+              <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-2">
+                  <h3 class="text-sm font-bold text-heading">
+                    #{{ order.order_no }}
+                  </h3>
 
-              <p class="text-xs text-gray-400">
-                {{ order.timestamps?.placed_at ?? 'N/A' }}
-              </p>
-            </div>
+                  <span
+                    class="rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-semibold text-gray-600"
+                  >
+                    {{ order.items_count }} items
+                  </span>
+                </div>
 
-            <div class="flex items-center gap-3">
-              <span class="px-3 py-1 rounded-full text-xs font-medium" :class="{
-                'bg-yellow-100 text-yellow-700': order.status === 'pending',
-                'bg-blue-100 text-blue-700': order.status === 'processing',
-                'bg-indigo-100 text-indigo-700': order.status === 'shipped',
-                'bg-green-100 text-green-700': order.status === 'delivered',
-                'bg-red-100 text-red-700': order.status === 'cancelled',
-                'bg-gray-100 text-gray-700': !['pending', 'processing', 'shipped', 'delivered', 'cancelled'].includes(order.status)
-              }">
+                <p class="mt-1 text-xs text-body">
+                  {{ order.timestamps?.placed_at }}
+                </p>
+              </div>
+
+              <span
+                class="inline-flex w-fit items-center rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold capitalize text-primary"
+              >
                 {{ order.status }}
               </span>
-
-              <span class="text-lg font-semibold text-gray-800">
-                {{ order.total_formatted }}
-              </span>
-            </div>
-          </div>
-
-          <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-
-            <div>
-              <p class="text-gray-400">Items</p>
-              <p class="font-medium text-gray-700">
-                {{ order.items?.length ?? 0 }}
-              </p>
             </div>
 
-            <div>
-              <p class="text-gray-400">Payment Method</p>
-              <p class="font-medium text-gray-700 capitalize">
-                {{ order.payment_method ?? '-' }}
-              </p>
-            </div>
+            <div
+              class="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between"
+            >
+              <div
+                class="grid grid-cols-2 gap-x-8 gap-y-3 sm:flex sm:items-center sm:gap-8"
+              >
+                <div>
+                  <p
+                    class="text-xs font-medium uppercase tracking-wide text-body"
+                  >
+                    Payment
+                  </p>
+                  <p class="mt-0.5 text-sm font-semibold capitalize text-body">
+                    {{ order.payment_method }}
+                  </p>
+                </div>
 
-            <div>
-              <p class="text-gray-400">Payment Status</p>
-              <p class="font-medium text-gray-700 capitalize">
-                {{ order.payment_status ?? '-' }}
-              </p>
-            </div>
+                <div>
+                  <p
+                    class="text-xs font-medium uppercase tracking-wide text-body"
+                  >
+                    Payment Status
+                  </p>
+                  <p
+                    class="mt-0.5 text-sm font-semibold capitalize text-green-600"
+                  >
+                    {{ order.payment_status }}
+                  </p>
+                </div>
 
-            <div>
-              <p class="text-gray-400">Address</p>
+                <div>
+                  <p
+                    class="text-xs font-medium uppercase tracking-wide text-body"
+                  >
+                    Customer
+                  </p>
+                  <p
+                    class="mt-0.5 max-w-40 truncate text-sm font-semibold text-body"
+                  >
+                    {{ order.user?.name ?? order.contact?.name }}
+                  </p>
+                </div>
+              </div>
 
-              <p class="font-medium text-gray-700 leading-snug">
-                {{
-                  [
-                    order.contact?.address,
-                    order.contact?.city,
-                    order.contact?.state,
-                    order.contact?.postcode,
-                    order.contact?.country
-                  ]
-                    .filter(Boolean)
-                    .join(', ') || '-'
-                }}
-              </p>
-            </div>
-          </div>
-          <div class="mt-4 flex gap-3 overflow-x-auto pb-1">
-
-            <div v-for="item in order.items" :key="item.id"
-              class="min-w-xs flex items-center gap-3 border rounded-lg p-2 bg-white">
-              <img :src="item.cover_url" class="w-12 h-12 rounded object-cover" />
-
-              <div class="text-xs">
-                <p class="font-medium text-gray-700 line-clamp-1">
-                  {{ item.name }}
+              <div class="sm:text-right">
+                <p
+                  class="text-xs font-medium uppercase tracking-wide text-body"
+                >
+                  Total
                 </p>
-                <p class="text-gray-500">
-                  Qty: {{ item.quantity }} • ৳{{ item.price?.sale || 0 }}
+
+                <p class="mt-0.5 text-lg font-bold text-heading">
+                  {{ order.total_formatted }}
                 </p>
               </div>
             </div>
+
+            <div
+              class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
+            >
+              <div class="">
+                <h4 class="text-sm font-semibold text-body">
+                  {{ order.contact?.name || "—" }}
+                </h4>
+
+                <address class="text-xs leading-5 text-body">
+                  {{ order.contact?.address || "—" }},
+                  {{ order.contact?.city || "—" }},
+                  {{ order.contact?.state || "—" }}
+                  {{ order.contact?.postcode || "" }},
+                  {{ order.contact?.country || "" }}
+                </address>
+
+                <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-body">
+                  <span v-if="order.contact?.phone">
+                    {{ order.contact.phone }}
+                  </span>
+
+                  <span v-if="order.contact?.email">
+                    {{ order.contact.email }}
+                  </span>
+                </div>
+              </div>
+
+              <a
+                :href="`/account/orders/${order.id}`"
+                class="inline-flex items-center justify-center rounded bg-primary px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-primary/90"
+              >
+                View Details
+              </a>
+            </div>
+          </article>
+
+          <div class="py-4">
+            <UPagination
+              v-model:page="page"
+              show-edges
+              :sibling-count="1"
+              :total="orders?.meta?.total"
+              :items-per-page="orders?.meta?.per_page"
+            />
           </div>
         </div>
       </div>
-    </div>
+    </template>
+
+    <EmptyState v-else />
   </Dashboard>
 </template>

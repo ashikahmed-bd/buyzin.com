@@ -33,11 +33,11 @@ const remove = async (id) => {
           <h3 class="text-lg font-semibold">Wishlist</h3>
         </div>
 
-        <div class="p-4">
+        <div class="space-y-4 p-4">
           <article
             v-for="item in wishlist.data"
             :key="item.id"
-            class="group rounded-2xl border border-border bg-white p-3 transition-all duration-200 hover:border-primary sm:p-3.5"
+            class="group rounded-2xl border border-border bg-white p-3 transition-all duration-200 hover:border-primary"
           >
             <div
               class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3.5"

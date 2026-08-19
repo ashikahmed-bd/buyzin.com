@@ -15,8 +15,8 @@ export const useProfileStore = defineStore("profile", {
         this.user = response.data;
         return response;
       } catch (error) {
-        this.errors = error?.response?._data?.errors
-        throw error
+        this.errors = error?.response?._data?.errors;
+        throw error;
       }
     },
 
@@ -28,23 +28,9 @@ export const useProfileStore = defineStore("profile", {
         toast.success(response.message);
         return response;
       } catch (error) {
-        this.errors = error?.response?._data?.errors
-        throw error
+        this.errors = error?.response?._data?.errors;
+        throw error;
       }
     },
-
-    async getOrders() {
-      this.loading = true;
-      const { $api } = useNuxtApp();
-      try {
-        const response = await $api("/api/orders");
-        return response;
-      } catch (error) {
-        this.errors = error?.response?._data?.errors
-        throw error
-      }
-    },
-
-
   },
 });
