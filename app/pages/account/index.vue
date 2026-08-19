@@ -315,9 +315,7 @@ const products = [
           <div
             class="rounded-xl border border-default bg-white p-5 shadow-card"
           >
-            <h2 class="mb-5 text-sm font-bold text-title">
-              Order Status Summary
-            </h2>
+            <h2 class="mb-5 text-sm font-bold text-title">Order Summary</h2>
 
             <div class="flex items-center gap-5">
               <div class="relative size-32 shrink-0">
@@ -361,9 +359,6 @@ const products = [
 
                   <span class="font-body text-xs font-semibold text-title">
                     {{ status.count }}
-                    <span class="font-normal text-body">
-                      ({{ status.percentage }})
-                    </span>
                   </span>
                 </div>
               </div>

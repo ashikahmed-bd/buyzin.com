@@ -59,7 +59,7 @@ const addToWishlist = async (product) => {
     <div class="p-2.5">
       <a :href="`/product/${product.slug}/${product.id}`">
         <h3
-          class="text-sm font-semibold text-heading line-clamp-2 group-hover:text-primary transition"
+          class="text-sm font-semibold text-title line-clamp-2 group-hover:text-primary transition"
         >
           {{ product.name }}
         </h3>

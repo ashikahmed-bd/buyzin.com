@@ -139,10 +139,10 @@ const settings = useSettings();
         <div class="w-full">
           <div class="grid grid-cols-2 md:grid-cols-2 gap-8">
             <div class="w-full">
-              <h3 class="text-lg md:text-xl font-semibold text-gray-800 mb-4">
+              <h3 class="text-lg md:text-xl font-semibold text-title mb-4">
                 Information
               </h3>
-              <ul class="space-y-2">
+              <ul class="space-y-2 text-body">
                 <li class="flex items-center group">
                   <LazyUIcon
                     name="i-lucide-chevrons-right"

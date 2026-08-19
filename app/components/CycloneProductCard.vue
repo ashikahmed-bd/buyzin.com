@@ -37,7 +37,7 @@ const props = defineProps({
         :title="product.meta_title"
       >
         <h3
-          class="text-sm font-medium line-clamp-2 text-heading hover:text-primary transition"
+          class="text-sm font-medium line-clamp-2 text-title hover:text-primary transition"
         >
           {{ product.name }}
         </h3>

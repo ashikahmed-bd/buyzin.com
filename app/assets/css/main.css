@@ -21,7 +21,7 @@
   --color-danger: #ef4444;
   --color-info: #3b82f6;
 
-  --color-title: #2a2c2d;
+  --color-title: #314158;
   --color-body: #334155;
   --color-muted: #64748b;
 
@@ -58,6 +58,38 @@
 
   input::placeholder {
     @apply text-muted text-sm;
+  }
+
+  table {
+    @apply w-full border-separate border-spacing-y-2;
+  }
+
+  thead {
+    @apply bg-gray-50;
+  }
+
+  thead th {
+    @apply px-4 py-3 text-left text-sm font-semibold capitalize;
+  }
+
+  tbody tr {
+    @apply bg-white rounded transition;
+  }
+
+  tbody td {
+    @apply px-4 py-1.5 text-sm text-body;
+  }
+
+  tbody tr td:first-child {
+    @apply rounded-l;
+  }
+
+  tbody tr td:last-child {
+    @apply rounded-r;
+  }
+
+  tbody tr:nth-child(even) {
+    @apply bg-gray-50;
   }
 }
 

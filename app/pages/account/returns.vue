@@ -319,61 +319,27 @@ const submitReturn = () => {
         <section
           class="overflow-hidden rounded-md border border-border bg-white py-4"
         >
-          <div class="border-b border-slate-100 px-3 py-2">
-            <h2 class="text-xs font-semibold text-slate-900">
+          <div class="border-b border-border px-3 py-2">
+            <h2 class="text-base font-semibold text-title">
               Your Return Requests
             </h2>
           </div>
 
           <div class="w-full overflow-x-auto">
-            <table class="w-full border-collapse">
+            <table>
               <thead>
-                <tr class="bg-slate-50">
-                  <th
-                    class="px-3 py-2 text-left text-sm font-semibold text-title"
-                  >
-                    Order ID
-                  </th>
-
-                  <th
-                    class="px-3 py-2 text-left text-sm font-semibold text-title"
-                  >
-                    Item
-                  </th>
-
-                  <th
-                    class="px-3 py-2 text-left text-sm font-semibold text-title"
-                  >
-                    Reason
-                  </th>
-
-                  <th
-                    class="px-3 py-2 text-left text-sm font-semibold text-title"
-                  >
-                    Status
-                  </th>
-
-                  <th
-                    class="px-3 py-2 text-left text-sm font-semibold text-title"
-                  >
-                    Refund Amount
-                  </th>
-
-                  <th
-                    class="px-3 py-2 text-left text-sm font-semibold text-title"
-                  >
-                    Requested On
-                  </th>
-
-                  <th
-                    class="px-3 py-2 text-left text-sm font-semibold text-title"
-                  >
-                    Action
-                  </th>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Item</th>
+                  <th>Reason</th>
+                  <th>Status</th>
+                  <th>Refund Amount</th>
+                  <th>Requested On</th>
+                  <th>Action</th>
                 </tr>
               </thead>
 
-              <tbody class="divide-y divide-border">
+              <tbody>
                 <tr
                   v-for="request in returnRequests"
                   :key="request.orderId"
@@ -383,7 +349,7 @@ const submitReturn = () => {
                     {{ request.orderId }}
                   </td>
 
-                  <td class="px-3 py-2">
+                  <td>
                     <div class="flex items-center gap-2">
                       <img
                         :src="request.image"
@@ -403,33 +369,33 @@ const submitReturn = () => {
                     </div>
                   </td>
 
-                  <td class="px-3 py-2 text-sm text-body">
+                  <td>
                     {{ request.reason }}
                   </td>
 
-                  <td class="px-3 py-2">
+                  <td>
                     <span
-                      class="inline-flex rounded px-1.5 py-0.5 text-sm text-body font-medium ring-1 ring-inset"
+                      class="inline-flex rounded px-1.5 py-0.5 text-xs text-body font-medium"
                       :class="statusClasses[request.status]"
                     >
                       {{ request.status }}
                     </span>
                   </td>
 
-                  <td class="px-3 py-2 text-[9px] font-medium text-slate-700">
+                  <td>
                     {{ request.refund }}
                   </td>
 
-                  <td class="px-3 py-2 text-[9px] text-slate-500">
+                  <td>
                     {{ request.date }}
                   </td>
 
-                  <td class="px-3 py-2">
+                  <td>
                     <NuxtLink
                       :to="`/account/returns/${request.orderId.replace('#', '')}`"
-                      class="inline-flex h-6 items-center rounded border border-violet-200 px-2 text-[8px] font-medium text-violet-600 transition hover:bg-violet-50"
+                      class="inline-flex items-center rounded border border-border px-2 py-1.5 text-xs font-medium text-primary"
                     >
-                      View Details
+                      Details
                     </NuxtLink>
                   </td>
                 </tr>
