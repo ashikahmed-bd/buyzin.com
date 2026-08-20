@@ -226,7 +226,7 @@ const settings = useSettings();
               <h3 class="text-lg md:text-xl font-semibold text-gray-800 mb-4">
                 Our Company
               </h3>
-              <ul class="space-y-2">
+              <ul class="space-y-2 text-body">
                 <li class="flex items-center group">
                   <LazyUIcon
                     name="i-lucide-chevrons-right"

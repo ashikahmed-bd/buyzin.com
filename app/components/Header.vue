@@ -38,7 +38,7 @@ const {
           class="p-2 rounded hover:text-primary hover:bg-gray-100 md:hidden"
           @click="open = true"
         >
-          <UIcon name="i-lucide-menu" class="size-6" />
+          <UIcon name="i-lucide-menu" class="size-6 text-body" />
         </button>
 
         <div class="flex-none">

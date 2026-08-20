@@ -592,46 +592,28 @@ useSchemaOrg([
 
               <div class="border-b border-border p-4">
                 <div class="mt-3 space-y-3">
-                  <!-- Delivery Location -->
                   <div class="flex items-start gap-3">
                     <UIcon
                       name="i-heroicons:map-pin"
                       class="mt-0.5 size-5 shrink-0 text-blue-600"
                     />
-
                     <div class="min-w-0 flex-1">
                       <p class="text-xs font-medium text-gray-500">
                         Deliver to
                       </p>
 
                       <div class="mt-1 flex items-center justify-between gap-2">
-                        <p
-                          v-if="shipping?.location"
-                          class="truncate text-xs font-semibold text-body"
-                        >
-                          {{ shipping.location.state }},
-                          {{ shipping.location.city }},
-                          {{ shipping.location.area }}
-                        </p>
-
-                        <p v-else class="text-xs text-gray-400">
-                          Select location
+                        <p class="truncate text-xs font-semibold text-body">
+                          Rangpur, Kurigram, Rowmari
                         </p>
 
                         <button
                           type="button"
-                          @click="locationDialog = true"
                           class="shrink-0 text-xs font-bold text-primary hover:text-primary/80"
                         >
                           Change
                         </button>
                       </div>
-
-                      <DialogLocation
-                        v-model:open="locationDialog"
-                        :location="shipping?.location"
-                        @update="updateLocation"
-                      />
                     </div>
                   </div>
 
@@ -639,56 +621,26 @@ useSchemaOrg([
                   <div class="flex items-center gap-3">
                     <UIcon
                       name="i-heroicons:clock"
-                      class="size-4 shrink-0 text-gray-400"
+                      class="size-4 shrink-0 text-body"
                     />
 
                     <div class="min-w-0 flex-1">
                       <p class="text-xs text-gray-400">Delivery time</p>
-
-                      <p
-                        v-if="shipping?.delivery"
-                        class="mt-0.5 text-xs font-semibold text-gray-800"
-                      >
-                        {{ shipping.delivery.min_days }}-{{
-                          shipping.delivery.max_days
-                        }}
-                        working days
-                      </p>
-
-                      <p v-else class="mt-0.5 text-xs text-gray-400">
-                        Select location
+                      <p class="mt-0.5 text-xs font-semibold text-gray-800">
+                        3-5 working days
                       </p>
                     </div>
                   </div>
 
-                  <!-- Shipping Charge -->
                   <div class="flex items-center gap-3">
                     <UIcon
                       name="i-heroicons:banknotes"
                       class="size-4 shrink-0 text-gray-400"
                     />
-
                     <div class="min-w-0 flex-1">
                       <p class="text-xs text-gray-400">Shipping charge</p>
-
-                      <template v-if="shipping">
-                        <p
-                          v-if="shipping.free_shipping"
-                          class="mt-0.5 text-xs font-bold text-green-600"
-                        >
-                          Free Shipping
-                        </p>
-
-                        <p
-                          v-else
-                          class="mt-0.5 text-xs font-bold text-gray-800"
-                        >
-                          ৳{{ shipping.price }}
-                        </p>
-                      </template>
-
-                      <p v-else class="mt-0.5 text-xs text-gray-400">
-                        Select location
+                      <p class="mt-0.5 text-xs font-bold text-green-600">
+                        Free Shipping
                       </p>
                     </div>
                   </div>
@@ -808,7 +760,7 @@ useSchemaOrg([
       @close="cartStore.dialog = false"
     />
 
-    <RelatedProducts :product="product.id" />
+    <!-- <RelatedProducts :product="product.id" /> -->
   </main>
 </template>
 
