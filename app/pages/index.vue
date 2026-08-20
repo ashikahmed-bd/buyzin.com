@@ -125,7 +125,7 @@ const { data: categories } = useAsyncData("categories", async () => {
               class="mx-auto object-cover rounded-xl transition-transform duration-500"
             />
 
-            <h3 class="text-sm font-semibold truncate w-full mt-2.5">
+            <h3 class="text-sm text-body font-semibold truncate w-full mt-2.5">
               {{ item.name }}
             </h3>
           </NuxtLink>

@@ -7,14 +7,7 @@ const wishlistStore = useWishlistStore();
 const productStore = useProductStore();
 const cartStore = useCartStore();
 
-const { shipping } = useShipping();
 const { link } = useWhatsapp();
-
-const locationDialog = ref(false);
-
-const updateLocation = (location) => {
-  shipping.value.location = location;
-};
 
 const quantity = ref(1);
 
@@ -459,22 +452,18 @@ useSchemaOrg([
                 :items="[
                   {
                     label: 'Description',
-                    icon: 'i-lucide-file-text',
                     slot: 'description',
                   },
                   {
                     label: 'Specifications',
-                    icon: 'i-lucide-list',
                     slot: 'specifications',
                   },
                   {
                     label: 'Reviews',
-                    icon: 'i-lucide-star',
                     slot: 'reviews',
                   },
                   {
                     label: 'FAQ',
-                    icon: 'i-lucide-circle-help',
                     slot: 'faq',
                   },
                 ]"
@@ -760,7 +749,7 @@ useSchemaOrg([
       @close="cartStore.dialog = false"
     />
 
-    <!-- <RelatedProducts :product="product.id" /> -->
+    <RelatedProducts :product="product.id" />
   </main>
 </template>
 
