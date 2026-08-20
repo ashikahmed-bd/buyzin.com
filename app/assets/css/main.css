@@ -14,23 +14,26 @@
   --color-background: #f7f3fd;
   --color-surface: #f1f5f9;
 
-  --color-border: #e5e7eb;
+  --color-border: #f5f3ff;
 
   --color-success: #269f53;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
   --color-info: #3b82f6;
 
-  --color-title: #314158;
+  --color-title: #0f172b;
   --color-body: #334155;
   --color-muted: #64748b;
 
   --color-black: #141414;
   --color-dark: #0f172b;
+  --color-light: #f5f3ff;
   --color-white: #ffffff;
 
   --font-sans: "Inter", sans-serif;
   --font-bangla: "Baloo Da 2", sans-serif;
+
+  --text-2xs: 0.625rem;
 }
 
 @layer base {

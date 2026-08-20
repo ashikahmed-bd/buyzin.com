@@ -73,7 +73,7 @@ const giftCards = [
     icon: "i-lucide-gift",
   },
 ];
-const giftCardDesigns = [
+const items = [
   {
     title: "Happy Birthday",
     price: "From $10.00",
@@ -476,18 +476,18 @@ const copyCode = async (code) => {
 
           <UCarousel
             v-slot="{ item }"
+            :items="items"
             loop
-            :autoplay="{ delay: 2000 }"
-            wheel-gestures
-            :items="giftCardDesigns"
+            :autoplay="{ delay: 2500 }"
             :ui="{
               item: 'basis-1/4',
+              content: 'gap-4',
             }"
           >
             <NuxtLink
               :key="item.title"
               to="/account/gift-cards/create"
-              class="group min-w-0"
+              class="group block min-w-0"
             >
               <div
                 class="flex h-24 items-center justify-center rounded-md text-white transition-opacity group-hover:opacity-90"
@@ -495,13 +495,20 @@ const copyCode = async (code) => {
               >
                 <div class="text-center">
                   <UIcon :name="item.icon" class="size-6" />
-                  <p class="mt-1 text-sm font-semibold">{{ item.title }}</p>
+
+                  <p class="mt-1 text-sm font-semibold">
+                    {{ item.title }}
+                  </p>
                 </div>
               </div>
+
               <p class="mt-2 truncate text-xs font-medium text-title">
                 {{ item.title }}
               </p>
-              <p class="mt-0.5 text-xs text-body">{{ item.price }}</p>
+
+              <p class="mt-0.5 text-xs text-body">
+                {{ item.price }}
+              </p>
             </NuxtLink>
           </UCarousel>
         </section>
