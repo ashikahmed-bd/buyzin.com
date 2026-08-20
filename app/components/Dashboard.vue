@@ -75,7 +75,7 @@ const logout = async () => {
                   <NuxtImg
                     :src="authStore.user.photo_url"
                     :alt="authStore.user.name"
-                    class="h-full w-full object-cover p-1"
+                    class="h-full w-full object-cover p-0.5"
                     loading="lazy"
                   />
                 </div>
@@ -94,17 +94,18 @@ const logout = async () => {
               <div class="mt-4 grid grid-cols-2 gap-2">
                 <NuxtLink
                   to="/account/profile"
-                  class="flex items-center justify-center rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+                  class="flex items-center justify-center rounded bg-primary px-3 py-2 text-sm font-semibold text-white transition hover:opacity-90"
                 >
                   Edit Profile
                 </NuxtLink>
 
                 <button
                   type="button"
-                  class="flex items-center justify-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-semibold text-body transition hover:bg-slate-50"
+                  class="flex items-center justify-center gap-1.5 rounded border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-body transition hover:opacity-90"
                 >
-                  <span>Wallet</span>
-                  <span>৳2,500</span>
+                  <UIcon name="i-lucide-coins" class="size-4 text-amber-500" />
+
+                  <span>{{ authStore.user.points }}</span>
                 </button>
               </div>
             </div>

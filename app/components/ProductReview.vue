@@ -1,6 +1,6 @@
 <script setup>
 const route = useRoute();
-const reviewStore = useReviewStore();
+const productStore = useProductStore();
 
 const {
   data: reviews,
@@ -9,7 +9,7 @@ const {
   refresh,
 } = await useAsyncData(
   () => `reviews-${route.params.slug}-${route.params.id}`,
-  () => reviewStore.getReviews(route.params.id),
+  () => productStore.getReviews(route.params.id),
 );
 </script>
 

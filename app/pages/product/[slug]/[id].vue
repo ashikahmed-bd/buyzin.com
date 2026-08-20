@@ -276,13 +276,13 @@ useSchemaOrg([
                             v-for="i in 5"
                             :key="i"
                             :name="
-                              i <= Math.round(product?.reviews_avg_rating ?? 0)
+                              i <= Math.round(product?.rating ?? 0)
                                 ? 'i-heroicons:star-solid'
                                 : 'i-heroicons:star'
                             "
                             class="size-4"
                             :class="
-                              i <= Math.round(product?.reviews_avg_rating ?? 0)
+                              i <= Math.round(product?.rating ?? 0)
                                 ? 'text-yellow-500'
                                 : 'text-body'
                             "
@@ -290,13 +290,11 @@ useSchemaOrg([
                         </div>
 
                         <span class="font-semibold text-body">
-                          {{
-                            Number(product?.reviews_avg_rating ?? 0).toFixed(1)
-                          }}
+                          {{ Number(product?.rating ?? 0).toFixed(1) }}
                         </span>
 
                         <span class="text-gray-500">
-                          ({{ product?.reviews_count ?? 0 }} Reviews)
+                          ({{ product?.review_count ?? 0 }} Reviews)
                         </span>
                       </div>
 
@@ -456,12 +454,29 @@ useSchemaOrg([
             </div>
 
             <section class="bg-white py-4 rounded-xl">
-              <Tabs
-                :tabs="[
-                  { label: 'Description', slot: 'description' },
-                  { label: 'Specifications', slot: 'specifications' },
-                  { label: 'Reviews', slot: 'reviews' },
-                  { label: 'FAQ', slot: 'faq' },
+              <UTabs
+                variant="link"
+                :items="[
+                  {
+                    label: 'Description',
+                    icon: 'i-lucide-file-text',
+                    slot: 'description',
+                  },
+                  {
+                    label: 'Specifications',
+                    icon: 'i-lucide-list',
+                    slot: 'specifications',
+                  },
+                  {
+                    label: 'Reviews',
+                    icon: 'i-lucide-star',
+                    slot: 'reviews',
+                  },
+                  {
+                    label: 'FAQ',
+                    icon: 'i-lucide-circle-help',
+                    slot: 'faq',
+                  },
                 ]"
               >
                 <template #description>
@@ -498,7 +513,7 @@ useSchemaOrg([
                 <template #faq>
                   <ProductFaq />
                 </template>
-              </Tabs>
+              </UTabs>
             </section>
           </div>
 

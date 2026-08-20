@@ -8,14 +8,14 @@ export const useReviewStore = defineStore("review", {
   getters: {},
 
   actions: {
-    async getReviews(product) {
+    async getReviews() {
       const { $api } = useNuxtApp();
       try {
-        const response = await $api(`/api/products/${product}/reviews`);
+        const response = await $api(`/api/reviews`);
         return response;
       } catch (error) {
-        this.errors = error?.response?._data?.errors
-        throw error
+        this.errors = error?.response?._data;
+        return error?.response?._data;
       }
     },
 
@@ -26,8 +26,8 @@ export const useReviewStore = defineStore("review", {
         review.helpful_count++;
         return response;
       } catch (error) {
-        this.errors = error?.response?._data?.errors
-        throw error
+        this.errors = error?.response?._data?.errors;
+        throw error;
       }
     },
 
@@ -38,8 +38,8 @@ export const useReviewStore = defineStore("review", {
         review.not_helpful_count++;
         return response;
       } catch (error) {
-        this.errors = error?.response?._data?.errors
-        throw error
+        this.errors = error?.response?._data?.errors;
+        throw error;
       }
     },
   },
