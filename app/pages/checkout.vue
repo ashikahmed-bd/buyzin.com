@@ -273,6 +273,51 @@ watch(
             </div>
           </div>
 
+          <div class="border-t p-4">
+            <div class="space-y-2">
+              <div class="form__group">
+                <label class="text-sm font-medium text-title">
+                  Gift Card
+                </label>
+                <div class="flex">
+                  <input
+                    type="text"
+                    placeholder="Enter gift card code"
+                    class="border px-3 py-2 text-sm rounded-l w-full focus:outline-none"
+                  />
+
+                  <button class="bg-primary text-white px-4 text-sm rounded-r">
+                    Apply
+                  </button>
+                </div>
+              </div>
+
+              <div
+                class="flex items-center justify-between gap-3 rounded border border-success/20 bg-success/5 p-2.5"
+              >
+                <div class="min-w-0">
+                  <p class="text-xs text-body">Gift Card</p>
+                  <p class="truncate text-sm font-medium text-title">
+                    GIFT-OFZQ-UKGC
+                  </p>
+                </div>
+
+                <div class="flex shrink-0 items-center gap-3">
+                  <span class="text-sm font-semibold text-success">
+                    - 20 BDT
+                  </span>
+
+                  <button
+                    type="button"
+                    class="text-xs text-danger hover:underline"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="border-t p-4 space-y-3">
             <div class="space-y-2.5 text-sm">
               <div class="flex justify-between">
@@ -290,9 +335,14 @@ watch(
                 <span>{{ data?.tax_formatted }}</span>
               </div>
 
-              <div class="flex justify-between text-success">
+              <div class="flex justify-between text-danger">
                 <span>Discount</span>
-                <span>{{ data?.discount_formatted }}</span>
+                <span>- {{ data?.discount_formatted }}</span>
+              </div>
+
+              <div class="flex items-center justify-between text-success">
+                <span> Gift Card </span>
+                <span> - 1200 </span>
               </div>
 
               <div class="flex justify-between font-semibold text-lg pt-3">

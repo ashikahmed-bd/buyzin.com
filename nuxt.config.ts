@@ -8,7 +8,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: "http://127.0.0.1:8000", // http://127.0.0.1:8000 https://api.buyzin.com
+      apiBase: "https://api.buyzin.com", // http://127.0.0.1:8000 https://api.buyzin.com
       siteUrl: 'https://buyzin.com'
     },
   },
