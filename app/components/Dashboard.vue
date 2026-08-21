@@ -1,5 +1,6 @@
 <script setup>
 const authStore = useAuthStore();
+const { user } = storeToRefs(authStore);
 
 const menu = [
   {
@@ -68,13 +69,13 @@ const logout = async () => {
         <aside>
           <div class="sticky top-24 rounded-2xl bg-white p-4">
             <div class="border-b border-slate-100 pb-5">
-              <div v-if="authStore.user" class="flex items-center gap-3">
+              <div v-if="user" class="flex items-center gap-3">
                 <div
                   class="h-14 w-14 shrink-0 overflow-hidden rounded-full border border-slate-200"
                 >
                   <NuxtImg
-                    :src="authStore.user.photo_url"
-                    :alt="authStore.user.name"
+                    :src="user?.photo_url"
+                    :alt="user?.name"
                     class="h-full w-full object-cover p-0.5"
                     loading="lazy"
                   />
@@ -82,11 +83,11 @@ const logout = async () => {
 
                 <div class="min-w-0">
                   <h3 class="truncate font-semibold text-slate-900">
-                    {{ authStore.user.name }}
+                    {{ user?.name }}
                   </h3>
 
                   <span class="text-xs text-body">
-                    Since {{ authStore.user.since }}
+                    Since {{ user?.since }}
                   </span>
                 </div>
               </div>
@@ -105,7 +106,7 @@ const logout = async () => {
                 >
                   <UIcon name="i-lucide-coins" class="size-4 text-amber-500" />
 
-                  <span>{{ authStore.user.points }}</span>
+                  <span>{{ user?.points ?? 0 }}</span>
                 </button>
               </div>
             </div>

@@ -1,8 +1,4 @@
-<script setup lang="ts">
-definePageMeta({
-  middleware: "auth",
-});
-
+<script setup>
 const stats = [
   {
     title: "Total Orders",

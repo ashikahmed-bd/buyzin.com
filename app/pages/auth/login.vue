@@ -14,7 +14,6 @@ const form = reactive({
 
 const submit = async () => {
   const response = await authStore.login(form);
-  console.log(response);
   toast.add({
     title: response.message,
   });

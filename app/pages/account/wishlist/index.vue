@@ -181,7 +181,7 @@ const moveAllToCart = () => {
                         <button
                           type="button"
                           title="Remove from wishlist"
-                          class="inline-flex size-8 items-center justify-center rounded-md bg-red-50 text-red-500 transition-colors hover:bg-red-500 hover:text-white"
+                          class="inline-flex size-8 items-center justify-center rounded bg-red-50 text-red-500 transition-colors hover:bg-red-500 hover:text-white"
                         >
                           <UIcon name="i-lucide-trash-2" class="size-4" />
                         </button>
@@ -234,7 +234,7 @@ const moveAllToCart = () => {
 
                   <div>
                     <p class="text-sm font-bold text-title">
-                      {{ wishlist.summary?.items }}
+                      ({{ wishlist.summary?.items }}) Items
                     </p>
 
                     <p class="text-sm text-body">Items in wishlist</p>
@@ -250,10 +250,10 @@ const moveAllToCart = () => {
 
                   <div>
                     <p class="text-sm font-bold text-title">
-                      {{ wishlist.summary?.total }}
+                      {{ wishlist.summary?.total_formatted }}
                     </p>
 
-                    <p class="text-sm text-body">Total Value</p>
+                    <p class="text-sm text-body">Estimated Total</p>
                   </div>
                 </div>
 
@@ -266,10 +266,10 @@ const moveAllToCart = () => {
 
                   <div>
                     <p class="text-sm font-bold text-title">
-                      Save {{ wishlist.summary?.saved }}
+                      Save {{ wishlist.summary?.saved_formatted }}
                     </p>
 
-                    <p class="text-sm text-body">With current offers</p>
+                    <p class="text-sm text-body">Based on Current Offers</p>
                   </div>
                 </div>
               </div>

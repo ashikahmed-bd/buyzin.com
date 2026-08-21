@@ -12,16 +12,6 @@ const {
 
 const sortBy = ref("newest");
 
-const statusClasses = {
-  Published: "bg-emerald-50 text-emerald-700 ring-emerald-200",
-  Pending: "bg-amber-50 text-amber-700 ring-amber-200",
-  Draft: "bg-slate-50 text-slate-600 ring-slate-200",
-};
-
-const getStars = (rating) => {
-  return Array.from({ length: 5 }, (_, index) => index < rating);
-};
-
 const writeReview = () => {
   // Navigate to write review page
 };
@@ -53,7 +43,9 @@ const moreReviewActions = (review) => {
 
     <ErrorState v-else-if="error" :retry="refresh" />
 
-    <template v-else-if="reviews">
+    <EmptyState v-else-if="!reviews?.data?.length" />
+
+    <template v-else>
       <Head>
         <Title>My Reviews | Buyzin</Title>
 
@@ -227,7 +219,7 @@ const moreReviewActions = (review) => {
                 </h1>
 
                 <p class="mt-1 font-semibold text-title">
-                  {{ review.order.total_formatted }}
+                  {{ review.order?.total_formatted }}
                 </p>
                 <p class="mt-0.5 text-xs text-muted">
                   Order #{{ review.order?.order_no }}
@@ -288,7 +280,7 @@ const moreReviewActions = (review) => {
 
                   <button
                     type="button"
-                    class="inline-flex items-center gap-1 transition-colors hover:text-primary"
+                    class="inline-flex items-center gap-1 transition-colors text-success"
                     :aria-label="`Mark review helpful. ${review.helpful_count} people found it helpful`"
                   >
                     <UIcon name="i-lucide-thumbs-up" class="size-3.5" />
@@ -298,7 +290,7 @@ const moreReviewActions = (review) => {
 
                   <button
                     type="button"
-                    class="inline-flex items-center gap-1 transition-colors hover:text-title"
+                    class="inline-flex items-center gap-1 transition-colors text-danger"
                     :aria-label="`Mark review not helpful. ${review.not_helpful_count} people found it not helpful`"
                   >
                     <UIcon name="i-lucide-thumbs-down" class="size-3.5" />
@@ -369,7 +361,5 @@ const moreReviewActions = (review) => {
         </section>
       </section>
     </template>
-
-    <EmptyState v-else />
   </Dashboard>
 </template>

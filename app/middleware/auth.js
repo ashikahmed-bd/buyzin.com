@@ -1,17 +1,11 @@
-export default defineNuxtRouteMiddleware(async (to) => {
+export default defineNuxtRouteMiddleware(() => {
   const authStore = useAuthStore();
 
   if (!authStore.token) {
-    return navigateTo("/auth/login");
-  }
+    authStore.$reset();
 
-  // profile lazy load ensure
-  if (!authStore.user) {
-    try {
-      await authStore.getProfile();
-    } catch (e) {
-      authStore.logout?.();
-      return navigateTo("/auth/login");
-    }
+    return navigateTo("/auth/login", {
+      replace: true,
+    });
   }
 });

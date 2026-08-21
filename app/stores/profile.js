@@ -2,7 +2,6 @@ export const useProfileStore = defineStore("profile", {
   state: () => ({
     loading: false,
     errors: [],
-    user: null,
   }),
 
   getters: {},
@@ -12,10 +11,9 @@ export const useProfileStore = defineStore("profile", {
       const { $api } = useNuxtApp();
       try {
         const response = await $api("/api/profile");
-        this.user = response.data;
-        return response;
+        return response.data;
       } catch (error) {
-        this.errors = error?.response?._data?.errors;
+        this.errors = error?.data ?? error?.response?._data ?? null;
         throw error;
       }
     },

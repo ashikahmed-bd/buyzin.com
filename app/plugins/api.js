@@ -1,4 +1,3 @@
-// plugins/api.js
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();
 
@@ -10,8 +9,9 @@ export default defineNuxtPlugin(() => {
       const cartToken = useCartToken();
 
       options.headers = new Headers(options.headers);
+
+      options.headers.set("Accept", "application/json");
       options.headers.set("X-Source", "Web");
-      options.headers.set("X-APP-KEY", config.public.appKey);
 
       if (authStore.token) {
         options.headers.set("Authorization", `Bearer ${authStore.token}`);
@@ -23,11 +23,25 @@ export default defineNuxtPlugin(() => {
     },
 
     onResponseError({ response }) {
-      const authStore = useAuthStore();
+      if (import.meta.dev) {
+        console.error("API ERROR:", {
+          status: response.status,
+          url: response.url,
+          data: response._data,
+        });
+      }
 
-      if (response.status === 401) {
+      // Authentication is handled by auth middleware/page.
+      // Do not reset the store or redirect here.
+
+      if (response.status === 401 && import.meta.client) {
+        const authStore = useAuthStore();
+
         authStore.$reset();
-        navigateTo("/auth/login");
+
+        return navigateTo("/auth/login", {
+          replace: true,
+        });
       }
     },
   });
