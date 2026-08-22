@@ -41,6 +41,11 @@ const remove = async (item) => {
   await cartStore.remove(item);
   await refresh();
 };
+
+const clear = async () => {
+  await cartStore.clear();
+  await refresh();
+};
 </script>
 
 <template>
@@ -88,8 +93,12 @@ const remove = async (item) => {
               Shopping Cart ({{ cart.items.length }})
             </h3>
 
-            <button class="text-sm text-red-500" @click="cartStore.clear">
-              Clear all
+            <button
+              class="text-sm text-danger"
+              :disabled="cartStore.loading"
+              @click="clear()"
+            >
+              <span> Clear all </span>
             </button>
           </div>
 
@@ -127,10 +136,18 @@ const remove = async (item) => {
                     </div>
 
                     <button
-                      class="rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-500"
+                      type="button"
                       @click="remove(item)"
+                      :disabled="cartStore.loading"
+                      class="rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-500"
                     >
-                      <UIcon name="i-lucide-trash-2" class="h-4 w-4" />
+                      <UIcon
+                        v-if="cartStore.loading && cartStore.item === item.id"
+                        name="i-lucide-loader"
+                        class="size-4 animate-spin"
+                      />
+
+                      <UIcon v-else name="i-lucide-trash-2" class="size-4" />
                     </button>
                   </div>
 
@@ -150,28 +167,42 @@ const remove = async (item) => {
                     </div>
 
                     <div
-                      class="flex items-center overflow-hidden rounded-xl border border-gray-200"
+                      class="flex items-center overflow-hidden rounded border border-border"
                     >
                       <button
-                        class="flex h-10 w-10 items-center justify-center transition hover:bg-gray-100"
+                        class="flex h-10 w-10 items-center justify-center transition bg-red-50 text-red-500"
                         :disabled="cartStore.loading"
                         @click="decrease(item)"
                       >
-                        <UIcon name="i-lucide-minus" class="size-4" />
+                        <UIcon
+                          v-if="
+                            cartStore.loading && cartStore.item?.id === item.id
+                          "
+                          name="i-lucide-loader"
+                          class="size-4 animate-spin"
+                        />
+                        <UIcon v-else name="i-lucide-minus" class="size-4" />
                       </button>
 
                       <span
-                        class="flex h-10 min-w-12 items-center justify-center border-x text-sm font-semibold"
+                        class="flex h-10 min-w-12 items-center justify-center text-sm font-semibold"
                       >
                         {{ item.quantity }}
                       </span>
 
                       <button
-                        class="flex h-10 w-10 items-center justify-center transition hover:bg-gray-100"
+                        class="flex h-10 w-10 items-center justify-center transition bg-green-50 text-green-500"
                         :disabled="cartStore.loading"
                         @click="increase(item)"
                       >
-                        <UIcon name="i-lucide-plus" class="size-4" />
+                        <UIcon
+                          v-if="
+                            cartStore.loading && cartStore.item?.id === item.id
+                          "
+                          name="i-lucide-loader"
+                          class="size-4 animate-spin"
+                        />
+                        <UIcon v-else name="i-lucide-plus" class="size-4" />
                       </button>
                     </div>
                   </div>
