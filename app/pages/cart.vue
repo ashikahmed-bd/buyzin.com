@@ -1,7 +1,10 @@
 <script setup>
 const cartStore = useCartStore();
+const couponStore = useCouponStore();
 
-const couponCode = ref("");
+const coupon = reactive({
+  code: "",
+});
 
 const {
   data: cart,
@@ -12,9 +15,9 @@ const {
 });
 
 const couponApply = async () => {
-  if (!couponCode.value) return;
+  if (!coupon.code) return;
 
-  await cartStore.couponApply(couponCode.value);
+  await couponStore.apply(coupon.code);
   await refresh();
 };
 
@@ -217,17 +220,24 @@ const remove = async (item) => {
             <div class="p-4 space-y-4">
               <div class="flex">
                 <input
-                  v-model="couponCode"
+                  v-model="coupon.code"
                   type="text"
                   placeholder="Coupon Code"
                   class="border px-3 py-2 text-sm rounded-l w-full focus:outline-none"
                 />
 
                 <button
+                  type="button"
                   @click="couponApply"
-                  class="bg-primary text-white px-4 text-sm rounded-r"
+                  :disabled="couponStore.loading"
+                  class="bg-primary text-white flex items-center gap-2.5 px-4 text-sm rounded-r"
                 >
-                  Apply
+                  <UIcon
+                    v-if="couponStore.loading"
+                    name="i-lucide-loader"
+                    class="size-5 animate-spin"
+                  />
+                  <span>{{ couponStore.loading ? "Applying" : "Apply" }}</span>
                 </button>
               </div>
 
@@ -247,16 +257,17 @@ const remove = async (item) => {
                   <span>{{ cart?.tax_formatted }}</span>
                 </div>
 
-                <div class="flex justify-between text-green-600">
-                  <span>Coupon</span>
+                <div class="flex justify-between text-danger">
+                  <span>Discount</span>
                   <span> - {{ cart?.discount_formatted }}</span>
                 </div>
-
-                <div class="flex items-center justify-between text-success">
+                <div
+                  v-if="cart?.gift_card > 0"
+                  class="flex items-center justify-between text-success"
+                >
                   <span> Gift Card </span>
-                  <span> - 250 </span>
+                  <span> - {{ cart?.gift_card_formatted }} </span>
                 </div>
-
                 <div class="flex justify-between font-semibold">
                   <span>Total</span>
                   <span>{{ cart?.total_formatted }}</span>

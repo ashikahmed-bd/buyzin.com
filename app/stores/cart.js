@@ -13,7 +13,6 @@ export const useCartStore = defineStore("cart", {
     total: (state) => state.cart?.total,
     discount: (state) => state.cart?.discount,
     shipping: (state) => state.cart?.shipping,
-    coupon: (state) => state.cart?.coupon_code,
     token: (state) => state.cart?.token,
     isEmpty: (state) => state.cart?.items_count === 0,
   },
@@ -136,60 +135,6 @@ export const useCartStore = defineStore("cart", {
       } catch (error) {
         this.errors = error?.response?._data?.errors || {};
         throw error;
-      }
-    },
-
-    async getShippingCost(payload) {
-      const { $api } = useNuxtApp();
-      try {
-        const response = await $api("/api/cart/shipping/calculate", {
-          method: "PUT",
-          body: payload,
-        });
-        return response;
-      } catch (error) {
-        this.errors = error?.response?._data?.errors;
-        throw error;
-      }
-    },
-
-    /**
-     * Apply coupon
-     */
-    async couponApply(code) {
-      const { $api } = useNuxtApp();
-      this.loading = true;
-
-      try {
-        const response = await $api("/api/cart/coupon/apply", {
-          method: "POST",
-          body: {
-            code: code,
-          },
-        });
-        return response;
-      } catch (error) {
-        this.errors = error?.response?._data?.errors;
-        throw error;
-      }
-    },
-
-    async checkout(payload) {
-      const { $api } = useNuxtApp();
-      this.loading = true;
-      try {
-        const response = await $api("/api/cart/checkout", {
-          method: "POST",
-          body: payload,
-        });
-        return navigateTo(response.redirect_url, {
-          external: true,
-        });
-      } catch (error) {
-        this.errors = error?.response?._data?.errors;
-        throw error;
-      } finally {
-        this.loading = false;
       }
     },
   },

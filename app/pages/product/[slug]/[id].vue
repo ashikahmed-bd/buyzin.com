@@ -385,22 +385,22 @@ useSchemaOrg([
 
                   <!-- variants -->
 
-                  <div class="flex flex-col gap-3 sm:flex-row">
+                  <div class="flex items-center gap-3">
                     <div
-                      class="flex shrink-0 items-center overflow-hidden rounded-xl border border-gray-200 bg-white"
+                      class="flex shrink-0 items-center overflow-hidden rounded border border-gray-200 bg-white"
                     >
                       <button
                         type="button"
                         :disabled="quantity <= 1"
                         @click="decreaseQuantity"
-                        class="flex h-full w-10 items-center justify-center text-gray-500 transition hover:bg-gray-50 hover:text-gray-900"
+                        class="flex w-10 items-center justify-center py-2.5 text-gray-500 transition hover:bg-gray-50 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40"
                         aria-label="Decrease quantity"
                       >
                         <UIcon name="i-heroicons:minus" class="size-4" />
                       </button>
 
                       <span
-                        class="flex w-10 items-center justify-center text-sm font-semibold"
+                        class="flex w-10 items-center justify-center py-2.5 text-sm font-semibold text-gray-900"
                       >
                         {{ quantity }}
                       </span>
@@ -408,18 +408,17 @@ useSchemaOrg([
                       <button
                         type="button"
                         @click="increaseQuantity"
-                        class="flex h-full w-10 items-center justify-center transition hover:bg-gray-50 hover:text-gray-900"
+                        class="flex w-10 items-center justify-center py-2.5 text-gray-500 transition hover:bg-gray-50 hover:text-gray-900"
                         aria-label="Increase quantity"
                       >
                         <UIcon name="i-heroicons:plus" class="size-4" />
                       </button>
                     </div>
 
-                    <!-- Add to Cart -->
                     <BaseButton
                       :loading="cartStore.loading"
                       :disabled="cartStore.loading"
-                      class="w-full gap-2.5"
+                      class="flex-1 gap-2.5 rounded"
                       @click="addToCart(product)"
                     >
                       <UIcon name="i-heroicons:shopping-bag" class="size-5" />
@@ -430,7 +429,7 @@ useSchemaOrg([
                       type="button"
                       :disabled="wishlistStore.loading"
                       @click="addToWishlist(product)"
-                      class="flex px-2 shrink-0 items-center justify-center rounded border border-border transition hover:border-primary hover:bg-primary/5 hover:text-primary"
+                      class="flex shrink-0 items-center justify-center rounded border border-gray-200 bg-white p-2.5 text-gray-500 transition hover:border-primary hover:bg-primary/5 hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
                       aria-label="Add to wishlist"
                     >
                       <UIcon
