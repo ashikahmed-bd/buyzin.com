@@ -25,8 +25,6 @@ const moveAllToCart = () => {
 
     <ErrorState v-else-if="error" :retry="refresh" />
 
-    <EmptyState v-else-if="!wishlist?.data?.length" />
-
     <template v-else>
       <Head>
         <Title>Wishlist | Buyzin</Title>
@@ -58,11 +56,13 @@ const moveAllToCart = () => {
 
       <div class="space-y-4 text-sm">
         <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
+          <!-- Main -->
           <main class="min-w-0 space-y-4">
             <!-- Wishlist -->
             <section
               class="overflow-hidden rounded-lg border border-border bg-white"
             >
+              <!-- Header -->
               <div
                 class="flex flex-col gap-3 border-b border-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
               >
@@ -70,7 +70,7 @@ const moveAllToCart = () => {
                   <h1
                     class="text-lg font-bold tracking-tight text-title sm:text-xl"
                   >
-                    My Wishlist ({{ wishlist.data.length }})
+                    My Wishlist ({{ wishlist?.data?.length ?? 0 }})
                   </h1>
 
                   <p class="mt-0.5 text-sm text-body">
@@ -88,33 +88,42 @@ const moveAllToCart = () => {
                   </option>
 
                   <option value="price-low">Price: Low to High</option>
+
                   <option value="price-high">Price: High to Low</option>
+
                   <option value="rating">Highest Rated</option>
                 </select>
               </div>
 
-              <div class="divide-y divide-border">
+              <!-- Empty -->
+              <EmptyState v-if="!wishlist?.data?.length" />
+
+              <!-- Wishlist Items -->
+              <div v-else class="divide-y divide-border">
                 <article
-                  v-for="item in wishlist.data"
+                  v-for="item in wishlist?.data ?? []"
                   :key="item.id"
                   class="flex flex-wrap items-center gap-3 border-b border-border px-4 py-4 transition-colors last:border-b-0 hover:bg-slate-50/70 sm:flex-nowrap"
                 >
+                  <!-- Product Image -->
                   <NuxtLink
                     :to="`/product/${item.product?.slug}/${item.product?.id}`"
                     class="shrink-0"
                   >
                     <NuxtImg
                       :src="item.product?.cover_url"
-                      :alt="item.product?.name"
+                      :alt="item.product?.name ?? 'Product'"
                       loading="lazy"
                       class="size-20 rounded border border-border bg-white object-cover"
                     />
                   </NuxtLink>
 
+                  <!-- Product Content -->
                   <div class="min-w-0 flex-1">
                     <div
                       class="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
                     >
+                      <!-- Product Info -->
                       <div class="min-w-0 flex-1">
                         <NuxtLink
                           :to="`/product/${item.product?.slug}/${item.product?.id}`"
@@ -124,6 +133,7 @@ const moveAllToCart = () => {
                           {{ item.product?.name }}
                         </NuxtLink>
 
+                        <!-- Rating -->
                         <div class="mt-1 flex items-center gap-1.5">
                           <div class="flex items-center gap-0.5">
                             <UIcon
@@ -149,26 +159,32 @@ const moveAllToCart = () => {
                         </div>
                       </div>
 
+                      <!-- Price -->
                       <div class="flex shrink-0 items-center gap-2">
                         <p class="text-sm font-bold text-title">
-                          {{ item.product?.price_formatted }}
+                          {{ $currency(item.product?.price) }}
                         </p>
 
                         <p
-                          v-if="item.product?.base_price > item.product?.price"
+                          v-if="
+                            (item.product?.base_price ?? 0) >
+                            (item.product?.price ?? 0)
+                          "
                           class="text-sm text-muted line-through"
                         >
-                          {{ item.product?.base_price_formatted }}
+                          {{ $currency(item.product?.base_price) }}
                         </p>
                       </div>
                     </div>
 
+                    <!-- Stock + Actions -->
                     <div class="mt-2 flex items-center justify-between gap-3">
                       <p class="text-sm font-medium text-success">
-                        {{ item.product?.stock }}
+                        {{ item.product?.stock ?? "Out of stock" }}
                       </p>
 
                       <div class="flex shrink-0 items-center gap-1.5">
+                        <!-- Add To Cart -->
                         <button
                           type="button"
                           title="Add to cart"
@@ -178,6 +194,7 @@ const moveAllToCart = () => {
                           <UIcon name="i-lucide-shopping-cart" class="size-4" />
                         </button>
 
+                        <!-- Remove -->
                         <button
                           type="button"
                           title="Remove from wishlist"
@@ -192,12 +209,13 @@ const moveAllToCart = () => {
               </div>
             </section>
 
+            <!-- Price Alert -->
             <section
-              class="flex flex-col gap-3 rounded-lg border border-violet-100 bg-violet-50/60 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between"
+              class="flex flex-col gap-3 rounded border border-border bg-white px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between"
             >
               <div class="flex items-center gap-3">
                 <div
-                  class="flex size-10 shrink-0 items-center justify-center rounded-full bg-violet-100 text-violet-600"
+                  class="flex size-10 shrink-0 items-center justify-center rounded-full bg-violet-100 text-accent"
                 >
                   <UIcon name="i-lucide-bell" class="size-4" />
                 </div>
@@ -220,11 +238,13 @@ const moveAllToCart = () => {
             </section>
           </main>
 
+          <!-- Sidebar -->
           <aside class="space-y-4">
             <section class="rounded-lg border border-border bg-white p-4">
               <h2 class="text-sm font-semibold text-title">Wishlist Summary</h2>
 
               <div class="mt-4 space-y-4">
+                <!-- Items -->
                 <div class="flex items-center gap-3">
                   <div
                     class="flex size-9 items-center justify-center rounded-full bg-violet-50 text-violet-500"
@@ -234,13 +254,14 @@ const moveAllToCart = () => {
 
                   <div>
                     <p class="text-sm font-bold text-title">
-                      ({{ wishlist.summary?.items }}) Items
+                      ({{ wishlist?.summary?.items ?? 0 }}) Items
                     </p>
 
                     <p class="text-sm text-body">Items in wishlist</p>
                   </div>
                 </div>
 
+                <!-- Total -->
                 <div class="flex items-center gap-3">
                   <div
                     class="flex size-9 items-center justify-center rounded-full bg-pink-50 text-pink-500"
@@ -250,13 +271,14 @@ const moveAllToCart = () => {
 
                   <div>
                     <p class="text-sm font-bold text-title">
-                      {{ wishlist.summary?.total_formatted }}
+                      {{ $currency(wishlist?.summary?.total ?? 0) }}
                     </p>
 
                     <p class="text-sm text-body">Estimated Total</p>
                   </div>
                 </div>
 
+                <!-- Saved -->
                 <div class="flex items-center gap-3">
                   <div
                     class="flex size-9 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"
@@ -266,7 +288,7 @@ const moveAllToCart = () => {
 
                   <div>
                     <p class="text-sm font-bold text-title">
-                      Save {{ wishlist.summary?.saved_formatted }}
+                      Save {{ $currency(wishlist?.summary?.saved ?? 0) }}
                     </p>
 
                     <p class="text-sm text-body">Based on Current Offers</p>
@@ -275,11 +297,12 @@ const moveAllToCart = () => {
               </div>
             </section>
 
+            <!-- Recently Viewed -->
             <section class="rounded-lg border border-border bg-white p-4">
               <h2 class="text-sm font-semibold text-title">Recently Viewed</h2>
 
               <div class="mt-3 divide-y divide-border">
-                <article v-for="item in wishlist.viewed" :key="item.id">
+                <article v-for="item in wishlist?.viewed ?? []" :key="item.id">
                   <NuxtLink
                     :to="`/product/${item.product?.slug}/${item.product?.id}`"
                     target="_blank"
@@ -293,22 +316,22 @@ const moveAllToCart = () => {
                     />
 
                     <div class="min-w-0 flex-1">
-                      <p
+                      <h4
                         class="line-clamp-2 text-sm font-medium leading-4 text-title"
                       >
                         {{ item.product?.name }}
-                      </p>
+                      </h4>
 
                       <div class="mt-0.5 flex items-center gap-1.5">
                         <p class="text-sm font-semibold text-title">
-                          {{ item.product?.price_formatted }}
+                          {{ $currency(item.product?.price) }}
                         </p>
 
                         <p
                           v-if="item.product?.has_discount"
                           class="text-sm text-muted line-through"
                         >
-                          {{ item.product?.base_price_formatted }}
+                          {{ $currency(item.product?.base_price) }}
                         </p>
 
                         <span
@@ -321,6 +344,13 @@ const moveAllToCart = () => {
                     </div>
                   </NuxtLink>
                 </article>
+
+                <p
+                  v-if="!wishlist?.viewed?.length"
+                  class="py-3 text-center text-sm text-muted"
+                >
+                  No recently viewed products.
+                </p>
               </div>
             </section>
 
@@ -328,9 +358,11 @@ const moveAllToCart = () => {
               class="relative overflow-hidden rounded-lg bg-violet-50 p-4"
             >
               <div class="relative z-10">
-                <h2 class="text-sm font-bold text-title">
+                <h2
+                  class="flex items-center gap-2 text-sm font-bold text-title"
+                >
                   Don't Miss Out!
-                  <span class="text-violet-500">♥</span>
+                  <UIcon name="i-lucide-heart" class="size-4 text-pink-500" />
                 </h2>
 
                 <p class="mt-1 text-sm leading-4 text-body">
@@ -342,7 +374,7 @@ const moveAllToCart = () => {
                   class="mt-3 inline-flex h-8 items-center rounded-md bg-violet-600 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-700"
                   @click="moveAllToCart"
                 >
-                  Go to Cart ({{ wishlist.data.length }})
+                  Go to Cart ({{ wishlist?.data?.length ?? 0 }})
                 </button>
               </div>
 

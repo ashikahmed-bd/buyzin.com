@@ -2,6 +2,7 @@
 const { getLocation } = useLocation();
 
 const cartStore = useCartStore();
+const checkoutStore = useCheckoutStore();
 const giftCardStore = useGiftCardStore();
 
 const { data, pending, error, refresh } = await useAsyncData(
@@ -48,6 +49,7 @@ const submit = async () => {
     name: form.name,
     phone: form.phone,
     address: form.address,
+    area: form.area,
     city: form.city,
     state: form.state,
     postcode: form.postcode,
@@ -58,7 +60,7 @@ const submit = async () => {
     payment_method: form.payment_method,
   };
 
-  await cartStore.checkout(payload);
+  await checkoutStore.placeOrder(payload);
 };
 
 // watch(
@@ -105,12 +107,12 @@ watch(
       </Head>
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2 space-y-6">
-          <div class="bg-white rounded-xl border border-border overflow-hidden">
-            <div class="border-b px-5 py-4">
+          <div class="bg-white rounded-2xl border border-border px-4">
+            <div class="border-b py-4">
               <h6 class="font-semibold text-lg">Shipping Address</h6>
             </div>
 
-            <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="block mb-2 text-sm font-medium">
                   Full Name *
@@ -184,13 +186,21 @@ watch(
               />
 
               <BaseInput
-                label="Notes"
-                v-model="form.note"
-                placeholder="Additional delivery instructions (optional)"
+                label="Postal Code"
+                v-model="form.postcode"
+                placeholder="e.g. 1203"
                 :required="false"
                 error=""
               />
             </div>
+
+            <BaseInput
+              label="Notes"
+              v-model="form.note"
+              placeholder="Additional delivery instructions (optional)"
+              :required="false"
+              error=""
+            />
           </div>
 
           <div class="bg-white rounded-xl border border-border overflow-hidden">
@@ -244,7 +254,7 @@ watch(
                       {{ item.name }}
                     </h2>
                     <span class="text-sm">
-                      {{ item.price }}x {{ item.quantity }}
+                      {{ $currency(item.price) }}x {{ item.quantity }}
                     </span>
                     <div
                       v-if="item.variant"
@@ -310,7 +320,7 @@ watch(
 
                   <div class="flex shrink-0 items-center gap-3">
                     <span class="text-sm font-semibold text-success">
-                      - {{ data?.gift_card_formatted }}
+                      - {{ $currency(data?.gift_card) }}
                     </span>
 
                     <button
@@ -330,39 +340,39 @@ watch(
               <div class="space-y-2.5 text-sm">
                 <div class="flex justify-between">
                   <span>Subtotal</span>
-                  <span>{{ data?.subtotal_formatted }}</span>
+                  <span>{{ $currency(data?.subtotal) }}</span>
                 </div>
 
                 <div class="flex justify-between">
                   <span>Shipping</span>
-                  <span>{{ data?.shipping_formatted }}</span>
+                  <span>{{ $currency(data?.shipping) }}</span>
                 </div>
 
                 <div class="flex justify-between">
                   <span>Tax</span>
-                  <span>{{ data?.tax_formatted }}</span>
+                  <span>{{ $currency(data?.tax) }}</span>
                 </div>
 
                 <div class="flex justify-between text-danger">
                   <span>Discount</span>
-                  <span>- {{ data?.discount_formatted }}</span>
+                  <span>- {{ $currency(data?.discount) }}</span>
                 </div>
 
                 <div class="flex items-center justify-between text-success">
                   <span> Gift Card </span>
-                  <span> - {{ data?.gift_card_formatted }} </span>
+                  <span> - {{ $currency(data?.gift_card) }} </span>
                 </div>
 
                 <div class="flex justify-between font-semibold text-lg pt-3">
                   <span>Total</span>
-                  <span>{{ data?.total_formatted }}</span>
+                  <span>{{ $currency(data?.total) }}</span>
                 </div>
               </div>
 
               <BaseButton
                 class="w-full"
                 :disabled="!data?.items?.length"
-                :loading="cartStore.loading"
+                :loading="checkoutStore.loading"
                 @click="submit"
               >
                 Place Order

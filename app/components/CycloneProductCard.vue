@@ -45,14 +45,14 @@ const props = defineProps({
 
       <div class="flex items-center gap-2">
         <span class="text-red-600 font-bold font-bangla">
-          {{ product.price_formatted }}
+          {{ $currency(product.price) }}
         </span>
 
         <span
-          v-if="product.base_price_formatted"
+          v-if="product.base_price"
           class="text-gray-400 line-through text-xs font-bangla"
         >
-          {{ product.base_price_formatted }}
+          {{ $currency(product.base_price) }}
         </span>
       </div>
 

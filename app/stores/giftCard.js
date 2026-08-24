@@ -5,10 +5,6 @@ export const useGiftCardStore = defineStore("giftCard", {
     giftCard: null,
   }),
 
-  persist: {
-    pick: ["giftCard"],
-  },
-
   getters: {},
 
   actions: {
@@ -80,6 +76,17 @@ export const useGiftCardStore = defineStore("giftCard", {
         throw error;
       } finally {
         this.loading = false;
+      }
+    },
+
+    async redemptions() {
+      const { $api } = useNuxtApp();
+      try {
+        const response = await $api("/api/gift-cards/redemptions");
+        return response;
+      } catch (error) {
+        this.errors = error?.response?._data;
+        throw error;
       }
     },
   },

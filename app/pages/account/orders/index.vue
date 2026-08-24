@@ -28,7 +28,7 @@ const {
 
     <ErrorState v-else-if="error" :retry="refresh" />
 
-    <template v-else-if="orders">
+    <template v-else>
       <div class="bg-white rounded-2xl px-4">
         <div class="mb-3 border-b border-border border-dashed py-2.5">
           <h2 class="text-lg font-semibold text-title">My Orders</h2>
@@ -37,6 +37,8 @@ const {
             Track and manage all your orders in one place.
           </p>
         </div>
+
+        <EmptyState v-if="!orders.data.length" />
 
         <div class="space-y-3">
           <article
@@ -85,7 +87,7 @@ const {
                     Payment
                   </p>
                   <p class="mt-0.5 text-sm font-semibold capitalize text-body">
-                    {{ order.payment_method }}
+                    {{ order.payment?.method }}
                   </p>
                 </div>
 
@@ -98,7 +100,7 @@ const {
                   <p
                     class="mt-0.5 text-sm font-semibold capitalize text-green-600"
                   >
-                    {{ order.payment_status }}
+                    {{ order.payment?.status }}
                   </p>
                 </div>
 
@@ -124,7 +126,7 @@ const {
                 </p>
 
                 <p class="mt-0.5 text-lg font-bold text-heading">
-                  {{ order.total_formatted }}
+                  {{ $currency(order.total) }}
                 </p>
               </div>
             </div>
@@ -137,14 +139,6 @@ const {
                   {{ order.contact?.name || "—" }}
                 </h4>
 
-                <address class="text-xs leading-5 text-body">
-                  {{ order.contact?.address || "—" }},
-                  {{ order.contact?.city || "—" }},
-                  {{ order.contact?.state || "—" }}
-                  {{ order.contact?.postcode || "" }},
-                  {{ order.contact?.country || "" }}
-                </address>
-
                 <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-body">
                   <span v-if="order.contact?.phone">
                     {{ order.contact.phone }}
@@ -154,6 +148,27 @@ const {
                     {{ order.contact.email }}
                   </span>
                 </div>
+                <address class="text-xs leading-5 text-body">
+                  {{
+                    [
+                      order.contact?.address,
+                      order.contact?.area,
+                      order.contact?.city,
+                    ]
+                      .filter(Boolean)
+                      .join(", ")
+                  }}
+                  <br />
+                  {{
+                    [
+                      order.contact?.state,
+                      order.contact?.postcode,
+                      order.contact?.country,
+                    ]
+                      .filter(Boolean)
+                      .join(", ")
+                  }}
+                </address>
               </div>
 
               <a
@@ -177,7 +192,5 @@ const {
         </div>
       </div>
     </template>
-
-    <EmptyState v-else />
   </Dashboard>
 </template>

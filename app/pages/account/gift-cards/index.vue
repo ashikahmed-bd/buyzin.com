@@ -1,4 +1,6 @@
 <script setup>
+const toast = useToast();
+const appStore = useAppStore();
 const giftCardStore = useGiftCardStore();
 
 const {
@@ -10,62 +12,30 @@ const {
   return await giftCardStore.all();
 });
 
-const items = [
-  {
-    title: "Happy Birthday",
-    price: "From $10.00",
-    class: "bg-violet-600",
-    icon: "i-lucide-cake",
-  },
-  {
-    title: "Thank You",
-    price: "From $10.00",
-    class: "bg-rose-400",
-    icon: "i-lucide-heart",
-  },
-  {
-    title: "Happy Anniversary",
-    price: "From $10.00",
-    class: "bg-slate-800",
-    icon: "i-lucide-heart",
-  },
-  {
-    title: "Merry Christmas",
-    price: "From $10.00",
-    class: "bg-emerald-700",
-    icon: "i-lucide-gift",
-  },
-  {
-    title: "Congratulations",
-    price: "From $10.00",
-    class: "bg-amber-500",
-    icon: "i-lucide-party-popper",
-  },
-  {
-    title: "Happy Anniversary",
-    price: "From $10.00",
-    class: "bg-slate-800",
-    icon: "i-lucide-heart",
-  },
-  {
-    title: "Merry Christmas",
-    price: "From $10.00",
-    class: "bg-emerald-700",
-    icon: "i-lucide-gift",
-  },
-  {
-    title: "Congratulations",
-    price: "From $10.00",
-    class: "bg-amber-500",
-    icon: "i-lucide-party-popper",
-  },
-];
+const { data: redemptions } = await useAsyncData("redemptions", async () => {
+  return await giftCardStore.redemptions();
+});
+
+const { data: templates } = await useAsyncData("templates", async () => {
+  return await appStore.giftCardTemplates();
+});
 
 const copyCode = async (code) => {
   try {
     await navigator.clipboard.writeText(code);
+    toast.add({
+      title: "Copied!",
+      description: "Gift card code copied successfully.",
+      icon: "i-lucide-check",
+      color: "success",
+    });
   } catch (error) {
-    console.error(error);
+    toast.add({
+      title: "Copy failed",
+      description: "Unable to copy the gift card code.",
+      icon: "i-lucide-circle-x",
+      color: "error",
+    });
   }
 };
 </script>
@@ -75,8 +45,6 @@ const copyCode = async (code) => {
     <LoadingState v-if="pending" />
 
     <ErrorState v-else-if="error" :retry="refresh" />
-
-    <EmptyState v-else-if="!giftCards" />
 
     <template v-else>
       <Head>
@@ -107,7 +75,7 @@ const copyCode = async (code) => {
             </p>
           </div>
           <NuxtLink
-            to="/account/gift-cards/create"
+            to="/account/gift-cards"
             class="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-white transition-colors hover:bg-primary/90"
           >
             <UIcon name="i-lucide-plus" class="size-4" /> Buy Gift Card
@@ -125,7 +93,7 @@ const copyCode = async (code) => {
                 <div>
                   <p class="text-xs text-body">Total Balance</p>
                   <p class="text-base font-semibold text-title">
-                    {{ giftCards?.total_balance_formatted }}
+                    {{ $currency(giftCards?.total_balance) }}
                   </p>
                 </div>
               </div>
@@ -147,7 +115,7 @@ const copyCode = async (code) => {
                 <div>
                   <p class="text-xs text-body">Available Balance</p>
                   <p class="text-base font-semibold text-title">
-                    {{ giftCards?.available_balance_formatted }}
+                    {{ $currency(giftCards?.available_balance) }}
                   </p>
                 </div>
               </div>
@@ -169,7 +137,7 @@ const copyCode = async (code) => {
                 <div>
                   <p class="text-xs text-body">Used Balance</p>
                   <p class="text-base font-semibold text-title">
-                    {{ giftCards?.used_balance_formatted }}
+                    {{ $currency(giftCards?.used_balance) }}
                   </p>
                 </div>
               </div>
@@ -223,7 +191,9 @@ const copyCode = async (code) => {
                 ]"
               >
                 <template #gift-cards>
-                  <div class="w-full overflow-x-auto">
+                  <EmptyState v-if="!giftCards.data.length" />
+
+                  <div v-else class="w-full overflow-x-auto scrollbar">
                     <table class="w-full text-sm">
                       <thead>
                         <tr
@@ -255,7 +225,7 @@ const copyCode = async (code) => {
                           <td class="px-3 py-3">
                             <div class="flex items-center gap-2.5">
                               <NuxtImg
-                                :src="card.image"
+                                :src="card.image_url"
                                 :alt="card.title"
                                 class="h-10 w-auto rounded"
                               />
@@ -289,7 +259,7 @@ const copyCode = async (code) => {
                           <td
                             class="whitespace-nowrap px-3 py-3 text-sm font-medium text-title"
                           >
-                            {{ card.balance }} {{ card.currency }}
+                            {{ $currency(card.balance) }}
                           </td>
 
                           <td class="px-3 py-3">
@@ -325,7 +295,71 @@ const copyCode = async (code) => {
                   </div>
                 </template>
 
-                <template #transactions>d </template>
+                <template #transactions>
+                  <div class="space-y-3">
+                    <div
+                      v-for="redem in redemptions.data"
+                      :key="redem.id"
+                      class="rounded-xl border border-gray-200 bg-white p-4"
+                    >
+                      <div class="flex items-start justify-between gap-4">
+                        <div class="min-w-0">
+                          <div class="flex items-center gap-2">
+                            <h3 class="truncate font-medium text-gray-900">
+                              {{ redem.gift_card?.title }}
+                            </h3>
+
+                            <UBadge color="error" variant="soft" size="sm">
+                              Redeemed
+                            </UBadge>
+                          </div>
+
+                          <p class="mt-1 text-sm text-gray-500">
+                            {{ redem.gift_card?.code }}
+                          </p>
+                        </div>
+
+                        <div class="shrink-0 text-right">
+                          <p class="font-semibold text-red-600">
+                            -{{ redem.amount }} {{ redem.currency }}
+                          </p>
+
+                          <p class="mt-1 text-xs text-gray-400">
+                            Balance: {{ redem.balance_after }}
+                            {{ redem.currency }}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div
+                        v-if="redem.order"
+                        class="mt-4 flex items-center justify-between border-t border-border pt-3"
+                      >
+                        <div>
+                          <p class="text-xs text-gray-400">Order</p>
+
+                          <p class="text-sm font-medium text-body">
+                            #{{ redem.order.order_no }}
+                          </p>
+                        </div>
+
+                        <div class="text-right">
+                          <p class="text-xs text-gray-400">Date</p>
+
+                          <p class="text-sm text-gray-600">
+                            {{ $date(redem.created_at) }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <EmptyState
+                      v-if="!redemptions?.data?.length"
+                      title="No transactions found"
+                      description="Your gift card transactions will appear here."
+                    />
+                  </div>
+                </template>
               </UTabs>
             </section>
             <aside class="space-y-4">
@@ -498,50 +532,41 @@ const copyCode = async (code) => {
                   Choose a design for your next gift.
                 </p>
               </div>
-              <NuxtLink
-                to="/gift-cards/designs"
+              <a
+                href="/gift-cards"
+                target="_blank"
                 class="text-xs font-medium text-primary"
               >
                 View All Designs
-              </NuxtLink>
+              </a>
             </div>
 
             <UCarousel
               v-slot="{ item }"
-              :items="items"
               loop
-              :autoplay="{ delay: 2500 }"
-              :ui="{
-                item: 'basis-1/4',
-                content: 'gap-4',
-              }"
+              :items="templates.data"
+              :autoplay="{ delay: 2000 }"
+              :ui="{ item: 'basis-1/4' }"
             >
-              <NuxtLink
-                :key="item.title"
-                to="/account/gift-cards/create"
-                class="group block min-w-0"
-              >
+              <article class="group cursor-pointer">
                 <div
-                  class="flex h-24 items-center justify-center rounded-md text-white transition-opacity group-hover:opacity-90"
-                  :class="item.class"
+                  class="relative overflow-hidden rounded transition-all duration-300 hover:-translate-y-1"
                 >
-                  <div class="text-center">
-                    <UIcon :name="item.icon" class="size-6" />
+                  <NuxtImg :src="item.image_url" :alt="item.title" class="" />
 
-                    <p class="mt-1 text-sm font-semibold">
-                      {{ item.title }}
-                    </p>
+                  <div class="border border-border bg-white px-2.5 py-2">
+                    <div class="min-w-0">
+                      <h3 class="truncate text-sm font-bold text-title">
+                        {{ item.title }}
+                      </h3>
+
+                      <p class="line-clamp-1 text-xs text-body">
+                        {{ item.description }}
+                      </p>
+                    </div>
                   </div>
                 </div>
-
-                <p class="mt-2 truncate text-xs font-medium text-title">
-                  {{ item.title }}
-                </p>
-
-                <p class="mt-0.5 text-xs text-body">
-                  {{ item.price }}
-                </p>
-              </NuxtLink>
+              </article>
             </UCarousel>
           </section>
         </div>

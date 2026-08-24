@@ -174,7 +174,7 @@ const settings = useSettings();
                     class="size-4 mr-1 group-hover:text-primary transition"
                   />
                   <NuxtLink
-                    to="/return-policy"
+                    to="/returns-refunds"
                     class="group-hover:text-primary transition-colors duration-200"
                   >
                     Return & Refund
@@ -246,7 +246,7 @@ const settings = useSettings();
                     class="size-4 mr-1 group-hover:text-primary transition"
                   />
                   <NuxtLink
-                    to="/contact"
+                    to="/help"
                     class="hover:text-primary transition-colors duration-200"
                   >
                     Help Center

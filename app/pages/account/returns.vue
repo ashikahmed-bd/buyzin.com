@@ -62,7 +62,7 @@ const submitReturn = () => {
 
     <ErrorState v-else-if="error" :retry="refresh" />
 
-    <template v-else-if="returns">
+    <template v-else>
       <Head>
         <Title>My Orders | Buyzin</Title>
         <Meta
@@ -361,7 +361,9 @@ const submitReturn = () => {
             </div>
 
             <div class="w-full overflow-x-auto">
-              <table class="w-full">
+              <EmptyState v-if="!returns.data.length" />
+
+              <table v-else class="w-full">
                 <thead>
                   <tr>
                     <th>Ref</th>
@@ -453,7 +455,5 @@ const submitReturn = () => {
         </div>
       </div>
     </template>
-
-    <EmptyState v-else />
   </Dashboard>
 </template>

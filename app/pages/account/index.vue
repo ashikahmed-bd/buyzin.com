@@ -141,7 +141,7 @@ const quickActions = [
     description: "Manage cards",
     icon: "i-lucide-credit-card",
     iconClass: "bg-blue-50 text-blue-600",
-    to: "/account/payment-methods",
+    to: "/account",
   },
 ];
 

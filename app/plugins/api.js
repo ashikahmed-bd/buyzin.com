@@ -9,9 +9,7 @@ export default defineNuxtPlugin(() => {
       const cartToken = useCartToken();
 
       options.headers = new Headers(options.headers);
-
       options.headers.set("Accept", "application/json");
-      options.headers.set("X-Source", "Web");
 
       if (authStore.token) {
         options.headers.set("Authorization", `Bearer ${authStore.token}`);

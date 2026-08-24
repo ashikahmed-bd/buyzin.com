@@ -103,15 +103,15 @@ const clear = async () => {
           </div>
 
           <div class="p-4">
-            <ul class="divide-y divide-gray-100">
-              <li
+            <div class="divide-y divide-border">
+              <article
                 v-for="item in cart.items"
                 :key="item.id"
-                class="group flex gap-4 rounded-2xl border border-border bg-white p-4 transitiond"
+                class="group flex gap-3 rounded border border-border bg-white p-3 transition sm:gap-4 sm:p-4"
               >
                 <NuxtLink
                   :to="`/product/${item.slug}/${item.id}`"
-                  class="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-gray-100"
+                  class="relative size-20 shrink-0 overflow-hidden rounded sm:size-24"
                 >
                   <NuxtImg
                     :src="item.cover_url"
@@ -120,17 +120,20 @@ const clear = async () => {
                   />
                 </NuxtLink>
 
-                <div class="flex min-w-0 flex-1 flex-col">
-                  <div class="flex items-start justify-between gap-3">
-                    <div class="min-w-0">
+                <div class="flex min-w-0 flex-1 flex-col gap-2">
+                  <div class="flex min-w-0 items-start justify-between gap-2">
+                    <div class="min-w-0 flex-1">
                       <NuxtLink
                         :to="`/product/${item.slug}/${item.id}`"
-                        class="line-clamp-2 text-sm font-semibold text-gray-900 hover:text-primary"
+                        class="line-clamp-2 text-sm font-semibold leading-5 text-gray-900 hover:text-primary sm:text-base"
                       >
                         {{ item.name }}
                       </NuxtLink>
 
-                      <p v-if="item.sku" class="mt-1 text-xs text-gray-500">
+                      <p
+                        v-if="item.sku"
+                        class="mt-1 truncate text-xs text-gray-500"
+                      >
                         SKU: {{ item.sku }}
                       </p>
                     </div>
@@ -139,7 +142,7 @@ const clear = async () => {
                       type="button"
                       @click="remove(item)"
                       :disabled="cartStore.loading"
-                      class="rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-500"
+                      class="shrink-0 rounded-lg p-1.5 text-gray-400 transition hover:bg-red-50 hover:text-red-500 sm:p-2"
                     >
                       <UIcon
                         v-if="cartStore.loading && cartStore.item === item.id"
@@ -151,27 +154,29 @@ const clear = async () => {
                     </button>
                   </div>
 
-                  <div class="mt-auto flex items-end justify-between pt-4">
-                    <div class="block">
-                      <div class="flex items-center gap-2">
-                        <span class="text-lg font-bold text-gray-900">
-                          {{ item.price_formatted }}
-                        </span>
-                        <del
-                          v-if="item.base_price > item.price"
-                          class="text-sm text-gray-400"
-                        >
-                          {{ item.base_price_formatted }}
-                        </del>
-                      </div>
+                  <div class="mt-auto flex items-center justify-between gap-2">
+                    <div class="flex min-w-0 items-center gap-2">
+                      <span
+                        class="truncate text-base font-bold text-gray-900 sm:text-lg"
+                      >
+                        {{ $currency(item.price) }}
+                      </span>
+
+                      <del
+                        v-if="item.base_price > item.price"
+                        class="shrink-0 text-xs text-gray-400 sm:text-sm"
+                      >
+                        {{ $currency(item.base_price) }}
+                      </del>
                     </div>
 
                     <div
-                      class="flex items-center overflow-hidden rounded border border-border"
+                      class="flex shrink-0 items-center overflow-hidden rounded-full border border-border px-2 py-1"
                     >
                       <button
-                        class="flex h-10 w-10 items-center justify-center transition bg-red-50 text-red-500"
-                        :disabled="cartStore.loading"
+                        type="button"
+                        class="flex size-6 items-center justify-center text-danger transition disabled:cursor-not-allowed disabled:opacity-50"
+                        :disabled="cartStore.loading || item.quantity <= 1"
                         @click="decrease(item)"
                       >
                         <UIcon
@@ -181,17 +186,19 @@ const clear = async () => {
                           name="i-lucide-loader"
                           class="size-4 animate-spin"
                         />
+
                         <UIcon v-else name="i-lucide-minus" class="size-4" />
                       </button>
 
                       <span
-                        class="flex h-10 min-w-12 items-center justify-center text-sm font-semibold"
+                        class="flex min-w-9 items-center justify-center px-1 text-sm font-semibold"
                       >
                         {{ item.quantity }}
                       </span>
 
                       <button
-                        class="flex h-10 w-10 items-center justify-center transition bg-green-50 text-green-500"
+                        type="button"
+                        class="flex size-6 items-center justify-center text-success transition disabled:cursor-not-allowed disabled:opacity-50"
                         :disabled="cartStore.loading"
                         @click="increase(item)"
                       >
@@ -202,13 +209,14 @@ const clear = async () => {
                           name="i-lucide-loader"
                           class="size-4 animate-spin"
                         />
+
                         <UIcon v-else name="i-lucide-plus" class="size-4" />
                       </button>
                     </div>
                   </div>
                 </div>
-              </li>
-            </ul>
+              </article>
+            </div>
           </div>
         </template>
 
@@ -275,33 +283,33 @@ const clear = async () => {
               <div class="space-y-2 text-sm">
                 <div class="flex justify-between">
                   <span>Subtotal</span>
-                  <span>{{ cart?.subtotal_formatted }}</span>
+                  <span>{{ $currency(cart?.subtotal) }}</span>
                 </div>
 
                 <div class="flex justify-between">
                   <span>Shipping</span>
-                  <span>{{ cart?.shipping_formatted }}</span>
+                  <span>{{ $currency(cart?.shipping) }}</span>
                 </div>
 
                 <div class="flex justify-between">
                   <span>Tax</span>
-                  <span>{{ cart?.tax_formatted }}</span>
+                  <span>{{ $currency(cart?.tax) }}</span>
                 </div>
 
                 <div class="flex justify-between text-danger">
                   <span>Discount</span>
-                  <span> - {{ cart?.discount_formatted }}</span>
+                  <span> - {{ $currency(cart?.discount) }}</span>
                 </div>
                 <div
                   v-if="cart?.gift_card > 0"
                   class="flex items-center justify-between text-success"
                 >
                   <span> Gift Card </span>
-                  <span> - {{ cart?.gift_card_formatted }} </span>
+                  <span> - {{ $currency(cart?.gift_card) }} </span>
                 </div>
                 <div class="flex justify-between font-semibold">
                   <span>Total</span>
-                  <span>{{ cart?.total_formatted }}</span>
+                  <span>{{ $currency(cart?.total) }}</span>
                 </div>
               </div>
 

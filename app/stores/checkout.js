@@ -36,7 +36,7 @@ export const useCheckoutStore = defineStore("checkout", {
       const { $api } = useNuxtApp();
       this.loading = true;
       try {
-        const response = await $api("/api/cart/checkout", {
+        const response = await $api("/api/cart/order", {
           method: "POST",
           body: payload,
         });

@@ -305,14 +305,14 @@ useSchemaOrg([
                       <span
                         class="font-bangla text-4xl font-bold text-gray-900"
                       >
-                        {{ product.price_formatted }}
+                        {{ $currency(product.price) }}
                       </span>
 
                       <span
                         v-if="product.base_price > product.price"
                         class="font-bangla text-xl text-gray-400 line-through"
                       >
-                        {{ product.base_price_formatted }}
+                        {{ $currency(product.base_price) }}
                       </span>
 
                       <span

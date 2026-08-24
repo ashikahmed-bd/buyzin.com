@@ -8,15 +8,24 @@ export const useAppStore = defineStore("app", {
 
   actions: {
     async getHome() {
-      const { $api } = useNuxtApp()
+      const { $api } = useNuxtApp();
       try {
-        return await $api("/api/home")
+        return await $api("/api/home");
       } catch (error) {
-        this.errors = error?.response?._data?.errors
-        throw error
+        this.errors = error?.response?._data?.errors;
+        throw error;
       }
     },
 
-
+    async giftCardTemplates() {
+      const { $api } = useNuxtApp();
+      try {
+        const response = await $api("/api/gift-card-templates");
+        return response;
+      } catch (error) {
+        this.errors = error?.response?._data;
+        throw error;
+      }
+    },
   },
 });

@@ -15,7 +15,7 @@ defineProps({
 <template>
   <ClientOnly>
     <div
-      class="bg-white rounded-2xl flex min-h-screen flex-col items-center justify-center px-4 text-center"
+      class="bg-white rounded-2xl flex flex-col items-center justify-center px-4 py-10 text-center"
     >
       <div
         class="mb-4 flex size-16 items-center justify-center rounded-full bg-muted"
