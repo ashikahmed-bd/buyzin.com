@@ -546,7 +546,9 @@ const copyCode = async (code) => {
               loop
               :items="templates.data"
               :autoplay="{ delay: 2000 }"
-              :ui="{ item: 'basis-1/4' }"
+              :ui="{
+                item: 'basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4',
+              }"
             >
               <article class="group cursor-pointer">
                 <div

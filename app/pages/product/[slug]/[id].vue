@@ -6,7 +6,7 @@ const config = useRuntimeConfig();
 const wishlistStore = useWishlistStore();
 const productStore = useProductStore();
 const cartStore = useCartStore();
-
+const { recentlyViewed, add, remove, clear } = useRecentlyViewed();
 const { link } = useWhatsapp();
 
 const quantity = ref(1);
@@ -54,6 +54,8 @@ const {
     watch: [() => route.params.slug, () => route.params.id],
   },
 );
+
+add(product.value?.id);
 
 useSchemaOrg([
   defineWebPage({

@@ -2,7 +2,7 @@ export const useCartToken = () => {
   const token = useCookie("cart_token", {
     maxAge: 60 * 60 * 24 * 365,
     path: "/",
-    secure: false,
+    secure: process.env.NODE_ENV === "production",
     httpOnly: true,
     sameSite: "lax",
   });
