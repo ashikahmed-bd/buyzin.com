@@ -10,8 +10,11 @@ const {
   return await addressStore.all();
 });
 
-const deleteAddress = (address) => {
-  console.log("Delete:", address);
+const deleteAddress = async (address) => {
+  if (confirm("Are you sure you want to delete this address?")) {
+    await addressStore.delete(address);
+    await refresh();
+  }
 };
 </script>
 
@@ -20,8 +23,6 @@ const deleteAddress = (address) => {
     <LoadingState v-if="pending" />
 
     <ErrorState v-else-if="error" :retry="refresh" />
-
-    <EmptyState v-else-if="!addresses.data" />
 
     <template v-else>
       <Head>
@@ -66,9 +67,8 @@ const deleteAddress = (address) => {
 
           <NuxtLink
             to="/account/addresses/create"
-            class="inline-flex h-9 items-center justify-center gap-2 rounded bg-primary px-4 text-sm font-medium text-white transition-colors hover:bg-primary/90"
+            class="inline-flex items-center justify-center gap-2 rounded bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90"
           >
-            <UIcon name="i-lucide-plus" class="size-4" />
             Add Address
           </NuxtLink>
         </div>
@@ -77,7 +77,9 @@ const deleteAddress = (address) => {
           <section
             class="overflow-hidden rounded border border-border bg-white"
           >
+            <EmptyState v-if="!addresses.data.length" />
             <article
+              v-else
               v-for="address in addresses.data"
               :key="address.id"
               class="border-b border-border border-l-2 px-3 py-4"
@@ -86,7 +88,6 @@ const deleteAddress = (address) => {
               "
             >
               <div class="flex flex-col gap-5 lg:flex-row lg:items-start">
-                <!-- Contact -->
                 <div class="flex min-w-0 shrink-0 items-start gap-3 lg:w-56">
                   <div
                     class="flex size-10 shrink-0 items-center justify-center rounded-full bg-violet-50 text-violet-500"
@@ -125,7 +126,6 @@ const deleteAddress = (address) => {
                   </div>
                 </div>
 
-                <!-- Address -->
                 <div class="flex min-w-0 flex-1 gap-2 text-sm text-body">
                   <UIcon
                     name="i-lucide-map-pin"
@@ -139,21 +139,18 @@ const deleteAddress = (address) => {
                     <p>{{ address.country }}</p>
                   </div>
                 </div>
-
-                <!-- Actions -->
                 <div class="flex shrink-0 items-start gap-2 lg:ml-auto">
-                  <button
-                    type="button"
-                    class="inline-flex h-8 items-center justify-center rounded-md border border-violet-200 px-3 text-sm font-medium text-violet-500 transition-colors hover:bg-violet-50"
-                    @click="editAddress(address)"
+                  <a
+                    :href="`/account/addresses/${address.id}`"
+                    class="inline-flex items-center justify-center rounded-md border border-violet-200 px-3 py-2 text-sm font-medium text-violet-500 transition-colors hover:bg-violet-50"
                   >
                     Edit
-                  </button>
+                  </a>
 
                   <button
                     type="button"
-                    class="inline-flex h-8 items-center justify-center rounded-md border border-red-200 px-3 text-sm font-medium text-red-500 transition-colors hover:bg-red-50"
-                    @click="deleteAddress(address)"
+                    class="inline-flex items-center justify-center rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-500 transition-colors hover:bg-red-50"
+                    @click="deleteAddress(address.id)"
                   >
                     Delete
                   </button>

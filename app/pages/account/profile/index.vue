@@ -4,6 +4,7 @@ definePageMeta({
 });
 
 const profileStore = useProfileStore();
+const { errors } = storeToRefs(profileStore);
 
 const {
   data: profile,
@@ -12,18 +13,18 @@ const {
   refresh,
 } = await useAsyncData("profile", () => profileStore.getProfile());
 
-const password = reactive({
-  current: "",
-  new: "",
-  confirmation: "",
+const form = reactive({
+  current_password: "",
+  password: "",
+  password_confirmation: "",
 });
 
 const saveProfile = async () => {
-  console.log("Profile:", profile.value);
+  await profileStore.update(profile.value);
 };
 
 const changePassword = async () => {
-  console.log("Password:", password);
+  await profileStore.changePassword(form);
 };
 </script>
 
@@ -33,17 +34,13 @@ const changePassword = async () => {
 
     <ErrorState v-else-if="error" :retry="refresh" />
 
-    <EmptyState v-else-if="!profile" />
-
     <template v-else>
       <Head>
         <Title>Profile | Buyzin</Title>
-
         <Meta
           name="description"
           content="View and manage your personal information and account settings on Buyzin."
         />
-
         <Meta name="robots" content="noindex, nofollow" />
       </Head>
 
@@ -67,7 +64,6 @@ const changePassword = async () => {
       <div class="rounded-2xl bg-white">
         <div class="border-b border-dashed border-border px-4 py-3">
           <h1 class="text-lg font-semibold text-title">My Profile</h1>
-
           <p class="mt-1 text-sm text-body">
             Manage your personal information and account security.
           </p>
@@ -135,7 +131,6 @@ const changePassword = async () => {
             </div>
           </section>
 
-          <!-- Account Settings -->
           <section
             class="overflow-hidden rounded-lg border border-border bg-white"
           >
@@ -155,7 +150,6 @@ const changePassword = async () => {
                 },
               ]"
             >
-              <!-- Personal Information -->
               <template #account>
                 <form class="p-4 sm:p-5" @submit.prevent="saveProfile">
                   <div class="grid gap-4 sm:grid-cols-2">
@@ -211,31 +205,29 @@ const changePassword = async () => {
                     />
                   </div>
 
-                  <div
-                    class="mt-5 flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between"
+                  <button
+                    type="submit"
+                    :disabled="profileStore.loading"
+                    :class="[
+                      'inline-flex items-center justify-center gap-2 rounded-md bg-primary px-2.5 py-2 text-xs font-medium text-white transition',
+                      profileStore.loading
+                        ? 'cursor-not-allowed opacity-60'
+                        : 'hover:bg-primary/90',
+                    ]"
                   >
-                    <NuxtLink
-                      to="/account/addresses"
-                      class="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-border px-4 text-xs font-medium text-body transition-colors hover:border-primary hover:text-primary"
-                    >
-                      <UIcon name="i-lucide-map-pin" class="size-3.5" />
+                    <UIcon
+                      v-if="profileStore.loading"
+                      name="i-lucide-loader"
+                      class="size-4 animate-spin"
+                    />
 
-                      Manage Addresses
-                    </NuxtLink>
+                    <UIcon v-else name="i-lucide-save" class="size-4" />
 
-                    <button
-                      type="submit"
-                      class="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-primary px-5 text-xs font-medium text-white transition-colors hover:bg-primary/90"
-                    >
-                      <UIcon name="i-lucide-save" class="size-3.5" />
-
-                      Save Changes
-                    </button>
-                  </div>
+                    {{ profileStore.loading ? "Saving..." : "Save Changes" }}
+                  </button>
                 </form>
               </template>
 
-              <!-- Change Password -->
               <template #password>
                 <form
                   class="max-w-2xl p-4 sm:p-5"
@@ -243,42 +235,57 @@ const changePassword = async () => {
                 >
                   <div class="grid gap-4">
                     <BaseInput
-                      v-model="password.current"
+                      v-model="form.current_password"
                       label="Current Password"
                       type="password"
                       placeholder="Enter current password"
-                      required
+                      :required="true"
+                      :error="errors.current_password"
                     />
 
                     <BaseInput
-                      v-model="password.new"
+                      v-model="form.password"
                       label="New Password"
                       type="password"
                       placeholder="Enter new password"
-                      required
+                      :required="true"
+                      :error="errors.password"
                     />
 
                     <BaseInput
-                      v-model="password.confirmation"
+                      v-model="form.password_confirmation"
                       label="Confirm New Password"
                       type="password"
                       placeholder="Confirm new password"
-                      required
+                      :required="true"
+                      :error="errors.password"
                     />
                   </div>
 
-                  <div
-                    class="mt-5 flex justify-end border-t border-border pt-4"
+                  <button
+                    type="submit"
+                    :disabled="profileStore.loading"
+                    :class="[
+                      'inline-flex items-center justify-center gap-2 rounded-md bg-primary px-2.5 py-2 text-xs font-medium text-white transition',
+                      profileStore.loading
+                        ? 'cursor-not-allowed opacity-60'
+                        : 'hover:bg-primary/90',
+                    ]"
                   >
-                    <button
-                      type="submit"
-                      class="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-primary px-5 text-xs font-medium text-white transition-colors hover:bg-primary/90"
-                    >
-                      <UIcon name="i-lucide-lock" class="size-3.5" />
+                    <UIcon
+                      v-if="profileStore.loading"
+                      name="i-lucide-loader"
+                      class="size-4 animate-spin"
+                    />
 
-                      Update Password
-                    </button>
-                  </div>
+                    <UIcon v-else name="i-lucide-lock" class="size-4" />
+
+                    {{
+                      profileStore.loading
+                        ? "Please wait..."
+                        : "Change Password"
+                    }}
+                  </button>
                 </form>
               </template>
             </UTabs>

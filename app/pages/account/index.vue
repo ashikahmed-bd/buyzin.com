@@ -168,8 +168,7 @@ const scrollNext = () => {
         <div
           class="overflow-hidden rounded-xl border border-default bg-white xl:col-span-2"
         >
-          <EmptyState v-if="!dashboard.recent_orders.length" />
-          <div v-else class="rounded-2xl bg-white">
+          <div class="rounded-2xl bg-white">
             <div
               class="flex items-center justify-between border-b border-default px-4 py-4"
             >
@@ -190,7 +189,9 @@ const scrollNext = () => {
             </div>
 
             <div class="divide-y divide-border px-4 py-4">
+              <EmptyState v-if="!dashboard.recent_orders.length" />
               <article
+                v-else
                 v-for="order in dashboard.recent_orders"
                 :key="order.id"
                 class="transition border border-border hover:bg-gray-50 p-2.5 rounded"

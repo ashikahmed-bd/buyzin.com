@@ -1,4 +1,5 @@
 <script setup>
+const route = useRoute();
 const addressStore = useAddressStore();
 
 const form = reactive({
@@ -38,8 +39,27 @@ const addressTypes = [
   },
 ];
 
+onMounted(async () => {
+  const response = await addressStore.show(route.params.id);
+
+  const address = response?.data ?? response;
+
+  Object.assign(form, {
+    name: address.name ?? "",
+    phone: address.phone ?? "",
+    country: address.country ?? "Bangladesh",
+    state: address.state ?? "",
+    city: address.city ?? "",
+    area: address.area ?? "",
+    address: address.address ?? "",
+    landmark: address.landmark ?? "",
+    type: address.type ?? "home",
+    default: Boolean(address.default),
+  });
+});
+
 const submit = async () => {
-  await addressStore.store(form);
+  await addressStore.update(route.params.id, form);
 };
 
 const cancel = () => {

@@ -1,7 +1,9 @@
 <script setup>
 const wishlistStore = useWishlistStore();
+const cartStore = useCartStore();
 
-const sortBy = ref("recently-added");
+const toast = useToast();
+const sortBy = ref("recently");
 
 const {
   data: wishlist,
@@ -10,12 +12,23 @@ const {
   refresh,
 } = await useAsyncData("wishlist", () => wishlistStore.getWishlist());
 
-const addToCart = (product) => {
-  console.log("Add to cart:", product);
+const addToCart = async (item) => {
+  const response = await cartStore.store({
+    product_id: item.product.id,
+    quantity: 1,
+    variant_id: null,
+  });
+
+  toast.add({
+    title: response.message,
+  });
 };
 
-const moveAllToCart = () => {
-  console.log("Move wishlist to cart");
+const destroy = async (item) => {
+  if (confirm("Remove this item from your wishlist?")) {
+    await wishlistStore.remove(item);
+    await refresh();
+  }
 };
 </script>
 
@@ -28,7 +41,6 @@ const moveAllToCart = () => {
     <template v-else>
       <Head>
         <Title>Wishlist | Buyzin</Title>
-
         <Meta
           name="description"
           content="View and manage your saved products on Buyzin."
@@ -56,13 +68,10 @@ const moveAllToCart = () => {
 
       <div class="space-y-4 text-sm">
         <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
-          <!-- Main -->
           <main class="min-w-0 space-y-4">
-            <!-- Wishlist -->
             <section
               class="overflow-hidden rounded-lg border border-border bg-white"
             >
-              <!-- Header -->
               <div
                 class="flex flex-col gap-3 border-b border-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
               >
@@ -83,29 +92,21 @@ const moveAllToCart = () => {
                   aria-label="Sort wishlist"
                   class="h-9 w-full rounded-md border border-border bg-white px-3 text-sm font-medium text-title outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10 sm:w-auto"
                 >
-                  <option value="recently-added">
-                    Sort by: Recently Added
-                  </option>
-
+                  <option value="recently">Sort by: Recently</option>
                   <option value="price-low">Price: Low to High</option>
-
                   <option value="price-high">Price: High to Low</option>
-
                   <option value="rating">Highest Rated</option>
                 </select>
               </div>
 
-              <!-- Empty -->
               <EmptyState v-if="!wishlist?.data?.length" />
 
-              <!-- Wishlist Items -->
               <div v-else class="divide-y divide-border">
                 <article
                   v-for="item in wishlist?.data ?? []"
                   :key="item.id"
                   class="flex flex-wrap items-center gap-3 border-b border-border px-4 py-4 transition-colors last:border-b-0 hover:bg-slate-50/70 sm:flex-nowrap"
                 >
-                  <!-- Product Image -->
                   <NuxtLink
                     :to="`/product/${item.product?.slug}/${item.product?.id}`"
                     class="shrink-0"
@@ -118,12 +119,10 @@ const moveAllToCart = () => {
                     />
                   </NuxtLink>
 
-                  <!-- Product Content -->
                   <div class="min-w-0 flex-1">
                     <div
                       class="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
                     >
-                      <!-- Product Info -->
                       <div class="min-w-0 flex-1">
                         <NuxtLink
                           :to="`/product/${item.product?.slug}/${item.product?.id}`"
@@ -132,8 +131,6 @@ const moveAllToCart = () => {
                         >
                           {{ item.product?.name }}
                         </NuxtLink>
-
-                        <!-- Rating -->
                         <div class="mt-1 flex items-center gap-1.5">
                           <div class="flex items-center gap-0.5">
                             <UIcon
@@ -159,7 +156,6 @@ const moveAllToCart = () => {
                         </div>
                       </div>
 
-                      <!-- Price -->
                       <div class="flex shrink-0 items-center gap-2">
                         <p class="text-sm font-bold text-title">
                           {{ $currency(item.product?.price) }}
@@ -177,14 +173,12 @@ const moveAllToCart = () => {
                       </div>
                     </div>
 
-                    <!-- Stock + Actions -->
                     <div class="mt-2 flex items-center justify-between gap-3">
                       <p class="text-sm font-medium text-success">
                         {{ item.product?.stock ?? "Out of stock" }}
                       </p>
 
                       <div class="flex shrink-0 items-center gap-1.5">
-                        <!-- Add To Cart -->
                         <button
                           type="button"
                           title="Add to cart"
@@ -193,11 +187,10 @@ const moveAllToCart = () => {
                         >
                           <UIcon name="i-lucide-shopping-cart" class="size-4" />
                         </button>
-
-                        <!-- Remove -->
                         <button
                           type="button"
                           title="Remove from wishlist"
+                          @click="destroy(item.id)"
                           class="inline-flex size-8 items-center justify-center rounded bg-red-50 text-red-500 transition-colors hover:bg-red-500 hover:text-white"
                         >
                           <UIcon name="i-lucide-trash-2" class="size-4" />
@@ -209,7 +202,6 @@ const moveAllToCart = () => {
               </div>
             </section>
 
-            <!-- Price Alert -->
             <section
               class="flex flex-col gap-3 rounded border border-border bg-white px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between"
             >
@@ -238,13 +230,11 @@ const moveAllToCart = () => {
             </section>
           </main>
 
-          <!-- Sidebar -->
           <aside class="space-y-4">
             <section class="rounded-lg border border-border bg-white p-4">
               <h2 class="text-sm font-semibold text-title">Wishlist Summary</h2>
 
               <div class="mt-4 space-y-4">
-                <!-- Items -->
                 <div class="flex items-center gap-3">
                   <div
                     class="flex size-9 items-center justify-center rounded-full bg-violet-50 text-violet-500"
@@ -261,7 +251,6 @@ const moveAllToCart = () => {
                   </div>
                 </div>
 
-                <!-- Total -->
                 <div class="flex items-center gap-3">
                   <div
                     class="flex size-9 items-center justify-center rounded-full bg-pink-50 text-pink-500"
@@ -278,7 +267,6 @@ const moveAllToCart = () => {
                   </div>
                 </div>
 
-                <!-- Saved -->
                 <div class="flex items-center gap-3">
                   <div
                     class="flex size-9 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"
@@ -294,63 +282,6 @@ const moveAllToCart = () => {
                     <p class="text-sm text-body">Based on Current Offers</p>
                   </div>
                 </div>
-              </div>
-            </section>
-
-            <!-- Recently Viewed -->
-            <section class="rounded-lg border border-border bg-white p-4">
-              <h2 class="text-sm font-semibold text-title">Recently Viewed</h2>
-
-              <div class="mt-3 divide-y divide-border">
-                <article v-for="item in wishlist?.viewed ?? []" :key="item.id">
-                  <NuxtLink
-                    :to="`/product/${item.product?.slug}/${item.product?.id}`"
-                    target="_blank"
-                    class="flex items-center gap-2.5 py-2.5"
-                  >
-                    <NuxtImg
-                      :src="item.product?.cover_url"
-                      :alt="item.product?.name"
-                      loading="lazy"
-                      class="size-10 rounded-md border border-border bg-slate-50 object-cover"
-                    />
-
-                    <div class="min-w-0 flex-1">
-                      <h4
-                        class="line-clamp-2 text-sm font-medium leading-4 text-title"
-                      >
-                        {{ item.product?.name }}
-                      </h4>
-
-                      <div class="mt-0.5 flex items-center gap-1.5">
-                        <p class="text-sm font-semibold text-title">
-                          {{ $currency(item.product?.price) }}
-                        </p>
-
-                        <p
-                          v-if="item.product?.has_discount"
-                          class="text-sm text-muted line-through"
-                        >
-                          {{ $currency(item.product?.base_price) }}
-                        </p>
-
-                        <span
-                          v-if="item.product?.has_discount"
-                          class="rounded bg-pink-50 px-1 py-0.5 text-xs font-medium text-pink-500"
-                        >
-                          {{ item.product?.discount_percentage }} OFF
-                        </span>
-                      </div>
-                    </div>
-                  </NuxtLink>
-                </article>
-
-                <p
-                  v-if="!wishlist?.viewed?.length"
-                  class="py-3 text-center text-sm text-muted"
-                >
-                  No recently viewed products.
-                </p>
               </div>
             </section>
 
