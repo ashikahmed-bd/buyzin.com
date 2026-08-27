@@ -1,46 +1,8 @@
 <script setup>
-const toast = useToast();
 const route = useRoute();
 const config = useRuntimeConfig();
 
-const wishlistStore = useWishlistStore();
 const productStore = useProductStore();
-const cartStore = useCartStore();
-const { recentlyViewed, add, remove, clear } = useRecentlyViewed();
-const { link } = useWhatsapp();
-
-const quantity = ref(1);
-
-const increaseQuantity = () => {
-  quantity.value++;
-};
-
-const decreaseQuantity = () => {
-  if (quantity.value > 1) {
-    quantity.value--;
-  }
-};
-
-const addToCart = async (product) => {
-  const response = await cartStore.store({
-    product_id: product.id,
-    quantity: quantity.value,
-    variant_id: null,
-  });
-
-  toast.add({
-    title: response.message,
-  });
-};
-
-const addToWishlist = async (product) => {
-  const response = await wishlistStore.addItem(product);
-  toast.add({
-    title: response.message,
-    color: response.success ? "success" : "error",
-    icon: response.success ? "i-lucide-circle-check-big" : "i-lucide-x",
-  });
-};
 
 const {
   data: product,
@@ -55,7 +17,146 @@ const {
   },
 );
 
-add(product.value?.id);
+const selectedOptions = ref({});
+
+const selectOption = (attribute, option) => {
+  selectedOptions.value = {
+    ...selectedOptions.value,
+    [attribute.id]: option.id,
+  };
+};
+
+const selectedVariant = computed(() => {
+  const variants = product.value?.variants ?? [];
+  const attributes = product.value?.attributes ?? [];
+  const selected = selectedOptions.value;
+
+  if (!variants.length || !attributes.length) {
+    return null;
+  }
+
+  // Total number of product attributes
+  const attributeCount = attributes.length;
+
+  // Number of selected attributes
+  const selectedCount = Object.keys(selected).length;
+
+  // Return null if all attributes are not selected
+  if (selectedCount !== attributeCount) {
+    return null;
+  }
+
+  return (
+    variants.find((variant) => {
+      const variantOptions = variant.options ?? [];
+
+      // Variant must have the same number of options as product attributes
+      if (variantOptions.length !== attributeCount) {
+        return false;
+      }
+
+      // Every attribute must match its selected option
+      return attributes.every((attribute) => {
+        const selectedOptionId = selected[attribute.id];
+
+        return variantOptions.some((variantOption) => {
+          return (
+            String(variantOption.attribute?.id) === String(attribute.id) &&
+            String(variantOption.option?.id) === String(selectedOptionId)
+          );
+        });
+      });
+    }) ?? null
+  );
+});
+
+const currentPrice = computed(() => {
+  return Number(selectedVariant.value?.price ?? product.value?.price ?? 0);
+});
+
+const currentComparePrice = computed(() => {
+  return Number(
+    selectedVariant.value?.compare_price ?? product.value?.compare_price ?? 0,
+  );
+});
+
+const discount = computed(() => {
+  if (
+    !currentComparePrice.value ||
+    currentComparePrice.value <= currentPrice.value
+  ) {
+    return 0;
+  }
+
+  return Math.round(
+    ((currentComparePrice.value - currentPrice.value) /
+      currentComparePrice.value) *
+      100,
+  );
+});
+
+const addToCart = () => {
+  const variant = selectedVariant.value;
+
+  // Product has variants but no variant is selected
+  if (product.value?.variants?.length && !variant) {
+    alert("Please select all product options.");
+    return;
+  }
+
+  const cartItem = {
+    product_id: product.value.id,
+    variant_id: variant?.id ?? null,
+
+    name: product.value.name,
+    sku: variant?.sku ?? product.value.sku ?? null,
+    price: variant?.price ?? product.value.price ?? 0,
+    compare_price:
+      variant?.compare_price ?? product.value.compare_price ?? null,
+    quantity: 1,
+
+    // Keep selected variant options
+    options:
+      variant?.options?.map((item) => ({
+        attribute_id: item.attribute?.id,
+        attribute_name: item.attribute?.name,
+        option_id: item.option?.id,
+        option_name: item.option?.name,
+      })) ?? [],
+
+    image: "https://placehold.co/400",
+  };
+
+  console.log("Add to cart:", cartItem);
+};
+
+const variantQuantities = ref({});
+
+const increaseVariantQuantity = (variant) => {
+  const current = variantQuantities.value[variant.id] ?? 0;
+
+  const min = variant.minimum_order_quantity ?? 1;
+  const max = variant.maximum_order_quantity ?? Infinity;
+  const step = variant.order_step ?? 1;
+
+  variantQuantities.value[variant.id] =
+    current === 0 ? min : Math.min(current + step, max);
+};
+
+const decreaseVariantQuantity = (variant) => {
+  const current = variantQuantities.value[variant.id] ?? 0;
+
+  const min = variant.minimum_order_quantity ?? 1;
+  const step = variant.order_step ?? 1;
+
+  if (current <= 0) {
+    return;
+  }
+
+  const next = current - step;
+
+  variantQuantities.value[variant.id] = next < min ? 0 : next;
+};
 
 useSchemaOrg([
   defineWebPage({
@@ -205,12 +306,12 @@ useSchemaOrg([
 </script>
 
 <template>
-  <main class="max-w-7xl mx-auto bg-white px-4 py-6">
+  <main class="max-w-7xl mx-auto bg-white px-4">
     <LoadingState v-if="pending" />
 
     <ErrorState v-else-if="error" :retry="refresh" />
 
-    <template v-else-if="product">
+    <template v-else>
       <SeoMeta
         :title="product?.meta_title"
         :description="product?.meta_description"
@@ -219,6 +320,7 @@ useSchemaOrg([
       />
 
       <UBreadcrumb
+        class="py-4"
         :items="[
           { label: 'Home', to: '/' },
           {
@@ -229,528 +331,540 @@ useSchemaOrg([
             label: product?.name,
           },
         ]"
-        class="mb-5 md:mb-8"
       />
 
-      <section>
-        <div class="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <div class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
+        <div
+          class="grid min-w-0 grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_28rem]"
+        >
           <div class="min-w-0">
-            <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
-              <div class="min-w-0">
-                <ProductGallery
-                  :images="
-                    [product?.cover_url, ...(product?.gallery || [])].filter(
-                      Boolean,
-                    )
-                  "
-                  :video="product?.video_url"
-                />
-              </div>
-
-              <div class="min-w-0">
-                <div class="space-y-2">
-                  <ProductOfferCountdown
-                    v-if="product.end_at"
-                    :end-date="product.end_at"
-                    title="Discount 20 OFF!"
-                  />
-                  <div>
-                    <h1
-                      class="text-2xl font-bold leading-tight tracking-tight text-title"
-                    >
-                      {{ product?.name }}
-                    </h1>
-
-                    <div
-                      class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm"
-                    >
-                      <div class="flex items-center gap-2">
-                        <!-- Stars -->
-                        <div class="flex items-center gap-0.5">
-                          <UIcon
-                            v-for="i in 5"
-                            :key="i"
-                            :name="
-                              i <= Math.round(product?.rating ?? 0)
-                                ? 'i-heroicons:star-solid'
-                                : 'i-heroicons:star'
-                            "
-                            class="size-4"
-                            :class="
-                              i <= Math.round(product?.rating ?? 0)
-                                ? 'text-yellow-500'
-                                : 'text-body'
-                            "
-                          />
-                        </div>
-
-                        <span class="font-semibold text-body">
-                          {{ Number(product?.rating ?? 0).toFixed(1) }}
-                        </span>
-
-                        <span class="text-gray-500">
-                          ({{ product?.review_count ?? 0 }} Reviews)
-                        </span>
-                      </div>
-
-                      <span class="text-gray-500">
-                        Brand:
-                        <span class="font-semibold text-gray-900">
-                          {{ product?.brand?.name ?? "Individual" }}
-                        </span>
-                      </span>
-                    </div>
-                  </div>
-
-                  <div class="flex items-end justify-between">
-                    <div class="flex items-baseline gap-2.5">
-                      <span
-                        class="font-bangla text-4xl font-bold text-gray-900"
-                      >
-                        {{ $currency(product.price) }}
-                      </span>
-
-                      <span
-                        v-if="product.base_price > product.price"
-                        class="font-bangla text-xl text-gray-400 line-through"
-                      >
-                        {{ $currency(product.base_price) }}
-                      </span>
-
-                      <span
-                        v-if="product.has_discount"
-                        class="font-bangla text-sm font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded"
-                      >
-                        Save {{ product.discount_percentage }}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div v-if="product?.highlights" class="text-body">
-                    <h2 class="text-base font-bold text-title py-2">
-                      Highlights:
-                    </h2>
-                    <MDC
-                      :value="product?.highlights"
-                      class="prose max-w-none"
-                    />
-                  </div>
-
-                  <div
-                    v-if="product?.dimensions"
-                    class="flex flex-wrap items-center gap-2 py-4"
-                  >
-                    <div
-                      v-if="product?.dimensions?.weight"
-                      class="inline-flex items-center gap-2 text-xs leading-none"
-                    >
-                      <span class="text-gray-500">Weight</span>
-                      <span class="font-semibold text-gray-900">
-                        {{ product.dimensions.weight
-                        }}{{ product.dimensions.unit?.weight }}
-                      </span>
-                    </div>
-
-                    <div
-                      v-if="product?.dimensions?.length"
-                      class="inline-flex items-center gap-2 text-xs leading-none"
-                    >
-                      <span class="text-gray-500">Length</span>
-                      <span class="font-semibold text-gray-900">
-                        {{ product.dimensions.length
-                        }}{{ product.dimensions.unit?.dimension }}
-                      </span>
-                    </div>
-
-                    <div
-                      v-if="product?.dimensions?.width"
-                      class="inline-flex items-center gap-2 text-xs leading-none"
-                    >
-                      <span class="text-gray-500">Width</span>
-                      <span class="font-semibold text-gray-900">
-                        {{ product.dimensions.width
-                        }}{{ product.dimensions.unit?.dimension }}
-                      </span>
-                    </div>
-
-                    <div
-                      v-if="product?.dimensions?.height"
-                      class="inline-flex items-center gap-2 text-xs leading-none"
-                    >
-                      <span class="text-gray-500">Height</span>
-                      <span class="font-semibold text-gray-900">
-                        {{ product.dimensions.height
-                        }}{{ product.dimensions.unit?.dimension }}
-                      </span>
-                    </div>
-                  </div>
-
-                  <!-- variants -->
-
-                  <div class="flex items-center gap-3">
-                    <div
-                      class="flex shrink-0 items-center overflow-hidden rounded border border-gray-200 bg-white"
-                    >
-                      <button
-                        type="button"
-                        :disabled="quantity <= 1"
-                        @click="decreaseQuantity"
-                        class="flex w-10 items-center justify-center py-2.5 text-gray-500 transition hover:bg-gray-50 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40"
-                        aria-label="Decrease quantity"
-                      >
-                        <UIcon name="i-heroicons:minus" class="size-4" />
-                      </button>
-
-                      <span
-                        class="flex w-10 items-center justify-center py-2.5 text-sm font-semibold text-gray-900"
-                      >
-                        {{ quantity }}
-                      </span>
-
-                      <button
-                        type="button"
-                        @click="increaseQuantity"
-                        class="flex w-10 items-center justify-center py-2.5 text-gray-500 transition hover:bg-gray-50 hover:text-gray-900"
-                        aria-label="Increase quantity"
-                      >
-                        <UIcon name="i-heroicons:plus" class="size-4" />
-                      </button>
-                    </div>
-
-                    <BaseButton
-                      :loading="cartStore.loading"
-                      :disabled="cartStore.loading"
-                      class="flex-1 gap-2.5 rounded"
-                      @click="addToCart(product)"
-                    >
-                      <UIcon name="i-heroicons:shopping-bag" class="size-5" />
-                      <span>Add to Cart</span>
-                    </BaseButton>
-
-                    <button
-                      type="button"
-                      :disabled="wishlistStore.loading"
-                      @click="addToWishlist(product)"
-                      class="flex shrink-0 items-center justify-center rounded border border-gray-200 bg-white p-2.5 text-gray-500 transition hover:border-primary hover:bg-primary/5 hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
-                      aria-label="Add to wishlist"
-                    >
-                      <UIcon
-                        v-if="wishlistStore.loading"
-                        name="i-lucide:loader"
-                        class="size-5 animate-spin"
-                      />
-
-                      <UIcon v-else name="i-lucide:heart" class="size-5" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <section class="bg-white py-4 rounded-xl">
-              <UTabs
-                variant="link"
-                :items="[
-                  {
-                    label: 'Description',
-                    slot: 'description',
-                  },
-                  {
-                    label: 'Specifications',
-                    slot: 'specifications',
-                  },
-                  {
-                    label: 'Reviews',
-                    slot: 'reviews',
-                  },
-                  {
-                    label: 'FAQ',
-                    slot: 'faq',
-                  },
-                ]"
-              >
-                <template #description>
-                  <MDC :value="product?.description" class="prose max-w-none" />
-                </template>
-                <template #specifications>
-                  <table
-                    v-for="section in product?.specifications"
-                    :key="section.title"
-                    class="mb-6 border max-w-5xl w-full"
-                  >
-                    <thead>
-                      <tr class="bg-gray-100">
-                        <th class="text-left p-2" colspan="2">
-                          {{ section.title }}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="item in section.items" :key="item.label">
-                        <td
-                          class="p-2 border-t w-1/4 font-medium text-gray-600"
-                        >
-                          {{ item.label }}
-                        </td>
-                        <td class="p-2 border-t">{{ item.value }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </template>
-                <template #reviews>
-                  <ProductReview />
-                </template>
-                <template #faq>
-                  <ProductFaq />
-                </template>
-              </UTabs>
-            </section>
+            <ProductGallery
+              :images="
+                [product?.cover_url, ...(product?.gallery || [])].filter(
+                  Boolean,
+                )
+              "
+              :video="product?.video_url"
+            />
           </div>
 
-          <aside class="lg:sticky lg:top-6 lg:self-start">
-            <div class="overflow-hidden rounded-2xl border border-border">
-              <div class="border-b border-gray-100 p-5 space-y-4">
-                <div class="flex items-center gap-3">
-                  <div
-                    class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gray-100"
-                  >
-                    <UIcon
-                      name="i-heroicons:building-storefront"
-                      class="size-6 text-gray-600"
-                    />
-                  </div>
-
-                  <div class="min-w-0 flex-1">
-                    <p
-                      class="text-xs font-medium uppercase tracking-wide text-gray-400"
-                    >
-                      Sold by
-                    </p>
-
-                    <div class="mt-0.5 flex items-center gap-1.5">
-                      <h2 class="truncate text-sm font-bold text-title">
-                        {{ product?.store?.name }}
-                      </h2>
-
-                      <UIcon
-                        name="i-heroicons:check-badge"
-                        class="size-4 shrink-0 text-blue-600"
-                      />
-                    </div>
-
-                    <div
-                      class="mt-1 flex items-center gap-2 text-xs text-gray-500"
-                    >
-                      <span class="flex items-center gap-1">
-                        <UIcon
-                          name="i-heroicons:star-solid"
-                          class="size-3.5 text-yellow-400"
-                        />
-                        4.8
-                      </span>
-
-                      <span class="text-gray-300">•</span>
-
-                      <span>98% Positive</span>
-                    </div>
-                  </div>
-
-                  <a
-                    :href="
-                      link(
-                        product?.store?.whatsapp,
-                        `Hi, I'm interested in this product: ${config.public.siteUrl}${route.fullPath}`,
-                      )
-                    "
-                    target="_blank"
-                    class="flex shrink-0 items-center gap-1.5 rounded border border-border px-3 py-2 text-xs font-semibold"
-                  >
-                    <UIcon name="i-lucide-messages-square" class="size-4" />
-                    Chat
-                  </a>
-                </div>
-
-                <NuxtLink
-                  :to="`/stores/${product.store?.slug}`"
-                  class="flex w-full items-center justify-center gap-1.5 rounded border border-border bg-gray-50 py-2.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-100"
+          <div class="min-w-0">
+            <div class="space-y-2">
+              <div class="flex flex-wrap gap-2">
+                <span
+                  v-if="true"
+                  class="inline-flex items-center gap-1.5 rounded-lg bg-blue-50 px-2.5 py-1.5 text-xs font-semibold text-blue-700 sm:px-3"
                 >
-                  Visit Store
+                  <UIcon name="i-lucide-building-2" class="size-4" />
+                  Wholesale
+                </span>
 
-                  <UIcon name="i-heroicons:arrow-up-right" class="size-3.5" />
-                </NuxtLink>
+                <span
+                  v-if="product.has_variants"
+                  class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 sm:px-3"
+                >
+                  <UIcon name="i-lucide-package-check" class="size-4" />
+                  Variants Available
+                </span>
+
+                <span
+                  v-if="product.shipping_available"
+                  class="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1.5 text-xs font-semibold text-slate-700 sm:px-3"
+                >
+                  <UIcon name="i-lucide-truck" class="size-4" />
+                  Shipping Available
+                </span>
               </div>
 
-              <div class="border-b border-border p-4">
-                <div class="mt-3 space-y-3">
-                  <div class="flex items-start gap-3">
-                    <UIcon
-                      name="i-heroicons:map-pin"
-                      class="mt-0.5 size-5 shrink-0 text-blue-600"
-                    />
-                    <div class="min-w-0 flex-1">
-                      <p class="text-xs font-medium text-gray-500">
-                        Deliver to
-                      </p>
+              <div>
+                <h1
+                  class="text-xl font-bold leading-tight tracking-tight text-slate-950 sm:text-2xl"
+                >
+                  {{ product.name }}
+                </h1>
+              </div>
 
-                      <div class="mt-1 flex items-center justify-between gap-2">
-                        <p class="truncate text-xs font-semibold text-body">
-                          Rangpur, Kurigram, Rowmari
-                        </p>
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs">
+                <div class="flex items-center gap-1">
+                  <UIcon
+                    v-for="i in 5"
+                    :key="i"
+                    :name="
+                      i <= Math.round(product?.rating ?? 0)
+                        ? 'i-heroicons:star-solid'
+                        : 'i-heroicons:star'
+                    "
+                    class="size-4"
+                    :class="
+                      i <= Math.round(product?.rating ?? 0)
+                        ? 'text-yellow-500'
+                        : 'text-body'
+                    "
+                  />
 
-                        <button
-                          type="button"
-                          class="shrink-0 text-xs font-bold text-primary hover:text-primary/80"
-                        >
-                          Change
-                        </button>
-                      </div>
-                    </div>
+                  <span class="ml-1 font-semibold text-slate-900">
+                    {{ Number(product?.rating ?? 0).toFixed(1) }}
+                  </span>
+                </div>
+
+                <span
+                  class="text-body after:ml-3 after:content-['•'] last:after:hidden"
+                >
+                  {{ product.review_count }} reviews
+                </span>
+
+                <span class="text-body">
+                  SKU:
+                  <strong class="font-medium text-slate-800">
+                    {{ product.sku }}
+                  </strong>
+                </span>
+              </div>
+
+              <div class="py-2">
+                <MDC :value="product?.summary" class="prose max-w-none" />
+              </div>
+
+              <div
+                v-if="product.pricings?.length"
+                class="grid grid-cols-2 gap-3 sm:grid-cols-3"
+              >
+                <article
+                  v-for="price in product.pricings"
+                  :key="price.id"
+                  class="rounded border border-slate-200 bg-slate-50 p-2.5 transition"
+                >
+                  <div class="text-lg font-bold text-slate-950">
+                    {{ $currency(price.price) }}
                   </div>
+                  <div class="text-xs font-medium text-slate-500">
+                    {{ price.min_quantity }}+
 
-                  <!-- Delivery Time -->
-                  <div class="flex items-center gap-3">
-                    <UIcon
-                      name="i-heroicons:clock"
-                      class="size-4 shrink-0 text-body"
-                    />
+                    <span v-if="tier.max_quantity">
+                      – {{ price.max_quantity }}
+                    </span>
 
-                    <div class="min-w-0 flex-1">
-                      <p class="text-xs text-gray-400">Delivery time</p>
-                      <p class="mt-0.5 text-xs font-semibold text-gray-800">
-                        3-5 working days
-                      </p>
-                    </div>
+                    pieces
                   </div>
+                </article>
+              </div>
 
-                  <div class="flex items-center gap-3">
-                    <UIcon
-                      name="i-heroicons:banknotes"
-                      class="size-4 shrink-0 text-gray-400"
-                    />
-                    <div class="min-w-0 flex-1">
-                      <p class="text-xs text-gray-400">Shipping charge</p>
-                      <p class="mt-0.5 text-xs font-bold text-green-600">
-                        Free Shipping
-                      </p>
-                    </div>
-                  </div>
+              <div v-else class="flex flex-wrap items-center gap-2 sm:gap-3">
+                <span class="text-2xl font-bold text-slate-950 sm:text-3xl">
+                  {{ $currency(currentPrice) }}
+                </span>
+
+                <span
+                  v-if="currentComparePrice > currentPrice"
+                  class="text-base text-slate-400 line-through sm:text-lg"
+                >
+                  {{ $currency(currentComparePrice) }}
+                </span>
+
+                <span
+                  v-if="discount"
+                  class="rounded-lg bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-700"
+                >
+                  {{ discount }}% OFF
+                </span>
+              </div>
+
+              <p class="mt-3 text-xs leading-5 text-slate-500">
+                Price depends on quantity and selected variant.
+              </p>
+
+              <div v-for="attribute in product.attributes" :key="attribute.id">
+                <div class="flex items-center justify-between gap-3">
+                  <h3 class="text-sm font-semibold text-slate-900">
+                    {{ attribute.name }}
+                  </h3>
+                  <span
+                    v-if="selectedOptions[attribute.id]"
+                    class="text-xs font-medium text-slate-500"
+                  >
+                    {{
+                      attribute.options.find(
+                        (option) => option.id === selectedOptions[attribute.id],
+                      )?.name
+                    }}
+                  </span>
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                  <button
+                    v-for="option in attribute.options"
+                    :key="option.id"
+                    type="button"
+                    @click="selectOption(attribute, option)"
+                    class="min-w-14 rounded border px-3 py-2 text-sm font-medium transition"
+                    :class="
+                      selectedOptions[attribute.id] === option.id
+                        ? 'border-slate-900 bg-slate-900 text-white'
+                        : 'border-slate-300 bg-white text-slate-700 hover:border-slate-500'
+                    "
+                  >
+                    {{ option.name }}
+                  </button>
                 </div>
               </div>
 
-              <div class="border-b border-gray-100 p-5">
-                <div class="flex items-center gap-3">
+              <!-- Variants -->
+              <div class="py-4 space-y-2">
+                <article
+                  v-for="variant in product.variants"
+                  :key="variant.id"
+                  class="flex items-center gap-4"
+                >
                   <div
-                    class="flex size-9 items-center justify-center rounded bg-green-50"
+                    class="flex size-5 shrink-0 items-center justify-center rounded-full"
+                    :class="
+                      selectedVariant?.id === variant.id
+                        ? 'bg-blue-600 text-white'
+                        : 'border-2 border-slate-300 bg-white'
+                    "
                   >
                     <UIcon
-                      name="i-heroicons:banknotes"
-                      class="size-5 text-green-600"
+                      v-if="selectedVariant?.id === variant.id"
+                      name="i-lucide-check"
+                      class="size-3"
+                    />
+                  </div>
+
+                  <div
+                    class="overflow-hidden rounded size-10 bg-white ring-1 ring-blue-200"
+                  >
+                    <img
+                      src="https://placehold.co/80"
+                      class="h-full w-full object-contain"
                     />
                   </div>
 
                   <div class="min-w-0 flex-1">
-                    <p class="text-sm font-semibold text-gray-900">
-                      Cash on Delivery
+                    <h4 class="text-sm font-semibold text-slate-900">
+                      {{ variant.name }}
+                    </h4>
+
+                    <p class="text-xs text-slate-400">SKU: {{ variant.sku }}</p>
+                  </div>
+
+                  <!-- Price -->
+                  <div class="text-right">
+                    <p class="text-sm font-semibold text-slate-800">
+                      {{ product.currency }}
+                      {{ variant.price ?? product.price }}
                     </p>
 
-                    <p class="mt-0.5 text-xs text-gray-500">
-                      Pay when your order arrives
+                    <p
+                      v-if="variant.compare_price"
+                      class="text-xs text-slate-400 line-through"
+                    >
+                      {{ product.currency }} {{ variant.compare_price }}
                     </p>
+                  </div>
+
+                  <!-- Quantity -->
+                  <div
+                    class="flex h-9 overflow-hidden rounded-full border border-slate-200"
+                    @click.stop
+                  >
+                    <!-- Minus -->
+                    <button
+                      type="button"
+                      class="flex w-9 items-center justify-center text-slate-500 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:text-slate-300"
+                      :disabled="!variantQuantities[variant.id]"
+                      @click="decreaseVariantQuantity(variant)"
+                    >
+                      <UIcon name="i-lucide-minus" class="size-4" />
+                    </button>
+
+                    <!-- Quantity -->
+                    <span
+                      class="flex min-w-12 items-center justify-center border-x border-slate-200 px-2 text-sm font-medium text-slate-800"
+                    >
+                      {{ variantQuantities[variant.id] ?? 0 }}
+                    </span>
+
+                    <!-- Plus -->
+                    <button
+                      type="button"
+                      class="flex w-9 items-center justify-center text-slate-500 transition hover:bg-slate-50"
+                      @click="increaseVariantQuantity(variant)"
+                    >
+                      <UIcon name="i-lucide-plus" class="size-4" />
+                    </button>
+                  </div>
+                </article>
+              </div>
+
+              <!-- Summary -->
+              <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-sm font-semibold text-slate-900">Subtotal</p>
+
+                    <p class="mt-1 text-2xl font-bold text-slate-900">
+                      BDT 33,720.00
+                    </p>
+
+                    <p class="text-xs text-slate-500">BDT 134.88 / piece</p>
                   </div>
 
                   <UIcon
-                    name="i-heroicons:check-circle-solid"
-                    class="size-5 shrink-0 text-green-500"
+                    name="i-lucide-chevron-up"
+                    class="size-5 text-slate-500"
                   />
                 </div>
-              </div>
 
-              <div class="p-5">
-                <div class="flex items-center gap-2.5">
-                  <div
-                    class="flex size-9 items-center justify-center rounded bg-gray-100"
+                <div class="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    class="flex items-center justify-center gap-2 px-4 py-2.5 rounded bg-primary text-sm font-semibold text-white transition hover:opacity-90"
                   >
-                    <UIcon
-                      name="i-heroicons:shield-check"
-                      class="size-5 text-gray-600"
-                    />
-                  </div>
+                    <UIcon name="i-lucide-mail" class="size-5" />
 
-                  <div>
-                    <h2 class="text-sm font-bold text-gray-900">
-                      Return & Warranty
-                    </h2>
+                    Send inquiry
+                  </button>
 
-                    <p class="mt-0.5 text-xs text-gray-500">Seller policy</p>
-                  </div>
-                </div>
+                  <button
+                    type="button"
+                    class="flex items-center justify-center gap-2 px-2 py-2 rounded border border-slate-300 bg-white text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
+                  >
+                    <UIcon name="i-lucide-messages-square" class="size-5" />
 
-                <div class="mt-4 space-y-3">
-                  <div class="flex items-start gap-2.5">
-                    <UIcon
-                      name="i-heroicons:check-circle"
-                      class="mt-0.5 size-4 shrink-0 text-green-500"
-                    />
-
-                    <div>
-                      <p class="text-sm font-semibold text-gray-800">
-                        Return & Refund
-                      </p>
-
-                      <p class="mt-0.5 text-xs leading-4 text-gray-500">
-                        Cancellation, return and refund available
-                      </p>
-                    </div>
-                  </div>
-
-                  <div class="flex items-start gap-2.5">
-                    <UIcon
-                      name="i-heroicons:information-circle"
-                      class="mt-0.5 size-4 shrink-0 text-gray-400"
-                    />
-
-                    <div>
-                      <p class="text-sm font-semibold text-gray-800">
-                        Change of mind
-                      </p>
-
-                      <p class="mt-0.5 text-xs leading-4 text-gray-500">
-                        Not applicable for this product
-                      </p>
-                    </div>
-                  </div>
-
-                  <div class="flex items-start gap-3 rounded-xl bg-blue-50 p-3">
-                    <UIcon
-                      name="i-heroicons:shield-check"
-                      class="mt-0.5 size-5 shrink-0 text-blue-600"
-                    />
-                    <div class="min-w-0">
-                      <p class="font-sm font-bold text-gray-900">
-                        Manufacturer Warranty
-                      </p>
-
-                      <p class="mt-0.5 text-xs leading-4 text-gray-500">
-                        Warranty is included with this product
-                      </p>
-                    </div>
-                  </div>
+                    Chat now
+                  </button>
                 </div>
               </div>
             </div>
-          </aside>
+          </div>
+
+          <div class="bg-white col-span-2">
+            <UTabs
+              variant="link"
+              :items="[
+                {
+                  label: 'Description',
+                  slot: 'description',
+                },
+                {
+                  label: 'Specifications',
+                  slot: 'specifications',
+                },
+                {
+                  label: 'Reviews',
+                  slot: 'reviews',
+                },
+                {
+                  label: 'Faq',
+                  slot: 'faq',
+                },
+              ]"
+            >
+              <template #description>
+                <MDC :value="product?.description" class="prose max-w-none" />
+              </template>
+              <template #specifications>
+                <table
+                  v-for="section in product?.specifications"
+                  :key="section.title"
+                  class="mb-6 border max-w-5xl w-full"
+                >
+                  <thead>
+                    <tr class="bg-gray-100">
+                      <th class="text-left p-2" colspan="2">
+                        {{ section.title }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="item in section.items" :key="item.label">
+                      <td class="p-2 border-t w-1/4 font-medium text-gray-600">
+                        {{ item.label }}
+                      </td>
+                      <td class="p-2 border-t">{{ item.value }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </template>
+              <template #reviews>
+                <ProductReview />
+              </template>
+              <template #faq>
+                <ProductFaq />
+              </template>
+            </UTabs>
+          </div>
         </div>
-      </section>
+
+        <aside class="min-w-0">
+          <div
+            class="bg-white rounded-2xl border border-slate-200 lg:sticky top-0 space-y-4 px-4 py-6"
+          >
+            <div class="flex items-start gap-4">
+              <div
+                class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-white shadow-sm"
+              >
+                <UIcon name="i-lucide-store" class="size-6" />
+              </div>
+
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2">
+                  <h2 class="truncate text-sm font-bold text-slate-950">
+                    Buyzin Express
+                  </h2>
+
+                  <UIcon
+                    name="i-lucide-badge-check"
+                    class="size-4 shrink-0 text-blue-600"
+                  />
+                </div>
+
+                <p class="mt-1 text-xs text-slate-500">
+                  Verified wholesale supplier
+                </p>
+
+                <div class="mt-2 flex items-center gap-1.5">
+                  <UIcon
+                    name="i-lucide-star"
+                    class="size-3.5 fill-amber-400 text-amber-400"
+                  />
+
+                  <span class="text-xs font-semibold text-slate-700">
+                    4.9
+                  </span>
+
+                  <span class="text-xs text-slate-400">
+                    · 98% response rate
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contact Supplier -->
+            <div class="grid grid-cols-2 gap-2 py-2">
+              <button
+                type="button"
+                class="flex items-center justify-center gap-2 px-2 py-2 rounded border border-slate-300 bg-white text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
+              >
+                <UIcon name="i-lucide-store" class="size-4" />
+
+                Visit Store
+              </button>
+
+              <button
+                type="button"
+                class="flex items-center justify-center gap-2 px-2 py-2 rounded bg-slate-900 text-sm font-semibold text-white transition hover:bg-slate-800"
+              >
+                <UIcon name="i-lucide-message-circle" class="size-4" />
+
+                Contact
+              </button>
+            </div>
+
+            <!-- Shipping -->
+            <div class="flex items-center gap-2">
+              <div
+                class="flex size-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600"
+              >
+                <UIcon name="i-lucide-truck" class="size-4.5" />
+              </div>
+
+              <div>
+                <h3 class="text-sm font-semibold text-slate-900">Shipping</h3>
+
+                <p class="text-xs text-slate-500">
+                  Flexible wholesale delivery
+                </p>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <!-- Ships From -->
+              <div class="flex items-start gap-3">
+                <UIcon
+                  name="i-lucide-map-pin"
+                  class="mt-0.5 size-4 shrink-0 text-slate-400"
+                />
+
+                <div class="min-w-0">
+                  <p class="text-[11px] text-slate-400">Ships from</p>
+
+                  <p
+                    class="mt-0.5 break-word text-sm font-medium text-slate-800"
+                  >
+                    {{ product.ships_from }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Processing -->
+              <div class="flex items-start gap-3">
+                <UIcon
+                  name="i-lucide-clock-3"
+                  class="mt-0.5 size-4 shrink-0 text-slate-400"
+                />
+
+                <div>
+                  <p class="text-[11px] text-slate-400">Processing time</p>
+
+                  <p class="mt-0.5 text-sm font-medium text-slate-800">
+                    {{ product.processing_days }} days
+                  </p>
+                </div>
+              </div>
+
+              <!-- Delivery -->
+              <div class="flex items-start gap-3">
+                <UIcon
+                  name="i-lucide-package-check"
+                  class="mt-0.5 size-4 shrink-0 text-slate-400"
+                />
+
+                <div>
+                  <p class="text-xs text-slate-400">Delivery</p>
+
+                  <p class="mt-0.5 text-sm font-medium text-slate-800">
+                    Negotiable with supplier
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment -->
+            <div class="flex items-center gap-2">
+              <div
+                class="flex size-9 items-center justify-center rounded-lg bg-violet-50 text-violet-600"
+              >
+                <UIcon name="i-lucide-credit-card" class="size-4.5" />
+              </div>
+
+              <div>
+                <h3 class="text-sm font-semibold text-slate-900">Payment</h3>
+
+                <p class="text-xs text-slate-500">Secure payment options</p>
+              </div>
+            </div>
+
+            <!-- Buyer Protection -->
+            <div class="bg-white rounded p-4">
+              <h2 class="text-base font-semibold mb-2">Payment methods</h2>
+
+              <div class="flex items-center justify-start gap-8 my-4">
+                <img class="h-6 w-auto" src="/visa.png" />
+                <img class="h-6 w-auto" src="/mastercard.png" />
+                <img class="h-6 w-auto" src="/paypal.png" />
+                <img class="h-6 w-auto" src="/applepay.png" />
+              </div>
+              <h4 class="text-base font-semibold mb-2">Buyer Protection</h4>
+              <p class="my-2">
+                Get full refund if the item is not as described or if is not
+                delivered
+              </p>
+            </div>
+          </div>
+        </aside>
+      </div>
     </template>
-
-    <EmptyState v-else />
-
-    <CartSuccessDialog
-      :show="cartStore.dialog"
-      @close="cartStore.dialog = false"
-    />
-
-    <RelatedProducts :product="product.id" />
   </main>
 </template>
 
