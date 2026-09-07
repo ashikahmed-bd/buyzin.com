@@ -1,22 +1,15 @@
 <script setup>
 const authStore = useAuthStore();
 const { errors } = storeToRefs(authStore);
-const toast = useToast();
-
-definePageMeta({
-  middleware: "guest",
-});
 
 const form = reactive({
-  phone: "",
-  password: "",
+  email: "info@ashikahmed.net",
+  password: "password",
+  remember: true,
 });
 
 const submit = async () => {
   const response = await authStore.login(form);
-  toast.add({
-    title: response.message,
-  });
 
   if (response.success) {
     await navigateTo("/account");
@@ -58,11 +51,11 @@ const submit = async () => {
         <p class="text-gray-500 mb-6">Welcome back, you've been missed!</p>
         <form @submit.prevent="submit">
           <BaseInput
-            v-model="form.phone"
-            label="Phone Number"
-            placeholder="Enter your phone"
+            v-model="form.email"
+            label="Email or Phone"
+            placeholder="Enter your email or phone"
             :required="true"
-            :error="errors?.phone"
+            :error="errors?.email"
           />
 
           <BaseInput
@@ -76,7 +69,11 @@ const submit = async () => {
 
           <div class="flex items-center justify-between mb-6">
             <label class="flex items-center space-x-2">
-              <input type="checkbox" class="accent-primary" />
+              <input
+                type="checkbox"
+                v-model="form.remember"
+                class="accent-primary"
+              />
               <span class="text-sm text-body">Remember Me</span>
             </label>
             <RouterLink

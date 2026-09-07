@@ -9,20 +9,11 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: "https://api.buyzin.com", // http://127.0.0.1:8000 https://api.buyzin.com
-      siteUrl: 'https://buyzin.com'
+      siteUrl: 'https://localhost.3000'
     },
   },
 
-  modules: [
-    '@nuxt/image',
-    '@nuxt/ui',
-    '@nuxtjs/mdc',
-    '@nuxtjs/sitemap',
-    '@pinia/nuxt',
-    'pinia-plugin-persistedstate/nuxt',
-    'nuxt-gtag',
-    'nuxt-schema-org'
-  ],
+  modules: ['@nuxt/image', '@nuxt/ui', '@nuxtjs/mdc', '@nuxtjs/sitemap', '@pinia/nuxt', 'pinia-plugin-persistedstate/nuxt', 'nuxt-gtag', 'nuxt-schema-org'],
 
 
   css: ['~/assets/css/main.css'],

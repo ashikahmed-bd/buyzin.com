@@ -4,6 +4,8 @@ const categoryStore = useCategoryStore();
 const cartStore = useCartStore();
 const open = ref(false);
 
+const { user } = storeToRefs(authStore);
+
 const {
   data: categories,
   error,
@@ -30,6 +32,7 @@ const {
       </div>
     </div>
   </div>
+
   <header class="sticky top-0 z-30 border-b border-border bg-white">
     <div class="max-w-7xl mx-auto px-4 py-2.5">
       <div class="flex items-center justify-between">
@@ -97,21 +100,29 @@ const {
 
         <div class="flex items-center gap-6">
           <NuxtLink
-            :to="authStore.user ? '/account' : '/auth/login'"
+            :to="user ? '/account' : '/auth/login'"
             class="flex items-center gap-2.5 rounded-xl px-2.5"
           >
-            <template v-if="authStore.user">
+            <template v-if="user">
               <NuxtImg
-                :src="authStore.user.photo_url"
-                :alt="authStore.user.name"
+                v-if="user.photo_url"
+                :src="user.photo_url"
+                :alt="user.name"
                 class="h-10 w-10 rounded-full border object-cover p-0.5"
               />
+
+              <div
+                v-else
+                class="flex h-10 w-10 items-center justify-center rounded-full border bg-gray-100 text-sm font-semibold"
+              >
+                {{ user.name?.charAt(0) }}
+              </div>
 
               <div class="leading-tight">
                 <p class="text-xs text-gray-500">Welcome back</p>
 
                 <p class="max-w-2xs truncate text-sm font-semibold text-title">
-                  {{ authStore.user.name }}
+                  {{ user.name }}
                 </p>
               </div>
             </template>
@@ -153,7 +164,7 @@ const {
               <span
                 class="absolute -top-2 -right-2 bg-primary text-white text-xs px-1 rounded-full"
               >
-                {{ cartStore.itemsCount ?? 0 }}
+                {{ cartStore.items.length ?? 0 }}
               </span>
             </ClientOnly>
           </NuxtLink>

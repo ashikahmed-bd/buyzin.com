@@ -1,46 +1,56 @@
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();
+  const toast = useToast();
 
   const api = $fetch.create({
     baseURL: config.public.apiBase,
     credentials: "include",
+    headers: {
+      Accept: "application/json",
+    },
 
     onRequest({ options }) {
-      const authStore = useAuthStore();
-      const cartToken = useCartToken();
-
       options.headers = new Headers(options.headers);
       options.headers.set("Accept", "application/json");
 
-      if (authStore.token) {
-        options.headers.set("Authorization", `Bearer ${authStore.token}`);
-      }
+      const xsrfToken = useCookie("XSRF-TOKEN");
 
-      if (cartToken.value) {
-        options.headers.set("X-Cart-Token", cartToken.value);
+      if (xsrfToken.value) {
+        options.headers.set(
+          "X-XSRF-TOKEN",
+          decodeURIComponent(xsrfToken.value),
+        );
       }
     },
 
     onResponseError({ response }) {
-      if (import.meta.dev) {
-        console.error("API ERROR:", {
-          status: response.status,
-          url: response.url,
-          data: response._data,
-        });
-      }
+      switch (response.status) {
+        case 401:
+          console.warn("You are not authenticated. Please log in to continue.");
+          break;
 
-      // Authentication is handled by auth middleware/page.
-      // Do not reset the store or redirect here.
+        case 403:
+          console.warn("You are not authorized to perform this action.");
+          break;
 
-      if (response.status === 401 && import.meta.client) {
-        const authStore = useAuthStore();
+        case 404:
+          console.warn("The requested resource was not found.");
+          break;
 
-        authStore.$reset();
+        case 422:
+          console.warn("The provided data is invalid.");
+          break;
 
-        return navigateTo("/auth/login", {
-          replace: true,
-        });
+        case 429:
+          console.warn("Too many requests. Please try again later.");
+          break;
+
+        case 500:
+          console.error("An unexpected server error occurred.");
+          break;
+
+        default:
+          console.error(`API error: ${response.status}`);
       }
     },
   });

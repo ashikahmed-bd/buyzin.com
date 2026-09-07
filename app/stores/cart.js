@@ -2,142 +2,128 @@ export const useCartStore = defineStore("cart", {
   state: () => ({
     loading: false,
     errors: {},
-    dialog: false,
-    cart: {},
-    item: null,
+    items: [],
   }),
 
+  persist: {
+    pick: ["items"],
+  },
+
   getters: {
-    items: (state) => state.cart?.items,
-    itemsCount: (state) => state.cart?.items_count,
-    subtotal: (state) => state.cart?.subtotal,
-    total: (state) => state.cart?.total,
-    discount: (state) => state.cart?.discount,
-    shipping: (state) => state.cart?.shipping,
-    token: (state) => state.cart?.token,
-    isEmpty: (state) => state.cart?.items_count === 0,
+    totalItems: (state) =>
+      state.items.reduce((total, item) => total + item.quantity, 0),
+
+    subtotal: (state) =>
+      state.items.reduce(
+        (total, item) => total + item.price * item.quantity,
+        0,
+      ),
+
+    isEmpty: (state) => state.items.length === 0,
   },
 
   actions: {
-    async getItems() {
-      const { $api } = useNuxtApp();
-      try {
-        const response = await $api("/api/cart");
-        this.cart = response.data;
-        return response.data;
-      } catch (error) {
-        this.errors = error?.response?._data?.errors;
-        throw error;
-      }
-    },
-
-    async store(payload) {
+    async add(product, variant, quantity) {
       this.loading = true;
-      const { $api } = useNuxtApp();
-      try {
-        const response = await $api("/api/cart/items", {
-          method: "POST",
-          body: payload,
-        });
-        this.dialog = true;
-        return response;
-      } catch (error) {
-        this.errors = error?.response?._data;
-        return error?.response?._data;
-      } finally {
-        this.loading = false;
-      }
-    },
 
-    /**
-     * Increase item quantity
-     */
-    async increase(item) {
-      const { $api } = useNuxtApp();
-      this.loading = true;
       try {
-        const response = await $api(`/api/cart/items/${item.id}`, {
-          method: "PUT",
-          body: {
-            quantity: item.quantity + 1,
-          },
-        });
-        this.item = item;
-        await this.getItems();
-        return response;
-      } catch (error) {
-        this.errors = error?.response?._data || {};
-        throw error;
-      } finally {
-        this.loading = false;
-      }
-    },
+        const existingItem = this.items.find(
+          (item) =>
+            item.product === product.id &&
+            item.variant === (variant?.id ?? null),
+        );
 
-    /**
-     * Decrease item quantity
-     */
-    async decrease(item) {
-      const { $api } = useNuxtApp();
-      this.loading = true;
-      try {
-        if (item.quantity <= 1) {
-          return this.remove(item.id);
+        if (existingItem) {
+          existingItem.quantity += Number(quantity);
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          return existingItem;
         }
-        const response = await $api(`/api/cart/items/${item.id}`, {
-          method: "PUT",
-          body: {
-            quantity: item.quantity - 1,
-          },
-        });
-        this.item = item;
-        await this.getItems();
-        return response;
+
+        const item = {
+          product: product.id,
+          variant: variant?.id ?? null,
+
+          name: product.name,
+          sku: variant?.sku ?? product.sku ?? null,
+          image: product.cover_url ?? null,
+
+          price: Number(variant?.price ?? product?.pricing?.min_price ?? 0),
+
+          currency: product.currency ?? null,
+          unit: product.unit ?? null,
+
+          quantity: Number(quantity),
+
+          moq: Number(product.moq ?? 1),
+          orderStep: Number(product.order_step ?? 1),
+
+          options:
+            variant?.options?.map((option) => ({
+              attributeId: option?.attribute?.id ?? null,
+              attributeName: option?.attribute?.name ?? null,
+              optionId: option?.option?.id ?? null,
+              optionName: option?.option?.name ?? null,
+            })) ?? [],
+        };
+
+        this.items.push(item);
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        return item;
       } catch (error) {
-        this.errors = error?.response?._data || {};
+        this.errors = {
+          message: error?.message ?? "Failed to add product to cart.",
+        };
         throw error;
       } finally {
         this.loading = false;
       }
     },
 
-    /**
-     * Remove item
-     */
-    async remove(item) {
-      const { $api } = useNuxtApp();
+    async remove(cartItem) {
       this.loading = true;
-      try {
-        const response = await $api(`/api/cart/items/${item.id}`, {
-          method: "DELETE",
-        });
 
-        await this.getItems();
-        this.item = item;
-        return response;
-      } catch (error) {
-        this.errors = error?.response?._data?.errors || {};
-        throw error;
+      try {
+        this.items = this.items.filter(
+          (item) =>
+            !(
+              item.product === cartItem.product &&
+              item.variant === cartItem.variant
+            ),
+        );
       } finally {
         this.loading = false;
       }
     },
 
-    /**
-     * Clear cart
-     */
+    async increment(product, variant, quantity) {
+      const item = this.items.find(
+        (item) => item.product === product && item.variant === variant,
+      );
+
+      if (!item) return null;
+
+      item.quantity = Number(quantity);
+
+      return item;
+    },
+
+    async decrement(product, variant, quantity) {
+      const item = this.items.find(
+        (item) => item.product === product && item.variant === variant,
+      );
+
+      if (!item) return null;
+
+      item.quantity = Number(quantity);
+
+      return item;
+    },
+
     async clear() {
-      const { $api } = useNuxtApp();
       this.loading = true;
-      try {
-        const response = await $api("/api/cart/clear", {
-          method: "DELETE",
-        });
 
-        await this.getItems();
-        return response;
-      } catch (error) {
-        this.errors = error?.response?._data?.errors || {};
-        throw error;
+      try {
+        this.items = [];
       } finally {
         this.loading = false;
       }

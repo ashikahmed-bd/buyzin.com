@@ -39,11 +39,6 @@ const menu = [
     icon: "i-lucide-map-pin",
   },
   {
-    label: "Gift Cards",
-    to: "/account/gift-cards",
-    icon: "i-lucide-gift",
-  },
-  {
     label: "Notifications",
     to: "/account/notifications",
     icon: "i-lucide-bell",

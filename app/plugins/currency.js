@@ -1,11 +1,8 @@
 export default defineNuxtPlugin(() => {
-  const currency = (amount) => {
+  const currency = (amount, currency = "BDT") => {
     return new Intl.NumberFormat("en-BD", {
       style: "currency",
-      currency: "BDT",
-      currencyDisplay: "narrowSymbol",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
+      currency: currency,
     }).format(Number(amount));
   };
 

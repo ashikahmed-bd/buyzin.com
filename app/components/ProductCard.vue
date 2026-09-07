@@ -26,9 +26,7 @@ const addToWishlist = async (product) => {
 </script>
 
 <template>
-  <article
-    class="group relative bg-white border border-border rounded overflow-hidden"
-  >
+  <article class="group relative bg-white rounded overflow-hidden">
     <div
       class="absolute top-2 left-2 right-2 z-10 flex justify-between items-start"
     >
@@ -43,9 +41,9 @@ const addToWishlist = async (product) => {
       </button>
     </div>
 
-    <a :href="`/product/${product.slug}/${product.id}`">
+    <NuxtLink :to="`/product/${product.slug}/${product.id}`">
       <div
-        class="relative shine__img__wrapper aspect-square bg-gray-50 overflow-hidden flex items-center justify-center"
+        class="relative shine__img__wrapper aspect-square bg-gray-50 overflow-hidden"
       >
         <NuxtImg
           :src="product.cover_url"
@@ -54,16 +52,16 @@ const addToWishlist = async (product) => {
           loading="lazy"
         />
       </div>
-    </a>
+    </NuxtLink>
 
     <div class="p-2.5">
-      <a :href="`/product/${product.slug}/${product.id}`">
+      <NuxtLink :to="`/product/${product.slug}/${product.id}`">
         <h3
-          class="text-sm font-semibold text-title line-clamp-2 group-hover:text-primary transition"
+          class="text-sm font-semibold text-title line-clamp-2 transition hover:opacity-90"
         >
           {{ product.name }}
         </h3>
-      </a>
+      </NuxtLink>
 
       <div class="flex items-center gap-2 py-2">
         <div class="flex items-center gap-0.5">
@@ -87,17 +85,55 @@ const addToWishlist = async (product) => {
         <span class="text-xs text-black"> ({{ product.review_count }}) </span>
       </div>
 
-      <div class="flex items-center gap-2">
-        <span class="text-base font-semibold text-black">
-          {{ $currency(product.price) }}
-        </span>
+      <div class="space-y-2.5">
+        <!-- Price -->
+        <div v-if="product.pricing">
+          <div class="flex items-baseline gap-1.5">
+            <span class="text-base font-bold tracking-tight text-black">
+              {{ $currency(product.pricing.min_price, product.currency) }}
+            </span>
 
-        <span
-          v-if="product.base_price && product.base_price > product.price"
-          class="text-xs text-muted line-through"
+            <template
+              v-if="product.pricing.min_price !== product.pricing.max_price"
+            >
+              <span class="text-base font-bold tracking-tight text-black"
+                >–</span
+              >
+
+              <span class="text-base font-bold tracking-tight text-black">
+                {{ $currency(product.pricing.max_price, product.currency) }}
+              </span>
+            </template>
+          </div>
+        </div>
+
+        <!-- MOQ + Sold -->
+        <div class="flex items-center gap-2">
+          <span
+            class="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-body"
+          >
+            MOQ: {{ product.moq }} {{ product.unit }}
+          </span>
+
+          <span
+            v-if="product.sold_count !== undefined"
+            class="text-xs text-muted"
+          >
+            {{ Number(product.sold_count || 0).toLocaleString() }} sold
+          </span>
+        </div>
+
+        <!-- Order Step -->
+        <div
+          v-if="product.order_step && product.order_step > 1"
+          class="flex items-center gap-1 text-[11px] text-muted"
         >
-          {{ $currency(product.base_price) }}
-        </span>
+          <span>Order quantity:</span>
+
+          <span class="font-medium text-body"> {{ product.order_step }}+ </span>
+
+          <span>or multiples thereof</span>
+        </div>
       </div>
     </div>
   </article>

@@ -154,7 +154,7 @@ const { data: categories } = useAsyncData("categories", async () => {
             item: 'basis-1/2 sm:basis-1/2 md:basis-1/4 lg:basis-1/5',
           }"
         >
-          <CycloneProductCard :product="item" />
+          <ProductCard :product="item" />
         </UCarousel>
       </div>
     </section>
