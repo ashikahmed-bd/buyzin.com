@@ -88,49 +88,30 @@ const addToWishlist = async (product) => {
       <div class="space-y-2.5">
         <!-- Price -->
         <div v-if="product.pricing">
-          <div class="flex items-baseline gap-1.5">
-            <span class="text-sm font-bold tracking-tight text-black">
+          <div class="flex items-baseline gap-1.5 font-sm">
+            <span class="tracking-tight text-black">
               {{ $currency(product.pricing.min_price, product.currency) }}
             </span>
 
             <template
               v-if="product.pricing.min_price !== product.pricing.max_price"
             >
-              <span class="text-sm font-bold tracking-tight text-black">-</span>
-
-              <span class="text-sm font-bold tracking-tight text-black">
+              <span class="tracking-tight text-black">-</span>
+              <span class="tracking-tight text-black">
                 {{ $currency(product.pricing.max_price, product.currency) }}
               </span>
             </template>
           </div>
         </div>
 
-        <!-- MOQ + Sold -->
         <div class="flex items-center gap-2">
-          <span
-            class="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-body"
-          >
+          <span class="inline-flex items-center text-xs font-medium text-body">
             MOQ: {{ product.moq }} {{ product.unit }}
           </span>
 
-          <span
-            v-if="product.sold_count !== undefined"
-            class="text-xs text-muted"
-          >
-            {{ Number(product.sold_count || 0).toLocaleString() }} sold
+          <span v-if="product.sold_count > 0" class="text-xs text-muted">
+            {{ product.sold_count }}+ sold
           </span>
-        </div>
-
-        <!-- Order Step -->
-        <div
-          v-if="product.order_step && product.order_step > 1"
-          class="flex items-center gap-1 text-[11px] text-muted"
-        >
-          <span>Order quantity:</span>
-
-          <span class="font-medium text-body"> {{ product.order_step }}+ </span>
-
-          <span>or multiples thereof</span>
         </div>
       </div>
     </div>

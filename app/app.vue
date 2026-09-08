@@ -49,8 +49,6 @@ useSchemaOrg([
   }),
 ]);
 
-const route = useRoute();
-
 const menuItems = [
   {
     label: "Home",
@@ -78,14 +76,6 @@ const menuItems = [
     to: "/account",
   },
 ];
-
-const isActive = (to) => {
-  if (to === "/") {
-    return route.path === "/";
-  }
-
-  return route.path === to || route.path.startsWith(`${to}/`);
-};
 </script>
 
 <template>
@@ -95,34 +85,53 @@ const isActive = (to) => {
       <NuxtPage />
     </UApp>
     <nav
-      class="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-white/50 lg:hidden backdrop-blur"
+      class="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-white lg:hidden"
       aria-label="Mobile navigation"
     >
       <div class="mx-auto grid max-w-lg grid-cols-5 py-3">
         <NuxtLink
-          v-for="item in menuItems"
-          :key="item.to"
-          :to="item.to"
-          class="relative flex flex-col items-center justify-center gap-1 transition-colors"
-          :class="
-            isActive(item.to)
-              ? 'text-blue-600'
-              : 'text-slate-500 hover:text-slate-900'
-          "
+          to="/"
+          exact-active-class="text-primary"
+          class="flex flex-col items-center justify-center gap-1 text-gray-500 router-link-exact-active:font-semibold"
         >
-          <UIcon :name="item.icon" class="h-5 w-5" />
+          <UIcon name="i-lucide-house" class="h-5 w-5" />
+          <span class="text-xs leading-none">Home</span>
+        </NuxtLink>
 
-          <span
-            class="text-xs leading-none"
-            :class="isActive(item.to) ? 'font-semibold' : 'font-medium'"
-          >
-            {{ item.label }}
-          </span>
+        <NuxtLink
+          to="/shop"
+          active-class="text-primary"
+          class="flex flex-col items-center justify-center gap-1 text-gray-500"
+        >
+          <UIcon name="i-lucide-shopping-bag" class="h-5 w-5" />
+          <span class="text-xs leading-none">Shop</span>
+        </NuxtLink>
 
-          <span
-            v-if="isActive(item.to)"
-            class="absolute bottom-0 h-0.5 w-8 rounded-full bg-blue-600"
-          />
+        <NuxtLink
+          to="/categories"
+          active-class="text-primary"
+          class="flex flex-col items-center justify-center gap-1 text-gray-500"
+        >
+          <UIcon name="i-lucide-layout-grid" class="h-5 w-5" />
+          <span class="text-xs leading-none">Categories</span>
+        </NuxtLink>
+
+        <NuxtLink
+          to="/wishlist"
+          active-class="text-primary"
+          class="flex flex-col items-center justify-center gap-1 text-gray-500"
+        >
+          <UIcon name="i-lucide-heart" class="h-5 w-5" />
+          <span class="text-xs leading-none">Wishlist</span>
+        </NuxtLink>
+
+        <NuxtLink
+          to="/account"
+          active-class="text-primary"
+          class="flex flex-col items-center justify-center gap-1 text-gray-500"
+        >
+          <UIcon name="i-lucide-user-round" class="h-5 w-5" />
+          <span class="text-xs leading-none">Account</span>
         </NuxtLink>
       </div>
     </nav>

@@ -3,6 +3,9 @@ export default defineNuxtPlugin(() => {
     return new Intl.NumberFormat("en-BD", {
       style: "currency",
       currency: currency,
+      // currencyDisplay: "narrowSymbol",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
     }).format(Number(amount));
   };
 

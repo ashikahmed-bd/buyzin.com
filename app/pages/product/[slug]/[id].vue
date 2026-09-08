@@ -89,7 +89,7 @@ const sendInquiry = async () => {
 </script>
 
 <template>
-  <main class="mx-auto max-w-7xl bg-white px-4">
+  <main class="mx-auto max-w-7xl bg-white px-4 space-y-4">
     <LoadingState v-if="pending" />
 
     <ErrorState v-else-if="error" :retry="refresh" />
@@ -102,7 +102,7 @@ const sendInquiry = async () => {
         :image="product?.cover_url"
       />
 
-      <header class="border-b border-slate-200 bg-white">
+      <div class="border-b border-slate-200 bg-white">
         <div class="mx-auto py-2">
           <div class="flex items-center justify-between gap-4">
             <nav class="flex min-w-0 items-center gap-2 text-sm">
@@ -161,25 +161,25 @@ const sendInquiry = async () => {
             </div>
           </div>
         </div>
-      </header>
+      </div>
 
-      <main class="mx-auto max-w-7xl py-6">
-        <div
-          class="grid min-w-0 grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1.05fr)_minmax(0,1.48fr)_18rem]"
-        >
-          <section class="min-w-0">
-            <ProductGallery
-              :images="
-                [product?.cover_url, ...(product?.gallery || [])].filter(
-                  Boolean,
-                )
-              "
-              :video="product?.video_url"
-            />
-          </section>
+      <div
+        class="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_18rem] xl:grid-cols-[minmax(0,1fr)_18rem]"
+      >
+        <main class="min-w-0">
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="min-w-0">
+              <ProductGallery
+                :images="
+                  [product?.cover_url, ...(product?.gallery || [])].filter(
+                    Boolean,
+                  )
+                "
+                :video="product?.video_url"
+              />
+            </div>
 
-          <section class="min-w-0">
-            <div class="space-y-4">
+            <div class="min-w-0 space-y-4">
               <div class="space-y-2">
                 <h1
                   class="text-xl font-bold leading-tight tracking-tight text-title"
@@ -369,209 +369,263 @@ const sendInquiry = async () => {
                 <MDC :value="product?.summary" class="prose max-w-none" />
               </div>
             </div>
-          </section>
-
-          <aside class="min-w-0">
-            <div class="sticky top-20 space-y-4 bg-white p-4">
-              <div class="flex items-start gap-3.5">
-                <div
-                  class="flex size-11 shrink-0 items-center justify-center rounded bg-slate-100 text-slate-700"
+          </div>
+          <div class="py-6">
+            <UTabs
+              variant="link"
+              :items="[
+                {
+                  label: 'Description',
+                  slot: 'description',
+                },
+                {
+                  label: 'Specifications',
+                  slot: 'specifications',
+                },
+                {
+                  label: 'Reviews',
+                  slot: 'reviews',
+                },
+                {
+                  label: 'FAQ',
+                  slot: 'faq',
+                },
+              ]"
+            >
+              <template #description>
+                <MDC :value="product?.description" class="prose max-w-none" />
+              </template>
+              <template #specifications>
+                <table
+                  v-for="section in product?.specifications"
+                  :key="section.title"
+                  class="mb-6 border max-w-5xl w-full"
                 >
-                  <UIcon name="i-lucide-store" class="size-5" />
+                  <thead>
+                    <tr class="bg-gray-100">
+                      <th class="text-left p-2" colspan="2">
+                        {{ section.title }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="item in section.items" :key="item.label">
+                      <td class="p-2 border-t w-1/4 font-medium text-gray-600">
+                        {{ item.label }}
+                      </td>
+                      <td class="p-2 border-t">{{ item.value }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </template>
+              <template #reviews>
+                <ProductReview />
+              </template>
+              <template #faq>
+                <ProductFaq />
+              </template>
+            </UTabs>
+          </div>
+        </main>
+
+        <aside class="min-w-0">
+          <div class="sticky top-20 space-y-4 bg-white p-4">
+            <div class="flex items-start gap-3.5">
+              <div
+                class="flex size-11 shrink-0 items-center justify-center rounded bg-slate-100 text-slate-700"
+              >
+                <UIcon name="i-lucide-store" class="size-5" />
+              </div>
+
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-1.5">
+                  <h2 class="truncate text-sm font-bold text-slate-950">
+                    Buyzin Express
+                  </h2>
+
+                  <UIcon
+                    name="i-lucide-badge-check"
+                    class="size-4 shrink-0 text-blue-600"
+                  />
                 </div>
 
-                <div class="min-w-0 flex-1">
-                  <div class="flex items-center gap-1.5">
-                    <h2 class="truncate text-sm font-bold text-slate-950">
-                      Buyzin Express
-                    </h2>
+                <p class="mt-0.5 text-xs text-slate-500">
+                  Verified wholesale supplier
+                </p>
 
-                    <UIcon
-                      name="i-lucide-badge-check"
-                      class="size-4 shrink-0 text-blue-600"
-                    />
-                  </div>
+                <div class="mt-2 flex items-center gap-1.5">
+                  <UIcon
+                    name="i-lucide-star"
+                    class="size-3.5 fill-amber-400 text-amber-400"
+                  />
 
-                  <p class="mt-0.5 text-xs text-slate-500">
-                    Verified wholesale supplier
+                  <span class="text-xs font-semibold text-slate-700">
+                    4.9
+                  </span>
+
+                  <span class="text-xs text-slate-400">
+                    · 98% response rate
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Shipping -->
+            <section class="space-y-4">
+              <div class="flex items-start gap-2">
+                <div
+                  class="flex size-7 shrink-0 items-center justify-center rounded bg-blue-50 text-blue-600"
+                >
+                  <UIcon name="i-lucide-truck" class="size-4" />
+                </div>
+
+                <div class="min-w-0">
+                  <h4 class="text-xs font-medium text-muted">Shipping</h4>
+
+                  <p class="mt-0.5 text-sm font-normal text-body">
+                    Flexible wholesale delivery
                   </p>
-
-                  <div class="mt-2 flex items-center gap-1.5">
-                    <UIcon
-                      name="i-lucide-star"
-                      class="size-3.5 fill-amber-400 text-amber-400"
-                    />
-
-                    <span class="text-xs font-semibold text-slate-700">
-                      4.9
-                    </span>
-
-                    <span class="text-xs text-slate-400">
-                      · 98% response rate
-                    </span>
-                  </div>
                 </div>
               </div>
 
-              <!-- Shipping -->
-              <section class="space-y-4">
-                <div class="flex items-start gap-2">
-                  <div
-                    class="flex size-7 shrink-0 items-center justify-center rounded bg-blue-50 text-blue-600"
-                  >
-                    <UIcon name="i-lucide-truck" class="size-4" />
-                  </div>
-
-                  <div class="min-w-0">
-                    <h4 class="text-xs font-medium text-muted">Shipping</h4>
-
-                    <p class="mt-0.5 text-sm font-normal text-body">
-                      Flexible wholesale delivery
-                    </p>
-                  </div>
-                </div>
-
-                <div class="flex items-start gap-2">
-                  <div
-                    class="flex size-7 shrink-0 items-center justify-center rounded bg-blue-50 text-blue-600"
-                  >
-                    <UIcon name="i-lucide-map-pin" class="size-4" />
-                  </div>
-
-                  <div class="min-w-0 flex-1">
-                    <h4 class="text-xs font-medium text-muted">Ships from</h4>
-
-                    <p class="mt-0.5 break-words text-sm font-normal text-body">
-                      {{ product?.ships_from }}
-                    </p>
-                  </div>
-                </div>
-
-                <div class="flex items-start gap-3">
-                  <div
-                    class="flex size-7 shrink-0 items-center justify-center rounded bg-amber-50 text-amber-600"
-                  >
-                    <UIcon name="i-lucide-clock-3" class="size-4" />
-                  </div>
-
-                  <div class="min-w-0 flex-1">
-                    <h4 class="text-xs font-medium text-muted">
-                      Processing time
-                    </h4>
-
-                    <p class="mt-0.5 text-sm font-normal text-body">
-                      {{ product?.processing_days }} days
-                    </p>
-                  </div>
-                </div>
-
-                <div class="flex items-start gap-2">
-                  <div
-                    class="flex size-7 shrink-0 items-center justify-center rounded bg-emerald-50 text-emerald-600"
-                  >
-                    <UIcon name="i-lucide-package-check" class="size-4" />
-                  </div>
-
-                  <div class="min-w-0 flex-1">
-                    <h4 class="text-xs font-medium text-muted">Delivery</h4>
-
-                    <p class="mt-0.5 text-sm font-normal text-body">
-                      Negotiable with supplier
-                    </p>
-                  </div>
-                </div>
-
-                <div class="flex items-center gap-2">
-                  <div
-                    class="flex size-7 shrink-0 items-center justify-center rounded bg-violet-50 text-violet-600"
-                  >
-                    <UIcon name="i-lucide-credit-card" class="size-4" />
-                  </div>
-
-                  <div class="min-w-0">
-                    <h4 class="text-xs font-medium text-muted">
-                      Payment Terms
-                    </h4>
-
-                    <p class="mt-0.5 text-sm font-normal text-body">
-                      T/T, L/C, Western Union
-                    </p>
-                  </div>
-                </div>
-              </section>
-
-              <section class="space-y-3">
-                <button
-                  type="button"
-                  class="flex w-full items-center justify-center gap-2 rounded bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
-                  :disabled="product?.has_variants"
-                  @click="cartDialog = !cartDialog"
+              <div class="flex items-start gap-2">
+                <div
+                  class="flex size-7 shrink-0 items-center justify-center rounded bg-blue-50 text-blue-600"
                 >
-                  <UIcon name="i-lucide-shopping-cart" class="size-5" />
-                  Add to cart
-                </button>
-
-                <button
-                  type="button"
-                  class="flex w-full items-center justify-center gap-2 rounded border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
-                >
-                  <UIcon name="i-lucide-message-circle" class="size-5" />
-                  Chat now
-                </button>
-              </section>
-
-              <!-- Payment Methods -->
-              <section class="space-y-4">
-                <h3 class="text-sm font-semibold text-slate-900">
-                  Payment methods
-                </h3>
-
-                <div class="flex items-center gap-4">
-                  <NuxtImg
-                    src="/visa.png"
-                    alt="Visa"
-                    class="h-5 w-auto object-contain"
-                  />
-
-                  <NuxtImg
-                    src="/mastercard.png"
-                    alt="Mastercard"
-                    class="h-5 w-auto object-contain"
-                  />
-
-                  <NuxtImg
-                    src="/paypal.png"
-                    alt="PayPal"
-                    class="h-5 w-auto object-contain"
-                  />
-
-                  <NuxtImg
-                    src="/applepay.png"
-                    alt="Apple Pay"
-                    class="h-5 w-auto object-contain"
-                  />
+                  <UIcon name="i-lucide-map-pin" class="size-4" />
                 </div>
-              </section>
 
-              <!-- Buyer Protection -->
-              <section class="flex items-start gap-2">
-                <UIcon name="i-lucide-shield-check" class="size-6" />
+                <div class="min-w-0 flex-1">
+                  <h4 class="text-xs font-medium text-muted">Ships from</h4>
 
-                <div class="block">
-                  <h4 class="text-sm font-semibold text-slate-900">
-                    Buyer Protection
-                  </h4>
-
-                  <p class="mt-1 text-xs leading-5 text-slate-600">
-                    Get a full refund if the item is not as described or is not
-                    delivered.
+                  <p class="mt-0.5 break-words text-sm font-normal text-body">
+                    {{ product?.ships_from }}
                   </p>
                 </div>
-              </section>
-            </div>
-          </aside>
-        </div>
-      </main>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <div
+                  class="flex size-7 shrink-0 items-center justify-center rounded bg-amber-50 text-amber-600"
+                >
+                  <UIcon name="i-lucide-clock-3" class="size-4" />
+                </div>
+
+                <div class="min-w-0 flex-1">
+                  <h4 class="text-xs font-medium text-muted">
+                    Processing time
+                  </h4>
+
+                  <p class="mt-0.5 text-sm font-normal text-body">
+                    {{ product?.processing_days }} days
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-2">
+                <div
+                  class="flex size-7 shrink-0 items-center justify-center rounded bg-emerald-50 text-emerald-600"
+                >
+                  <UIcon name="i-lucide-package-check" class="size-4" />
+                </div>
+
+                <div class="min-w-0 flex-1">
+                  <h4 class="text-xs font-medium text-muted">Delivery</h4>
+
+                  <p class="mt-0.5 text-sm font-normal text-body">
+                    Negotiable with supplier
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <div
+                  class="flex size-7 shrink-0 items-center justify-center rounded bg-violet-50 text-violet-600"
+                >
+                  <UIcon name="i-lucide-credit-card" class="size-4" />
+                </div>
+
+                <div class="min-w-0">
+                  <h4 class="text-xs font-medium text-muted">Payment Terms</h4>
+
+                  <p class="mt-0.5 text-sm font-normal text-body">
+                    T/T, L/C, Western Union
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <section class="space-y-3">
+              <button
+                type="button"
+                class="flex w-full items-center justify-center gap-2 rounded bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+                :disabled="product?.has_variants"
+                @click="cartDialog = !cartDialog"
+              >
+                <UIcon name="i-lucide-shopping-cart" class="size-5" />
+                Add to cart
+              </button>
+
+              <button
+                type="button"
+                class="flex w-full items-center justify-center gap-2 rounded border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+              >
+                <UIcon name="i-lucide-message-circle" class="size-5" />
+                Chat now
+              </button>
+            </section>
+
+            <!-- Payment Methods -->
+            <section class="space-y-4">
+              <h3 class="text-sm font-semibold text-slate-900">
+                Payment methods
+              </h3>
+
+              <div class="flex items-center gap-4">
+                <NuxtImg
+                  src="/visa.png"
+                  alt="Visa"
+                  class="h-5 w-auto object-contain"
+                />
+
+                <NuxtImg
+                  src="/mastercard.png"
+                  alt="Mastercard"
+                  class="h-5 w-auto object-contain"
+                />
+
+                <NuxtImg
+                  src="/paypal.png"
+                  alt="PayPal"
+                  class="h-5 w-auto object-contain"
+                />
+
+                <NuxtImg
+                  src="/applepay.png"
+                  alt="Apple Pay"
+                  class="h-5 w-auto object-contain"
+                />
+              </div>
+            </section>
+
+            <!-- Buyer Protection -->
+            <section class="flex items-start gap-2">
+              <UIcon name="i-lucide-shield-check" class="size-6" />
+
+              <div class="block">
+                <h4 class="text-sm font-semibold text-slate-900">
+                  Buyer Protection
+                </h4>
+
+                <p class="mt-1 text-xs leading-5 text-slate-600">
+                  Get a full refund if the item is not as described or is not
+                  delivered.
+                </p>
+              </div>
+            </section>
+          </div>
+        </aside>
+      </div>
     </template>
 
     <DialogCart v-model:open="cartDialog" :product="product" />
