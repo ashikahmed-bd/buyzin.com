@@ -18,6 +18,10 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  ui: {
+    colorMode: false
+  },
+
   mdc: {
     components: {
       prose: true,

@@ -98,10 +98,10 @@ const {
           </div>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-6">
           <NuxtLink
             :to="user ? '/account' : '/auth/login'"
-            class="flex items-center gap-2.5 rounded-xl px-2.5"
+            class="hidden md:flex items-center gap-2.5 rounded-xl px-2.5"
           >
             <template v-if="user">
               <NuxtImg
