@@ -303,18 +303,18 @@ const sendInquiry = async () => {
                     </div>
 
                     <div class="block">
-                      <span class="text-xs text-body line-through">
+                      <span class="text-2xs text-body line-through">
                         {{ $currency(tier.compare_price, product.currency) }}
                       </span>
 
                       <span class="ml-2 text-2xs font-medium text-success">
-                        Save
                         {{
                           $currency(
                             Number(tier.compare_price) - Number(tier.price),
                             product.currency,
                           )
                         }}
+                        OFF
                       </span>
                     </div>
                   </div>
@@ -371,10 +371,8 @@ const sendInquiry = async () => {
             </div>
           </section>
 
-          <!-- Supplier -->
           <aside class="min-w-0">
             <div class="sticky top-20 space-y-4 bg-white p-4">
-              <!-- Store -->
               <div class="flex items-start gap-3.5">
                 <div
                   class="flex size-11 shrink-0 items-center justify-center rounded bg-slate-100 text-slate-700"
@@ -505,21 +503,19 @@ const sendInquiry = async () => {
               <section class="space-y-3">
                 <button
                   type="button"
-                  class="flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
-                  :disabled="product?.has_variants && !selectedVariant"
+                  class="flex w-full items-center justify-center gap-2 rounded bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+                  :disabled="product?.has_variants"
                   @click="cartDialog = !cartDialog"
                 >
                   <UIcon name="i-lucide-shopping-cart" class="size-5" />
-
                   Add to cart
                 </button>
 
                 <button
                   type="button"
-                  class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                  class="flex w-full items-center justify-center gap-2 rounded border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
                 >
                   <UIcon name="i-lucide-message-circle" class="size-5" />
-
                   Chat now
                 </button>
               </section>

@@ -89,18 +89,16 @@ const addToWishlist = async (product) => {
         <!-- Price -->
         <div v-if="product.pricing">
           <div class="flex items-baseline gap-1.5">
-            <span class="text-base font-bold tracking-tight text-black">
+            <span class="text-sm font-bold tracking-tight text-black">
               {{ $currency(product.pricing.min_price, product.currency) }}
             </span>
 
             <template
               v-if="product.pricing.min_price !== product.pricing.max_price"
             >
-              <span class="text-base font-bold tracking-tight text-black"
-                >–</span
-              >
+              <span class="text-sm font-bold tracking-tight text-black">-</span>
 
-              <span class="text-base font-bold tracking-tight text-black">
+              <span class="text-sm font-bold tracking-tight text-black">
                 {{ $currency(product.pricing.max_price, product.currency) }}
               </span>
             </template>

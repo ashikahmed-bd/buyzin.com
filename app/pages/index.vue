@@ -30,75 +30,29 @@ const { data: categories } = useAsyncData("categories", async () => {
 
     <section class="bg-white py-2.5">
       <div class="container mx-auto px-4">
-        <div class="flex items-start gap-6">
-          <aside class="hidden md:block w-72 shrink-0">
-            <nav v-if="categories?.data">
-              <UDropdownMenu
-                v-for="parent in categories?.data"
-                :key="parent.id"
-                :items="
-                  parent.children.map((item) => ({
-                    label: item.name,
-                    to: `/categories/${parent.slug}/${item.slug}`,
-                    children: item.children?.map((child) => ({
-                      label: child.name,
-                      to: `/categories/${parent.slug}/${item.slug}/${child.slug}`,
-                      children: child.children?.map((sub) => ({
-                        label: sub.name,
-                        to: `/categories/${parent.slug}/${item.slug}/${child.slug}/${sub.slug}`,
-                      })),
-                    })),
-                  }))
-                "
-                :ui="{ content: 'w-60' }"
-                class="w-full"
-              >
-                <UButton
-                  color="neutral"
-                  variant="ghost"
-                  class="w-full flex items-center gap-2"
-                >
-                  <NuxtImg
-                    :src="parent.icon_url"
-                    :alt="parent.name"
-                    class="size-4 shrink-0"
-                  />
-                  <span class="flex-1 text-left"> {{ parent.name }} </span>
-                  <UIcon
-                    name="i-lucide-chevron-right"
-                    class="size-4 shrink-0"
-                  />
-                </UButton>
-              </UDropdownMenu>
-            </nav>
-          </aside>
-
-          <main class="flex-1">
-            <UCarousel
-              v-slot="{ item }"
-              loop
-              wheel-gestures
-              fade
-              :items="home?.banners"
-              :autoplay="{ delay: 3000, pauseOnHover: true }"
-              class="w-full"
-            >
-              <a
-                :href="item?.target_url"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="relative block overflow-hidden rounded group"
-              >
-                <NuxtImg
-                  :src="item.image_url"
-                  :alt="item.title?.trim()"
-                  loading="eager"
-                  class="w-full h-full object-cover object-center"
-                />
-              </a>
-            </UCarousel>
-          </main>
-        </div>
+        <UCarousel
+          v-slot="{ item }"
+          loop
+          wheel-gestures
+          fade
+          :items="home?.banners"
+          :autoplay="{ delay: 3000, pauseOnHover: true }"
+          class="w-full"
+        >
+          <a
+            :href="item?.target_url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="relative block overflow-hidden rounded group"
+          >
+            <NuxtImg
+              :src="item.image_url"
+              :alt="item.title?.trim()"
+              loading="eager"
+              class="w-full h-full object-cover object-center"
+            />
+          </a>
+        </UCarousel>
       </div>
     </section>
 

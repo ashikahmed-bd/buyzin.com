@@ -125,8 +125,6 @@ const addToCart = async () => {
     close();
   }, 1000);
 };
-
-const cartUpdate = (item, quantity) => {};
 </script>
 
 <template>
