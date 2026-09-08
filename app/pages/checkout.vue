@@ -1,386 +1,428 @@
-<script setup>
-const { getLocation } = useLocation();
-
-const cartStore = useCartStore();
-const checkoutStore = useCheckoutStore();
-const giftCardStore = useGiftCardStore();
-
-const { data, pending, error, refresh } = await useAsyncData(
-  "checkout",
-  async () => {
-    return await cartStore.getItems();
-  },
-);
-
-const form = reactive({
-  name: "",
-  phone: "",
-  country: "BD",
-  state: "",
-  city: "",
-  area: "",
-  address: "",
-  note: "",
-  payment_method: "",
-});
-
-const giftCard = reactive({
-  code: giftCardStore?.giftCard?.code ?? "",
-});
-
-const applyGiftCard = async () => {
-  if (!giftCard.code.trim()) return;
-
-  await giftCardStore.apply(giftCard.code, cartStore.total);
-  await refresh();
-};
-
-const removeGiftCard = async () => {
-  if (confirm("Are you sure you want to remove this gift card?")) {
-    await giftCardStore.remove();
-    await refresh();
-  }
-};
-
-const submit = async () => {
-  const location = await getLocation();
-
-  const payload = {
-    name: form.name,
-    phone: form.phone,
-    address: form.address,
-    area: form.area,
-    city: form.city,
-    state: form.state,
-    postcode: form.postcode,
-    country: form.country,
-    latitude: location.latitude,
-    longitude: location.longitude,
-    note: form.note,
-    payment_method: form.payment_method,
-  };
-
-  await checkoutStore.placeOrder(payload);
-};
-
-// watch(
-//   () => form.country,
-//   async () => {
-//     await cartStore.getShippingCost({
-//       country: form.country,
-//     });
-
-//     await refresh();
-//   },
-//   { immediate: true },
-// );
-
-watch(
-  () => giftCardStore?.giftCard?.code,
-  (code) => {
-    giftCard.code = code ?? "";
-  },
-  { immediate: true },
-);
-</script>
+<script setup></script>
 
 <template>
-  <main class="max-w-7xl mx-auto px-4 py-4">
-    <LoadingState v-if="pending" />
+  <main class="max-w-7xl mx-auto">
+    <Head>
+      <Title>
+        Checkout | Buyzin - Secure Payment & Fast Delivery in Bangladesh
+      </Title>
 
-    <ErrorState v-else-if="error" :retry="refresh" />
+      <Meta
+        name="description"
+        content="Complete your order securely. Review billing details, shipping address, and choose a payment method."
+      />
 
-    <EmptyState v-else-if="!data" />
+      <Meta name="robots" content="noindex, nofollow" />
+      <Meta name="referrer" content="no-referrer-when-downgrade" />
+    </Head>
 
-    <template v-else>
-      <Head>
-        <Title
-          >Checkout | Buyzin - Secure Payment & Fast Delivery in
-          Bangladesh</Title
-        >
-        <Meta
-          name="description"
-          content="Complete your order securely. Review billing details, shipping address, and choose a payment method."
-        />
-        <Meta name="robots" content="noindex, nofollow" />
-        <Meta name="referrer" content="no-referrer-when-downgrade" />
-      </Head>
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 space-y-6">
-          <div class="bg-white rounded-2xl border border-border px-4">
-            <div class="border-b py-4">
-              <h6 class="font-semibold text-lg">Shipping Address</h6>
+    <div class="px-4 py-6">
+      <div class="mb-6">
+        <h1 class="mt-1 text-xl font-semibold tracking-tight text-slate-900">
+          Complete your order
+        </h1>
+
+        <p class="mt-1 text-body">
+          Review your business, delivery and payment information.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div class="space-y-5 lg:col-span-8">
+          <section class="rounded-xl border border-slate-200/80 bg-white p-5">
+            <div class="mb-5 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div
+                  class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-700"
+                >
+                  <UIcon name="i-lucide-building-2" class="h-5 w-5" />
+                </div>
+
+                <div>
+                  <h2 class="text-title font-semibold">Business Information</h2>
+
+                  <p class="text-sm text-slate-500">
+                    Your registered business details
+                  </p>
+                </div>
+              </div>
+
+              <button
+                class="text-sm font-medium text-blue-600 transition hover:text-blue-700"
+              >
+                Edit Profile
+              </button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div
+              class="grid grid-cols-1 gap-x-6 gap-y-5 rounded-lg bg-slate-50 p-4 sm:grid-cols-2 md:grid-cols-3"
+            >
               <div>
-                <label class="block mb-2 text-sm font-medium">
-                  Full Name *
-                </label>
-
-                <input
-                  v-model="form.name"
-                  type="text"
-                  placeholder="Enter your full name"
-                  class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none"
-                />
+                <p class="text-sm text-slate-500">Business Name</p>
+                <p class="text-body mt-1 font-semibold">ABC Traders Ltd.</p>
               </div>
 
               <div>
-                <label class="block mb-2 text-sm font-medium">
-                  Phone Number *
-                </label>
-
-                <input
-                  v-model="form.phone"
-                  type="tel"
-                  placeholder="01XXXXXXXXX"
-                  class="w-full rounded-lg border border-border px-4 py-3 focus:border-primary focus:outline-none"
-                />
+                <p class="text-sm text-slate-500">Contact Person</p>
+                <p class="text-body mt-1 font-semibold">Md. Rahim Uddin</p>
               </div>
 
-              <BaseSelect
-                label="Country"
-                v-model="form.country"
-                :items="[
-                  {
-                    name: 'Bangladesh',
-                    id: 'BD',
-                  },
-                ]"
-                placeholder="Select country"
-                :required="true"
-                error=""
-              />
+              <div>
+                <p class="text-sm text-slate-500">Phone</p>
+                <p class="text-body mt-1 font-semibold">+880 1712 345678</p>
+              </div>
 
-              <BaseInput
-                label="State / Province"
-                v-model="form.state"
-                placeholder="e.g. Dhaka Division"
-                :required="true"
-                error=""
-              />
+              <div>
+                <p class="text-sm text-slate-500">Email</p>
+                <p class="text-body mt-1 font-semibold">info@abctraders.com</p>
+              </div>
 
-              <BaseInput
-                label="City"
-                v-model="form.city"
-                placeholder="e.g. Dhaka"
-                :required="true"
-                error=""
-              />
+              <div>
+                <p class="text-sm text-slate-500">Business Type</p>
+                <p class="text-body mt-1 font-semibold">Retailer</p>
+              </div>
 
-              <BaseInput
-                label="Area"
-                v-model="form.area"
-                placeholder="e.g. Dhaka"
-                :required="true"
-                error=""
-              />
+              <div>
+                <p class="text-sm text-slate-500">Tax ID (BIN)</p>
+                <p class="text-body mt-1 font-semibold">123456789012</p>
+              </div>
+            </div>
+          </section>
 
-              <BaseInput
-                label="Address"
-                v-model="form.address"
-                placeholder="e.g. House, Road, Area, Thana"
-                :required="true"
-                error=""
-              />
+          <section class="rounded-xl border border-border bg-white p-4">
+            <div class="mb-5 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div
+                  class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-700"
+                >
+                  <UIcon name="i-lucide-truck" class="h-5 w-5" />
+                </div>
 
-              <BaseInput
-                label="Postal Code"
-                v-model="form.postcode"
-                placeholder="e.g. 1203"
-                :required="false"
-                error=""
-              />
+                <div>
+                  <h2 class="text-title font-semibold">Shipping Information</h2>
+
+                  <p class="text-sm text-slate-500">
+                    Choose where your order should be delivered
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <BaseInput
-              label="Notes"
-              v-model="form.note"
-              placeholder="Additional delivery instructions (optional)"
-              :required="false"
-              error=""
-            />
-          </div>
-
-          <div class="bg-white rounded-xl border border-border overflow-hidden">
-            <div class="border-b px-5 py-4">
-              <h6 class="font-semibold text-lg">Payment Method</h6>
-            </div>
-
-            <div class="p-5 space-y-3">
+            <div class="space-y-3">
               <label
-                class="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:border-primary"
+                class="block cursor-pointer rounded-xl border-2 border-blue-500 bg-blue-50/30 p-4 transition"
               >
-                <span>Cash on Delivery</span>
-                <input v-model="form.payment_method" type="radio" value="cod" />
-              </label>
-
-              <label
-                class="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:border-primary"
-              >
-                <span>BKash</span>
-                <input
-                  v-model="form.payment_method"
-                  type="radio"
-                  value="bkash"
-                />
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <aside>
-          <div class="bg-white rounded-xl border border-border sticky top-24">
-            <div class="border-b p-4">
-              <h6 class="font-semibold text-lg">Order Summary</h6>
-            </div>
-
-            <div class="space-y-2 p-4">
-              <div
-                v-for="item in data?.items"
-                :key="item.id"
-                class="flex items-center justify-between"
-              >
-                <div class="w-full flex items-center gap-2">
-                  <NuxtImg
-                    :src="item.cover_url"
-                    :alt="item.name"
-                    class="w-12 h-12 object-cover rounded border"
+                <div class="flex gap-3">
+                  <input
+                    type="radio"
+                    name="address"
+                    checked
+                    class="mt-1 h-4 w-4 accent-blue-600"
                   />
 
-                  <div class="grow">
-                    <h2 class="text-sm font-medium line-clamp-1">
-                      {{ item.name }}
-                    </h2>
-                    <span class="text-sm">
-                      {{ $currency(item.price) }}x {{ item.quantity }}
-                    </span>
-                    <div
-                      v-if="item.variant"
-                      class="flex flex-wrap gap-2 text-xs text-gray-600"
-                    >
-                      <span
-                        v-for="(value, key) in item.variant.options"
-                        :key="key"
-                        class="px-2 py-0.5 bg-gray-100 rounded-md"
-                      >
-                        {{ key }}: {{ value }}
-                      </span>
+                  <div class="min-w-0 flex-1">
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div>
+                        <div class="flex items-center gap-2">
+                          <h3 class="text-body font-semibold">Main Office</h3>
+
+                          <span
+                            class="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700"
+                          >
+                            Default
+                          </span>
+                        </div>
+
+                        <p class="mt-2 text-sm leading-5 text-slate-500">
+                          House 12, Road 8, Sector 4<br />
+                          Uttara, Dhaka 1230, Bangladesh
+                        </p>
+                      </div>
+
+                      <div class="relative">
+                        <p class="text-body font-semibold">Md. Rahim Uddin</p>
+
+                        <p class="mt-1 text-sm text-slate-500">
+                          +880 1712 345678
+                        </p>
+
+                        <button
+                          class="absolute right-0 top-0 text-sm font-medium text-blue-600 hover:text-blue-700"
+                        >
+                          Edit
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </label>
 
-            <div class="border-t p-4">
-              <div class="space-y-2">
-                <div class="form__group">
-                  <label class="text-sm font-medium text-title">
-                    Gift Card <span class="text-danger">*</span>
-                  </label>
-                  <div class="flex">
-                    <input
-                      type="text"
-                      v-model="giftCard.code"
-                      placeholder="Enter gift card code"
-                      class="border px-3 py-2 text-sm rounded-l w-full focus:outline-none"
-                    />
-
-                    <button
-                      type="button"
-                      @click="applyGiftCard"
-                      :disabled="giftCardStore.loading"
-                      class="bg-primary text-white flex items-center gap-2.5 px-4 text-sm rounded-r"
-                    >
-                      <UIcon
-                        v-if="giftCardStore.loading"
-                        name="i-lucide-loader"
-                        class="size-5 animate-spin"
-                      />
-                      <span>{{
-                        giftCardStore.loading ? "Applying" : "Apply"
-                      }}</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div
-                  v-if="giftCardStore.giftCard"
-                  class="flex items-center justify-between gap-3 rounded border border-success/20 bg-success/5 p-2.5"
-                >
-                  <div class="min-w-0">
-                    <p class="text-xs text-body">
-                      {{ giftCardStore?.giftCard?.title }}
-                    </p>
-                    <p class="truncate text-sm font-medium text-title">
-                      {{ giftCardStore?.giftCard?.code }}
-                    </p>
-                  </div>
-
-                  <div class="flex shrink-0 items-center gap-3">
-                    <span class="text-sm font-semibold text-success">
-                      - {{ $currency(data?.gift_card) }}
-                    </span>
-
-                    <button
-                      type="button"
-                      class="text-xs text-danger hover:underline disabled:opacity-50"
-                      :disabled="giftCardStore.loading"
-                      @click="removeGiftCard"
-                    >
-                      {{ giftCardStore.loading ? "Removing..." : "Remove" }}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="border-t p-4 space-y-3">
-              <div class="space-y-2.5 text-sm">
-                <div class="flex justify-between">
-                  <span>Subtotal</span>
-                  <span>{{ $currency(data?.subtotal) }}</span>
-                </div>
-
-                <div class="flex justify-between">
-                  <span>Shipping</span>
-                  <span>{{ $currency(data?.shipping) }}</span>
-                </div>
-
-                <div class="flex justify-between">
-                  <span>Tax</span>
-                  <span>{{ $currency(data?.tax) }}</span>
-                </div>
-
-                <div class="flex justify-between text-danger">
-                  <span>Discount</span>
-                  <span>- {{ $currency(data?.discount) }}</span>
-                </div>
-
-                <div class="flex items-center justify-between text-success">
-                  <span> Gift Card </span>
-                  <span> - {{ $currency(data?.gift_card) }} </span>
-                </div>
-
-                <div class="flex justify-between font-semibold text-lg pt-3">
-                  <span>Total</span>
-                  <span>{{ $currency(data?.total) }}</span>
-                </div>
-              </div>
-
-              <BaseButton
-                class="w-full"
-                :disabled="!data?.items?.length"
-                :loading="checkoutStore.loading"
-                @click="submit"
+              <label
+                class="block cursor-pointer rounded-xl border border-slate-200 p-4 transition hover:border-slate-300 hover:bg-slate-50/50"
               >
-                Place Order
-              </BaseButton>
+                <div class="flex gap-3">
+                  <input
+                    type="radio"
+                    name="address"
+                    class="mt-1 h-4 w-4 accent-blue-600"
+                  />
+
+                  <div class="min-w-0 flex-1">
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div>
+                        <h3 class="text-body font-semibold">Warehouse</h3>
+
+                        <p class="mt-2 text-sm leading-5 text-slate-500">
+                          Plot 25, Block B, Export Zone<br />
+                          Chattogram 4207, Bangladesh
+                        </p>
+                      </div>
+
+                      <div class="relative">
+                        <p class="text-body font-semibold">Warehouse Manager</p>
+
+                        <p class="mt-1 text-sm text-slate-500">
+                          +880 1812 000111
+                        </p>
+
+                        <button
+                          class="absolute right-0 top-0 text-sm font-medium text-blue-600 hover:text-blue-700"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </label>
+
+              <button
+                class="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-slate-300 py-3 text-sm font-medium text-blue-600 transition hover:border-blue-300 hover:bg-blue-50/40"
+              >
+                <UIcon name="i-lucide-plus" class="h-4 w-4" />
+                Add New Address
+              </button>
             </div>
-          </div>
+          </section>
+
+          <section class="rounded-xl border border-slate-200/80 bg-white p-5">
+            <div class="mb-5 flex items-center gap-3">
+              <div
+                class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-700"
+              >
+                <UIcon name="i-lucide-send" class="h-5 w-5" />
+              </div>
+
+              <div>
+                <h2 class="text-title font-semibold">Shipping Method</h2>
+
+                <p class="text-sm text-slate-500">
+                  Select your preferred delivery option
+                </p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <label
+                class="flex cursor-pointer items-center justify-between rounded-xl border-2 border-blue-500 bg-blue-50/30 p-4"
+              >
+                <div class="flex items-center gap-3">
+                  <input
+                    type="radio"
+                    name="shipping"
+                    checked
+                    class="h-4 w-4 accent-blue-600"
+                  />
+
+                  <div>
+                    <p class="text-body font-semibold">Dhaka City</p>
+                    <p class="mt-1 text-sm text-slate-500">1-2 business days</p>
+                  </div>
+                </div>
+
+                <span class="text-body font-semibold"> ৳ 500 </span>
+              </label>
+
+              <label
+                class="flex cursor-pointer items-center justify-between rounded-xl border border-slate-200 p-4 transition hover:border-slate-300 hover:bg-slate-50/50"
+              >
+                <div class="flex items-center gap-3">
+                  <input
+                    type="radio"
+                    name="shipping"
+                    class="h-4 w-4 accent-blue-600"
+                  />
+
+                  <div>
+                    <p class="text-body font-semibold">Outside Dhaka</p>
+
+                    <p class="mt-1 text-sm text-slate-500">3-5 business days</p>
+                  </div>
+                </div>
+
+                <span class="text-body font-semibold"> ৳ 1,200 </span>
+              </label>
+            </div>
+          </section>
+        </div>
+
+        <aside class="space-y-5 lg:col-span-4 sticky top-4">
+          <section
+            class="rounded-xl border border-border bg-white p-4 space-y-4"
+          >
+            <div class="flex items-center justify-between py-2.5">
+              <div>
+                <h2 class="text-title font-semibold">Order Summary</h2>
+                <p class="mt-1 text-sm text-slate-500">3 items · 12 pcs</p>
+              </div>
+
+              <button
+                class="text-sm font-medium text-blue-600 hover:text-blue-700"
+              >
+                Edit Cart
+              </button>
+            </div>
+
+            <div class="space-y-3">
+              <article
+                v-for="value in 3"
+                class="flex items-center gap-2 border-border"
+              >
+                <div
+                  class="flex shrink-0 items-center justify-center rounded bg-slate-50"
+                >
+                  <img
+                    src="https://placehold.co/80x80"
+                    class="size-16 object-contain"
+                    alt="Premium Cotton T-Shirt"
+                  />
+                </div>
+
+                <div class="min-w-0 flex-1">
+                  <h3 class="text-body font-semibold">
+                    Premium Cotton T-Shirt
+                  </h3>
+                  <div class="flex items-center gap-2">
+                    <p class="text-xs text-body">SKU: TS-001</p>
+                    <p class="text-xs text-body">Navy · L</p>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-body">
+                      ৳ 350 x 5
+                    </span>
+                    <span class="text-body font-semibold"> ৳ 1,750 </span>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <div class="space-y-3 border-t border-slate-200 pt-4">
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-slate-500"> Subtotal </span>
+                <span class="text-sm font-semibold text-slate-900">
+                  ৳ 5,980
+                </span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-slate-500"> Shipping </span>
+
+                <span class="text-sm font-semibold text-slate-900">
+                  ৳ 500
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-slate-500"> VAT (15%) </span>
+
+                <span class="text-sm font-semibold text-slate-900">
+                  ৳ 897
+                </span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-body font-semibold"> Total Amount </span>
+                <span class="text-xl font-bold text-emerald-600">
+                  ৳ 7,377
+                </span>
+              </div>
+            </div>
+
+            <div class="mb-5 flex items-center gap-3">
+              <div
+                class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-700"
+              >
+                <UIcon name="i-lucide-credit-card" class="h-5 w-5" />
+              </div>
+
+              <div>
+                <h2 class="text-title font-semibold">Payment Method</h2>
+                <p class="text-sm text-slate-500">Choose how you want to pay</p>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label
+                class="flex cursor-pointer items-start gap-2 rounded border-2 border-blue-500 bg-blue-50/30 p-4"
+              >
+                <input
+                  type="radio"
+                  name="payment"
+                  checked
+                  class="mt-1 h-4 w-4 accent-blue-600"
+                />
+
+                <div>
+                  <p class="text-body font-semibold">Bank Transfer (B2B)</p>
+
+                  <p class="mt-1 text-sm leading-5 text-slate-500">
+                    Pay via bank transfer. Our team will confirm manually.
+                  </p>
+                </div>
+              </label>
+
+              <label
+                class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-4 transition hover:border-slate-300 hover:bg-slate-50/50"
+              >
+                <input
+                  type="radio"
+                  name="payment"
+                  class="mt-1 h-4 w-4 accent-blue-600"
+                />
+
+                <div>
+                  <p class="text-body font-semibold">Cash on Delivery (COD)</p>
+                  <p class="mt-1 text-sm leading-5 text-slate-500">
+                    Available for approved business accounts only.
+                  </p>
+                </div>
+              </label>
+
+              <label
+                class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-4 transition hover:border-slate-300 hover:bg-slate-50/50"
+              >
+                <input
+                  type="radio"
+                  name="payment"
+                  class="mt-1 h-4 w-4 accent-blue-600"
+                />
+
+                <div>
+                  <p class="text-body font-semibold">Credit Terms</p>
+                  <p class="mt-1 text-sm leading-5 text-slate-500">
+                    Pay later for verified business partners.
+                  </p>
+                </div>
+              </label>
+            </div>
+
+            <button
+              class="w-full flex items-center justify-center rounded bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary/90"
+            >
+              Place Order
+              <UIcon name="i-lucide-arrow-right" class="ml-2 h-4 w-4" />
+            </button>
+          </section>
         </aside>
       </div>
-    </template>
+    </div>
   </main>
 </template>

@@ -44,6 +44,10 @@ const remove = async (item) => {
 const clear = async () => {
   await cartStore.clear();
 };
+
+const checkout = () => {
+  return navigateTo("/checkout");
+};
 </script>
 
 <template>
@@ -207,7 +211,7 @@ const clear = async () => {
                 <div class="flex items-baseline gap-1.5">
                   <span class="text-xs font-medium text-body"> Stock </span>
                   <span class="font-semibold text-success">
-                    {{ item.quantity }}
+                    {{ item.stock }}
                     <span class="text-xs font-normal">
                       {{ item.unit }}
                     </span>

@@ -98,7 +98,7 @@ const {
           </div>
         </div>
 
-        <div class="flex items-center gap-6">
+        <div class="flex items-center gap-4">
           <NuxtLink
             :to="user ? '/account' : '/auth/login'"
             class="flex items-center gap-2.5 rounded-xl px-2.5"
@@ -157,7 +157,7 @@ const {
 
           <NuxtLink
             to="/cart"
-            class="relative hidden md:block cursor-pointer transition-transform hover:scale-110"
+            class="relative cursor-pointer transition-transform hover:scale-110"
           >
             <UIcon name="i-lucide-shopping-cart" class="size-6 text-body" />
             <ClientOnly>
