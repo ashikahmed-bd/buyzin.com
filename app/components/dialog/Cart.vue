@@ -119,7 +119,11 @@ const addToCart = async () => {
     return;
   }
 
-  await cartStore.add(props.product, selectedVariant.value, quantity.value);
+  await cartStore.add(
+    props.product.id,
+    selectedVariant.value.id,
+    quantity.value,
+  );
 
   setTimeout(() => {
     close();

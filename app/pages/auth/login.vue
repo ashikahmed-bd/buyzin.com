@@ -9,11 +9,7 @@ const form = reactive({
 });
 
 const submit = async () => {
-  const response = await authStore.login(form);
-
-  if (response.success) {
-    await navigateTo("/account");
-  }
+  await authStore.login(form);
 };
 </script>
 

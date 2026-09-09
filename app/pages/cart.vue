@@ -1,51 +1,35 @@
 <script setup>
 const cartStore = useCartStore();
 
-const increase = async (item) => {
-  const moq = Number(item.moq ?? 1);
-  const step = Number(item.orderStep ?? 1);
-  const maxStock = Number(item.stock ?? 0);
+const {
+  data: cart,
+  pending,
+  error,
+  refresh,
+} = await useAsyncData("cart", () => {
+  return cartStore.items();
+});
 
-  const nextQuantity = Number(item.quantity) + step;
-
-  // Stock limit
-  if (maxStock > 0 && nextQuantity > maxStock) {
-    nextQuantity = moq + Math.floor((maxStock - moq) / step) * step;
-
-    nextQuantity = Math.max(moq, nextQuantity);
-  }
-
-  // Nothing to update
-  if (nextQuantity === item.quantity) {
-    return;
-  }
-
-  cartStore.increment(item.product, item.variant ?? null, nextQuantity);
-};
-
-const decrease = async (item) => {
-  const moq = Number(item.moq ?? 1);
-  const step = Number(item.orderStep ?? 1);
-
-  const nextQuantity = Math.max(moq, Number(item.quantity) - step);
-
-  // Nothing to update
-  if (nextQuantity === item.quantity) {
-    return;
-  }
-
-  cartStore.decrement(item.product, item.variant ?? null, nextQuantity);
+const update = async (item, quantity) => {
+  await cartStore.update(item, quantity);
+  await refresh();
 };
 
 const remove = async (item) => {
-  await cartStore.remove(item.product, item.variant);
+  await cartStore.remove(item);
+  await refresh();
 };
 
 const clear = async () => {
   await cartStore.clear();
+  await refresh();
 };
 
-const checkout = () => {
+const goToCheckout = () => {
+  if (!cart.value.items?.length) {
+    return;
+  }
+
   return navigateTo("/checkout");
 };
 </script>
@@ -64,7 +48,11 @@ const checkout = () => {
 
     <div class="flex flex-wrap justify-between gap-6">
       <div class="bg-white rounded-xl grow">
-        <EmptyCart v-if="!cartStore?.items?.length" />
+        <LoadingState v-if="pending" />
+
+        <ErrorState v-else-if="error" :retry="refresh" />
+
+        <EmptyCart v-if="!cart?.items?.length" />
 
         <template v-else>
           <div
@@ -74,7 +62,7 @@ const checkout = () => {
               <h3 class="text-lg font-semibold">Shopping Cart</h3>
 
               <p class="mt-1 text-sm text-gray-500">
-                {{ cartStore.items.length }} products in your order
+                ({{ cart.items.length }}) products in your order
               </p>
             </div>
 
@@ -89,18 +77,17 @@ const checkout = () => {
 
           <div class="space-y-2.5 divide-y divide-dashed divide-border">
             <article
-              v-for="item in cartStore.items"
-              :key="`${item.product}-${item.variant ?? 'default'}`"
-              class="group p-4 space-y-3"
+              v-for="item in cart.items"
+              :key="item.id"
+              class="group space-y-3 p-4"
             >
-              <!-- Product -->
               <div class="flex gap-4">
                 <div
                   class="size-20 shrink-0 overflow-hidden rounded bg-gray-50"
                 >
                   <NuxtImg
-                    :src="item.image"
-                    :alt="item.name"
+                    :src="item.product?.cover_url"
+                    :alt="item.product?.name"
                     class="size-full object-cover transition duration-300 group-hover:scale-105"
                   />
                 </div>
@@ -108,16 +95,17 @@ const checkout = () => {
                 <div class="min-w-0 flex-1">
                   <div class="flex items-center justify-between gap-2">
                     <NuxtLink
-                      :to="`/product/${item.product}`"
+                      :to="`/product/${item.product?.slug}/${item.product?.id}`"
+                      target="_blank"
                       class="line-clamp-1 text-base font-semibold text-title transition hover:text-primary"
                     >
-                      {{ item.name }}
+                      {{ item.product?.name }}
                     </NuxtLink>
 
                     <button
                       type="button"
                       :disabled="cartStore.loading"
-                      @click="cartStore.remove(item.product, item.variant)"
+                      @click="remove(item.id)"
                       class="size-8 shrink-0 rounded-lg text-body transition hover:bg-red-50 hover:text-danger disabled:cursor-not-allowed disabled:opacity-40"
                       aria-label="Remove item"
                     >
@@ -125,26 +113,36 @@ const checkout = () => {
                     </button>
                   </div>
 
-                  <div class="flex items-center gap-x-2.5 text-xs text-body">
-                    <span v-if="item.sku">
+                  <div
+                    v-if="
+                      item.product?.sku ||
+                      item.variant?.options?.length ||
+                      item.product?.unit
+                    "
+                    class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-body"
+                  >
+                    <span v-if="item.product?.sku">
                       SKU:
-                      <strong class="text-body">
-                        {{ item.sku }}
-                      </strong>
-                    </span>
-
-                    <span v-for="option in item.options" :key="option.optionId">
-                      {{ option.attributeName }}:
-                      <strong class="font-semibold text-gray-800">
-                        {{ option.optionName }}
+                      <strong class="text-gray-800">
+                        {{ item.product.sku }}
                       </strong>
                     </span>
 
                     <span
-                      v-if="item.unit"
+                      v-for="option in item.variant?.options"
+                      :key="`${option.attribute}-${option.option}`"
+                    >
+                      {{ option.attribute }}:
+                      <strong class="font-semibold text-gray-800">
+                        {{ option.option }}
+                      </strong>
+                    </span>
+
+                    <span
+                      v-if="item.product?.unit"
                       class="rounded-md bg-gray-100 px-2 py-1 font-medium capitalize text-body"
                     >
-                      {{ item.unit }}
+                      {{ item.product.unit }}
                     </span>
                   </div>
 
@@ -153,9 +151,15 @@ const checkout = () => {
                       <button
                         type="button"
                         :disabled="
-                          cartStore.loading || item.quantity <= item.moq
+                          cartStore.loading ||
+                          item.quantity <= (item.product?.moq ?? 1)
                         "
-                        @click="decrease(item)"
+                        @click="
+                          update(
+                            item,
+                            item.quantity - item.product?.order_step ?? 1,
+                          )
+                        "
                         class="flex size-6 items-center justify-center text-body transition hover:bg-gray-50 hover:text-danger disabled:cursor-not-allowed disabled:opacity-30"
                         aria-label="Decrease quantity"
                       >
@@ -171,7 +175,12 @@ const checkout = () => {
                       <button
                         type="button"
                         :disabled="cartStore.loading"
-                        @click="increase(item)"
+                        @click="
+                          update(
+                            item,
+                            item.quantity + (item.product?.order_step ?? 1),
+                          )
+                        "
                         class="flex size-6 items-center justify-center text-body transition hover:bg-gray-50 hover:text-success disabled:cursor-not-allowed disabled:opacity-30"
                         aria-label="Increase quantity"
                       >
@@ -180,60 +189,72 @@ const checkout = () => {
                     </div>
 
                     <p class="text-sm font-medium text-gray-950">
-                      {{ $currency(item.price * item.quantity) }}
+                      {{ $currency(item.total) }}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <!-- Product Meta -->
-              <div class="flex flex-wrap items-center gap-x-4 text-sm">
+              <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
                 <div class="flex items-baseline gap-1.5">
                   <span class="text-xs font-medium text-body">
                     Unit Price
                   </span>
 
                   <span class="text-xs font-semibold text-title">
-                    {{ $currency(item.price) }}
+                    {{ $currency(item.unit_price) }}
                   </span>
                 </div>
 
-                <div class="flex items-baseline gap-1.5">
+                <div
+                  v-if="item.product?.moq"
+                  class="flex items-baseline gap-1.5"
+                >
                   <span class="text-xs font-medium text-body"> MOQ </span>
+
                   <span class="font-semibold text-gray-800">
-                    {{ item.moq }}
+                    {{ item.product.moq }}
                     <span class="text-xs font-normal text-body">
-                      {{ item.unit }}
+                      {{ item.product.unit }}
                     </span>
                   </span>
                 </div>
 
-                <div class="flex items-baseline gap-1.5">
-                  <span class="text-xs font-medium text-body"> Stock </span>
-                  <span class="font-semibold text-success">
-                    {{ item.stock }}
-                    <span class="text-xs font-normal">
-                      {{ item.unit }}
+                <div
+                  v-if="item.product?.order_step"
+                  class="flex items-baseline gap-1.5"
+                >
+                  <span class="text-xs font-medium text-body">
+                    Order Step
+                  </span>
+
+                  <span class="font-semibold text-gray-800">
+                    {{ item.product.order_step }}
+                    <span class="text-xs font-normal text-body">
+                      {{ item.product.unit }}
                     </span>
                   </span>
                 </div>
               </div>
 
               <div
-                v-if="item.moq || item.orderStep"
+                v-if="item.product?.moq || item.product?.order_step"
                 class="flex items-start gap-1.5 text-xs text-body"
               >
                 <UIcon name="i-lucide-info" class="size-4 shrink-0" />
+
                 <span>
                   Minimum order
                   <strong class="font-semibold text-blue-500">
-                    {{ item.moq }} {{ item.unit }}
+                    {{ item.product.moq }} {{ item.product.unit }}
                   </strong>
-                  <template v-if="item.orderStep">
+
+                  <template v-if="item.product?.order_step">
                     <span class="mx-1 text-gray-300">·</span>
+
                     Increase by
                     <strong class="font-semibold text-blue-500">
-                      {{ item.orderStep }} {{ item.unit }}
+                      {{ item.product.order_step }} {{ item.product.unit }}
                     </strong>
                   </template>
                 </span>
@@ -248,7 +269,7 @@ const checkout = () => {
           <div class="flex items-center justify-between">
             <h2 class="text-lg font-bold text-gray-900">Order Summary</h2>
             <span class="text-xs font-medium text-body">
-              {{ cartStore.items.length }} items
+              {{ cart.items.length }} items
             </span>
           </div>
 
@@ -256,31 +277,33 @@ const checkout = () => {
             <div class="flex items-center justify-between gap-4">
               <span class="text-sm text-body"> Subtotal </span>
               <span class="shrink-0 text-sm font-semibold text-gray-800">
-                {{ $currency(cartStore.subtotal) }}
+                {{ $currency(cart.subtotal, cart.currency) }}
               </span>
             </div>
 
             <div class="flex items-center justify-between gap-4">
-              <span class="text-sm text-body">
-                VAT
-                <span class="text-xs"> ({{ cartStore.taxRate }}%) </span>
-              </span>
-              <span class="shrink-0 text-sm font-semibold text-gray-800">
-                {{ $currency(cartStore.tax) }}
-              </span>
-            </div>
-
-            <div class="flex items-center justify-between gap-4">
-              <span class="text-sm text-body"> Shipping </span>
+              <span class="text-sm text-body"> Shipping Charge </span>
               <span
-                v-if="cartStore.shipping > 0"
+                v-if="cart.shipping > 0"
                 class="shrink-0 text-sm font-semibold text-gray-800"
               >
-                {{ $currency(cartStore.shipping) }}
+                {{ $currency(cart.subtotal, cart.currency) }}
               </span>
 
-              <span v-else class="shrink-0 text-sm font-semibold text-success">
-                Free
+              <span v-else class="shrink-0 text-sm font-semibold"> Free </span>
+            </div>
+
+            <div class="flex items-center justify-between gap-4">
+              <span class="text-sm text-body">VAT (5%)</span>
+              <span class="shrink-0 text-sm font-semibold text-gray-800">
+                {{ $currency(cart.tax, cart.currency) }}
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between gap-4">
+              <span class="text-sm text-body">Discount (10%)</span>
+              <span class="shrink-0 text-sm font-semibold text-gray-800">
+                {{ $currency(cart.discount, cart.currency) }}
               </span>
             </div>
           </div>
@@ -295,7 +318,7 @@ const checkout = () => {
             <span
               class="shrink-0 text-xl font-bold tracking-tight text-primary"
             >
-              {{ $currency(cartStore.total) }}
+              {{ $currency(cart.total, cart.currency) }}
             </span>
           </div>
 
@@ -303,7 +326,7 @@ const checkout = () => {
             type="button"
             :disabled="cartStore.loading || cartStore.isEmpty"
             class="w-full flex items-center justify-center gap-2 rounded bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary/90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
-            @click="checkout"
+            @click="goToCheckout"
           >
             <span>Proceed to Checkout</span>
             <UIcon name="i-lucide-arrow-right" class="size-4" />

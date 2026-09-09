@@ -62,7 +62,7 @@ const {
               class="max-w-40 bg-transparent px-4 py-2 text-sm text-body focus:outline-none"
             >
               <option value="">All Categories</option>
-              <template v-for="parent in categories.data" :key="parent.id">
+              <template v-for="parent in categories?.data" :key="parent.id">
                 <optgroup :label="parent.name">
                   <option :value="parent.slug">All {{ parent.name }}</option>
                   <option
@@ -145,9 +145,9 @@ const {
 
           <NuxtLink
             to="/wishlist"
-            class="relative hidden md:block cursor-pointer transition-transform hover:scale-110"
+            class="relative hidden md:block cursor-pointer"
           >
-            <UIcon name="i-lucide-heart" class="size-6 text-body" />
+            <UIcon name="i-lucide-heart" class="size-5 text-body" />
             <span
               class="absolute -top-2 -right-2 bg-danger text-white text-xs px-1 rounded-full"
             >
@@ -155,16 +155,13 @@ const {
             </span>
           </NuxtLink>
 
-          <NuxtLink
-            to="/cart"
-            class="relative cursor-pointer transition-transform hover:scale-110"
-          >
-            <UIcon name="i-lucide-shopping-cart" class="size-6 text-body" />
+          <NuxtLink to="/cart" class="relative cursor-pointer">
+            <UIcon name="i-lucide-shopping-cart" class="size-5 text-body" />
             <ClientOnly>
               <span
                 class="absolute -top-2 -right-2 bg-primary text-white text-xs px-1 rounded-full"
               >
-                {{ cartStore.items.length ?? 0 }}
+                {{ cartStore.itemCount }}
               </span>
             </ClientOnly>
           </NuxtLink>

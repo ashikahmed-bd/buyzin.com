@@ -3,7 +3,13 @@ export const useAuthStore = defineStore("auth", {
     loading: false,
     user: null,
     errors: {},
+    dialog: false,
+    token: null,
   }),
+
+  persist: {
+    pick: ["user", "token"],
+  },
 
   getters: {
     loggedIn: (state) => !!state.user,
@@ -11,25 +17,24 @@ export const useAuthStore = defineStore("auth", {
 
   actions: {
     async login(payload) {
-      this.loading = true;
       const { $api } = useNuxtApp();
+      const toast = useToast();
+      this.loading = true;
       try {
-        // Get CSRF cookie
-        await $api("/sanctum/csrf-cookie", {
-          method: "GET",
-        });
-
-        // Login
-        const response = await $api("/auth/login", {
+        const response = await $api("/api/auth/login", {
           method: "POST",
           body: {
             email: payload.email,
             password: payload.password,
+            remember: payload.remember,
           },
         });
-
+        this.token = response.token;
         this.user = response.user;
-        return response;
+        toast.add({
+          title: response.message,
+        });
+        return navigateTo("/account");
       } catch (error) {
         this.errors = error?.response?._data;
         return error?.response?._data;
