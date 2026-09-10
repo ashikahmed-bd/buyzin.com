@@ -64,7 +64,7 @@ const addToWishlist = async (product) => {
       </NuxtLink>
 
       <div class="flex items-center gap-2 py-2">
-        <div class="flex items-center gap-0.5">
+        <div class="flex items-center">
           <UIcon
             v-for="i in 5"
             :key="i"
@@ -82,34 +82,35 @@ const addToWishlist = async (product) => {
           />
         </div>
 
-        <span class="text-xs text-black"> ({{ product.review_count }}) </span>
+        <span class="text-xs text-body"> ({{ product.rating }}) </span>
       </div>
 
       <div class="space-y-2.5">
-        <!-- Price -->
         <div v-if="product.pricing">
-          <div class="flex items-baseline gap-1.5 font-sm">
-            <span class="tracking-tight text-black">
+          <div
+            class="flex items-baseline gap-1.5 font-sm sm:font-xl font-semibold"
+          >
+            <span class="tracking-tight text-body">
               {{ $currency(product.pricing.min_price, product.currency) }}
             </span>
 
             <template
               v-if="product.pricing.min_price !== product.pricing.max_price"
             >
-              <span class="tracking-tight text-black">-</span>
-              <span class="tracking-tight text-black">
+              <span class="tracking-tight text-body">-</span>
+              <span class="tracking-tight text-body">
                 {{ $currency(product.pricing.max_price, product.currency) }}
               </span>
             </template>
           </div>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center justify-between gap-2">
           <span class="inline-flex items-center text-xs font-medium text-body">
             MOQ: {{ product.moq }} {{ product.unit }}
           </span>
 
-          <span v-if="product.sold_count > 0" class="text-xs text-muted">
+          <span class="text-xs text-body">
             {{ product.sold_count }}+ sold
           </span>
         </div>

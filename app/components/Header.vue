@@ -2,7 +2,6 @@
 const authStore = useAuthStore();
 const categoryStore = useCategoryStore();
 const cartStore = useCartStore();
-const open = ref(false);
 
 const { user } = storeToRefs(authStore);
 
@@ -16,30 +15,43 @@ const {
 </script>
 
 <template>
-  <div
-    class="w-full hidden md:block bg-gray-100 text-xs text-gray-600 border-b"
-  >
-    <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-9">
-      <div class="flex items-center gap-6">
-        <span>Free delivery on orders over 2999 BDT.</span>
-      </div>
-
-      <div class="flex items-center gap-4">
-        <a href="#" class="hover:text-black">Sell on Buyzin</a>
-        <a href="#" class="hover:text-black">Track Order</a>
-        <a href="#" class="hover:text-black">Help & Support</a>
-        <span>English / BDT</span>
+  <header class="bg-white border-b border-border sticky top-0 z-30">
+    <div class="hidden md:block bg-dark text-white">
+      <div class="container mx-auto px-4">
+        <div class="flex h-9 items-center justify-between text-xs">
+          <div class="flex items-center gap-6">
+            <span class="flex items-center gap-1.5 text-gray-300">
+              <UIcon
+                name="i-lucide-badge-check"
+                class="size-3.5 text-primary"
+              />
+              Verified B2B Marketplace
+            </span>
+            <span class="text-gray-500">|</span>
+            <span class="text-gray-300"> Wholesale pricing available </span>
+          </div>
+          <div class="flex items-center gap-5">
+            <NuxtLink to="/" class="text-gray-300 transition hover:text-white">
+              Become a Supplier
+            </NuxtLink>
+            <NuxtLink
+              to="/help"
+              class="text-gray-300 transition hover:text-white"
+            >
+              Help Center
+            </NuxtLink>
+            <span class="flex items-center gap-1.5 text-gray-300">
+              <UIcon name="i-lucide-globe-2" class="size-3.5" /> EN
+            </span>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-
-  <header class="sticky top-0 z-30 border-b border-border bg-white">
-    <div class="max-w-7xl mx-auto px-4 py-2.5">
-      <div class="flex items-center justify-between">
+    <div class="container mx-auto">
+      <div class="flex items-center justify-between px-4 py-2.5">
         <button
           type="button"
           class="p-2 rounded hover:text-primary hover:bg-gray-100 md:hidden"
-          @click="open = true"
         >
           <UIcon name="i-lucide-menu" class="size-6 text-body" />
         </button>
@@ -84,7 +96,6 @@ const {
                 </optgroup>
               </template>
             </select>
-
             <input
               type="search"
               placeholder="Search products..."
@@ -184,13 +195,6 @@ const {
       </form>
     </div>
   </header>
-
-  <MobileNavigation
-    :categories="categories"
-    v-if="open"
-    :open="open"
-    @close="open = false"
-  />
 </template>
 
 <style scoped></style>

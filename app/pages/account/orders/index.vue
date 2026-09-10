@@ -52,7 +52,7 @@ const {
               <div class="min-w-0">
                 <div class="flex flex-wrap items-center gap-2">
                   <h3 class="text-sm font-bold text-heading">
-                    #{{ order.order_no }}
+                    #{{ order.order_number }}
                   </h3>
 
                   <span
@@ -87,7 +87,7 @@ const {
                     Payment
                   </p>
                   <p class="mt-0.5 text-sm font-semibold capitalize text-body">
-                    {{ order.payment?.method }}
+                    {{ order.method }}
                   </p>
                 </div>
 
@@ -100,7 +100,7 @@ const {
                   <p
                     class="mt-0.5 text-sm font-semibold capitalize text-green-600"
                   >
-                    {{ order.payment?.status }}
+                    {{ order.payment }}
                   </p>
                 </div>
 
@@ -136,24 +136,24 @@ const {
             >
               <div class="">
                 <h4 class="text-sm font-semibold text-body">
-                  {{ order.contact?.name || "—" }}
+                  {{ order.address?.name || "—" }}
                 </h4>
 
                 <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-body">
-                  <span v-if="order.contact?.phone">
-                    {{ order.contact.phone }}
+                  <span v-if="order.address?.phone">
+                    {{ order.address.phone }}
                   </span>
 
-                  <span v-if="order.contact?.email">
-                    {{ order.contact.email }}
+                  <span v-if="order.address?.email">
+                    {{ order.address.email }}
                   </span>
                 </div>
                 <address class="text-xs leading-5 text-body">
                   {{
                     [
-                      order.contact?.address,
-                      order.contact?.area,
-                      order.contact?.city,
+                      order.address?.address,
+                      order.address?.area,
+                      order.address?.city,
                     ]
                       .filter(Boolean)
                       .join(", ")
@@ -161,9 +161,9 @@ const {
                   <br />
                   {{
                     [
-                      order.contact?.state,
-                      order.contact?.postcode,
-                      order.contact?.country,
+                      order.address?.state,
+                      order.address?.postcode,
+                      order.address?.country,
                     ]
                       .filter(Boolean)
                       .join(", ")

@@ -1,136 +1,120 @@
 <script setup>
 const props = defineProps({
-  product: {
-    type: Object,
-    required: true,
-  },
-
-  open: {
-    type: Boolean,
-    default: false,
-  },
+  product: { type: Object, required: true },
+  open: { type: Boolean, default: false },
 });
-
+const emit = defineEmits(["update:open", "send-inquiry"]);
 const cartStore = useCartStore();
-
-const emit = defineEmits(["update:open"]);
-
-const close = () => {
-  emit("update:open", false);
-};
-
-const selectedOptions = ref({});
-const quantity = ref(props.product?.moq);
-
-// Selected variant
-const selectedVariant = computed(() => {
-  if (!props.product?.variants?.length) {
-    return null;
-  }
-
-  return props.product.variants.find((variant) => {
-    return variant.options?.every((variantOption) => {
-      return (
-        selectedOptions.value[variantOption.attribute.id] ===
-        variantOption.option.id
-      );
-    });
-  });
-});
-
-// Current price
-const currentPrice = computed(() => {
-  if (selectedVariant.value) {
-    return Number(selectedVariant.value.price);
-  }
-
-  return Number(props.product?.pricing?.min_price);
-});
-
-const currentStock = computed(() => {
-  return selectedVariant.value?.quantity ?? 0;
-});
-
-// Variant select
-const selectOption = (attribute, option) => {
-  selectedOptions.value[attribute.id] = option.id;
-
-  quantity.value = props.product?.moq ?? 1;
-};
-
-// Check selected option
-const isSelected = (attribute, option) => {
-  return selectedOptions.value[attribute] === option;
-};
-
-// Increment
-const Increment = () => {
-  const moq = Number(props.product?.moq ?? 1);
+const quantities = ref({});
+const close = () => emit("update:open", false);
+const variants = computed(() => props.product?.variants ?? []);
+const getQuantity = (id) => Number(quantities.value[id] ?? 0);
+const setQuantity = (id, value) => {
+  const variant = variants.value.find((item) => item.id === id);
+  if (!variant) return;
   const step = Number(props.product?.order_step ?? 1);
-  const maxStock = Number(currentStock.value ?? 0);
-
-  let nextQuantity = quantity.value + step;
-
-  // Stock limit
-  if (maxStock > 0 && nextQuantity > maxStock) {
-    nextQuantity = moq + Math.floor((maxStock - moq) / step) * step;
-
-    nextQuantity = Math.max(moq, nextQuantity);
+  const stock = Number(variant.quantity ?? 0);
+  let quantity = Math.max(0, Number(value ?? 0));
+  if (quantity > 0) {
+    quantity = Math.floor(quantity / step) * step;
+    quantity = Math.max(quantity, step);
   }
-
-  quantity.value = nextQuantity;
-
-  // Update cart
-  if (props.product?.id) {
-    cartStore.increment(
-      props.product.id,
-      selectedVariant.value?.id ?? null,
-      quantity.value,
-    );
+  if (stock > 0) {
+    quantity = Math.min(quantity, stock);
   }
+  quantities.value[id] = quantity;
 };
-
-// Decrement
-const Decrement = () => {
-  const moq = Number(props.product?.moq ?? 1);
-  const step = Number(props.product?.order_step ?? 1);
-
-  const nextQuantity = quantity.value - step;
-
-  quantity.value = Math.max(moq, nextQuantity);
-
-  // Update cart
-  if (props.product?.id) {
-    cartStore.decrement(
-      props.product.id,
-      selectedVariant.value?.id ?? null,
-      quantity.value,
-    );
-  }
-};
-
-// Total
-const total = computed(() => {
-  return quantity.value * currentPrice.value;
-});
-
-const addToCart = async () => {
-  if (props.product?.has_variants && !selectedVariant.value) {
-    return;
-  }
-
-  await cartStore.add(
-    props.product.id,
-    selectedVariant.value.id,
-    quantity.value,
+const incrementVariant = (variant) => {
+  setQuantity(
+    variant.id,
+    getQuantity(variant.id) + Number(props.product?.order_step ?? 1),
   );
-
-  setTimeout(() => {
-    close();
-  }, 1000);
+};
+const decrementVariant = (variant) => {
+  setQuantity(
+    variant.id,
+    getQuantity(variant.id) - Number(props.product?.order_step ?? 1),
+  );
+};
+const getVariantLabel = (variant) => {
+  if (!variant?.options?.length) return variant?.name ?? "";
+  return variant.options
+    .map((item) => item.option?.name ?? item.name ?? "")
+    .filter(Boolean)
+    .join(" / ");
+};
+const getVariantPricing = (variant) => {
+  const pricing = variant?.pricings ?? [];
+  const quantity = getQuantity(variant.id);
+  if (!pricing.length || quantity <= 0) return null;
+  return (
+    pricing.find((item) => {
+      const min = Number(item.min_quantity ?? 0);
+      const max = item.max_quantity ? Number(item.max_quantity) : Infinity;
+      return quantity >= min && quantity <= max;
+    }) ?? null
+  );
+};
+const getVariantPrice = (variant) => {
+  const pricing = getVariantPricing(variant);
+  if (pricing) return Number(pricing.price ?? 0);
+  if (variant?.price) return Number(variant.price);
+  return Number(props.product?.pricing?.min_price ?? 0);
+};
+const getVariantTotal = (variant) =>
+  getQuantity(variant.id) * getVariantPrice(variant);
+const selectedVariants = computed(() =>
+  variants.value.filter((variant) => getQuantity(variant.id) > 0),
+);
+const totalQuantity = computed(() =>
+  selectedVariants.value.reduce(
+    (total, variant) => total + getQuantity(variant.id),
+    0,
+  ),
+);
+const subtotal = computed(() =>
+  selectedVariants.value.reduce(
+    (total, variant) => total + getVariantTotal(variant),
+    0,
+  ),
+);
+const hasSelection = computed(() => selectedVariants.value.length > 0);
+const resetQuantities = () => {
+  quantities.value = Object.fromEntries(
+    variants.value.map((variant, index) => [
+      variant.id,
+      index === 0 ? Number(props.product?.moq ?? 0) : 0,
+    ]),
+  );
+};
+watch(
+  () => props.open,
+  (open) => open && resetQuantities(),
+);
+const addToCart = async () => {
+  if (!hasSelection.value) return;
+  for (const variant of selectedVariants.value) {
+    await cartStore.add(props.product.id, variant.id, getQuantity(variant.id));
+  }
+  close();
+};
+const sendInquiry = () => {
+  if (!hasSelection.value) return;
+  emit("send-inquiry", {
+    product_id: props.product.id,
+    quantity: totalQuantity.value,
+    subtotal: subtotal.value,
+    items: selectedVariants.value.map((variant) => ({
+      variant_id: variant.id,
+      sku: variant.sku,
+      name: variant.name,
+      quantity: getQuantity(variant.id),
+      price: getVariantPrice(variant),
+      total: getVariantTotal(variant),
+    })),
+  });
 };
 </script>
-
 <template>
   <Teleport to="body">
     <Transition
@@ -142,8 +126,9 @@ const addToCart = async () => {
       leave-to-class="opacity-0"
     >
       <div
-        v-if="props.open"
+        v-if="open"
         class="fixed inset-0 z-50 bg-black/20 backdrop-blur"
+        @click="close"
       >
         <Transition
           enter-active-class="transition duration-300 ease-out"
@@ -154,266 +139,234 @@ const addToCart = async () => {
           leave-to-class="translate-y-full opacity-0 sm:scale-95 sm:translate-y-4"
         >
           <div
+            v-if="open"
+            class="fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-2xl bg-white rounded-t-2xl sm:rounded-2xl sm:inset-x-auto sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2"
             @click.stop
-            class="fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-3xl overflow-hidden rounded-t-2xl bg-white sm:inset-x-auto sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl"
           >
-            <div
-              class="flex shrink-0 items-center justify-between border-b border-gray-100 px-4 py-3"
+            <header
+              class="flex shrink-0 items-center justify-between gap-4 border-b border-gray-100 px-5 py-4"
             >
-              <div>
-                <h2 class="text-lg font-bold text-gray-900">Add to Cart</h2>
-
-                <p class="mt-0.5 text-xs text-gray-500">
-                  Select product options
-                </p>
-              </div>
-
-              <button
-                type="button"
-                @click="close"
-                class="flex size-9 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200"
-              >
-                <UIcon name="i-lucide-x" class="size-5" />
-              </button>
-            </div>
-
-            <div class="flex-1 overflow-y-auto px-4 py-4">
-              <div class="space-y-5">
-                <div class="flex gap-3">
-                  <div
-                    class="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-gray-100 bg-gray-50"
-                  >
-                    <NuxtImg
-                      :src="product.cover_url"
-                      :alt="product.name"
-                      class="size-full object-contain"
-                    />
-                  </div>
-
-                  <div class="min-w-0">
-                    <h3 class="truncate text-sm font-semibold text-gray-900">
-                      {{ product.name }}
-                    </h3>
-
-                    <p class="mt-1 text-xs text-gray-500">
-                      SKU: {{ product.sku }}
-                    </p>
-
-                    <div class="mt-1 flex items-center gap-2">
-                      <span class="text-sm font-bold text-gray-900">
-                        {{ $currency(currentPrice, product.currency) }}
-                      </span>
-
-                      <span class="text-xs text-gray-400">
-                        / {{ product.unit }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
+              <div class="flex min-w-0 items-center gap-4">
                 <div
-                  v-for="attribute in product.attributes"
-                  :key="attribute.id"
-                  class="space-y-2"
+                  class="flex size-14 shrink-0 items-center justify-center rounded"
                 >
-                  <div class="flex items-center justify-between">
-                    <h4 class="text-sm font-semibold text-gray-900">
-                      {{ attribute.name }}
-                    </h4>
-
+                  <NuxtImg
+                    :src="product.cover_url"
+                    :alt="product.name"
+                    class="size-full object-contain p-1"
+                  />
+                </div>
+                <div class="min-w-0">
+                  <h2
+                    class="truncate text-sm font-semibold text-title sm:text-base"
+                  >
+                    {{ product.name }}
+                  </h2>
+                  <div class="flex items-center gap-2">
                     <span
-                      v-if="selectedOptions[attribute.id]"
-                      class="flex items-center gap-1 text-xs font-medium text-green-600"
+                      class="rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-body"
                     >
-                      <UIcon name="i-lucide-check" class="size-3.5" />
-                      Selected
+                      SKU
+                    </span>
+                    <span class="truncate text-xs text-gray-500">
+                      {{ product.sku }}
                     </span>
                   </div>
-
-                  <div class="flex flex-wrap gap-2">
-                    <button
-                      v-for="option in attribute.options"
-                      :key="option.id"
-                      type="button"
-                      @click="selectOption(attribute, option)"
-                      :class="[
-                        'rounded border px-2 py-1.5 text-sm font-medium transition',
-                        isSelected(attribute.id, option.id)
-                          ? 'border-gray-900 bg-gray-900 text-white'
-                          : 'border-gray-200 bg-white text-gray-700 hover:border-gray-400 hover:bg-gray-50',
-                      ]"
-                    >
-                      <span class="flex items-center gap-1.5">
-                        <UIcon
-                          v-if="isSelected(attribute.id, option.id)"
-                          name="i-lucide-check"
-                          class="size-3.5"
-                        />
-
-                        {{ option.name }}
-                      </span>
-                    </button>
-                  </div>
-                </div>
-
-                <div
-                  v-if="selectedVariant"
-                  class="rounded border border-green-200 bg-green-50 px-3 py-2.5"
-                >
-                  <div class="flex items-center justify-between gap-2">
-                    <div>
-                      <div class="flex items-center gap-1.5">
-                        <UIcon
-                          name="i-lucide-circle-check"
-                          class="size-4 text-green-600"
-                        />
-                        <span class="text-xs font-semibold text-green-700">
-                          Variant Available
-                        </span>
-                      </div>
-
-                      <div class="mt-1.5 flex items-center gap-2">
-                        <span class="text-sm font-bold text-gray-900">
-                          {{ selectedVariant.name }}
-                        </span>
-                        <span class="text-gray-300">•</span>
-                        <span
-                          class="font-mono text-xs font-semibold text-gray-600"
-                        >
-                          {{ selectedVariant.sku }}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div class="text-left sm:text-right">
-                      <p class="text-lg font-bold text-gray-900">
-                        {{ $currency(selectedVariant.price, product.currency) }}
-                      </p>
-
-                      <p class="text-xs text-gray-500">
-                        {{ selectedVariant.quantity }} pcs available
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  v-else-if="product.has_variants"
-                  class="rounded-2xl border border-red-200 bg-red-50 p-4"
-                >
-                  <div class="flex items-center gap-2">
-                    <UIcon
-                      name="i-lucide-circle-alert"
-                      class="size-4 text-red-600"
-                    />
-
-                    <p class="text-sm font-medium text-red-700">
-                      Selected variant is not available.
-                    </p>
-                  </div>
-                </div>
-
-                <!-- Quantity -->
-                <div class="rounded-xl bg-gray-50 p-4">
-                  <div class="flex items-center justify-between gap-4">
-                    <div>
-                      <p class="text-sm font-semibold text-gray-900">
-                        Quantity
-                      </p>
-                      <p class="mt-1 text-xs text-gray-500">
-                        Minimum order:
-                        <strong> {{ product.moq }} {{ product.unit }} </strong>
-                      </p>
-                      <p class="mt-0.5 text-xs text-gray-400">
-                        Order in multiples of {{ product.order_step }}
-                      </p>
-                    </div>
-                    <div
-                      class="flex items-center rounded-xl border border-gray-200 bg-white"
-                    >
-                      <button
-                        type="button"
-                        :disabled="quantity <= product.moq"
-                        @click="Decrement"
-                        :class="[
-                          'flex size-10 items-center justify-center transition',
-                          quantity <= product.moq
-                            ? 'cursor-not-allowed text-gray-300'
-                            : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900',
-                        ]"
-                      >
-                        <UIcon name="i-lucide-minus" class="size-4" />
-                      </button>
-                      <span
-                        class="min-w-14 text-center text-sm font-bold text-gray-900"
-                      >
-                        {{ quantity }}
-                      </span>
-                      <button
-                        type="button"
-                        :disabled="currentStock > 0 && quantity >= currentStock"
-                        @click="Increment"
-                        :class="[
-                          'flex size-10 items-center justify-center transition',
-                          currentStock > 0 && quantity >= currentStock
-                            ? 'cursor-not-allowed text-gray-300'
-                            : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900',
-                        ]"
-                      >
-                        <UIcon name="i-lucide-plus" class="size-4" />
-                      </button>
-                    </div>
-                  </div>
                 </div>
               </div>
-            </div>
-
-            <div
-              class="shrink-0 border-t border-gray-100 bg-white px-5 pb-5 pt-4"
-            >
-              <div class="mb-3 flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-gray-500">Total</p>
-
-                  <p class="mt-0.5 text-xs text-gray-400">
-                    {{ quantity }} {{ product.unit }} ×
-                    {{ $currency(currentPrice, product.currency) }}
-                  </p>
-                </div>
-
-                <span class="text-xl font-bold text-gray-900">
-                  {{ $currency(total, product.currency) }}
-                </span>
-              </div>
-
               <button
                 type="button"
-                :disabled="
-                  cartStore.loading ||
-                  (product.has_variants && !selectedVariant)
-                "
-                @click="addToCart"
-                :class="[
-                  'flex w-full items-center justify-center gap-2 rounded py-3.5 text-sm font-bold transition',
-                  cartStore.loading ||
-                  (product.has_variants && !selectedVariant)
-                    ? 'cursor-not-allowed bg-gray-200 text-gray-400'
-                    : 'bg-gray-900 text-white hover:bg-gray-800',
-                ]"
+                aria-label="Close dialog"
+                class="flex size-9 shrink-0 items-center justify-center rounded border border-gray-200 text-gray-500 transition hover:bg-gray-50 hover:text-gray-900"
+                @click="close"
               >
-                <UIcon
-                  v-if="cartStore.loading"
-                  name="i-lucide-loader"
-                  class="size-5 animate-spin"
-                />
-
-                <UIcon v-else name="i-lucide-shopping-cart" class="size-5" />
-
-                <span>
-                  {{ cartStore.loading ? "Adding..." : "Add to Cart" }}
-                </span>
+                <UIcon name="i-lucide-x" class="size-4" />
               </button>
+            </header>
+            <div class="space-y-4 px-4 py-3">
+              <div v-for="attribute in product.attributes" :key="attribute.id">
+                <h3 class="text-sm font-bold text-gray-900">
+                  {{ attribute.name }}
+                </h3>
+                <div class="space-y-2">
+                  <template
+                    v-for="option in attribute.options"
+                    :key="option.id"
+                  >
+                    <template
+                      v-for="variant in variants.filter((item) =>
+                        item.options?.some(
+                          (variantOption) =>
+                            variantOption.option?.id === option.id,
+                        ),
+                      )"
+                      :key="variant.id"
+                    >
+                      <div class="flex items-center justify-between gap-3">
+                        <button
+                          type="button"
+                          class="rounded px-3 py-2 text-sm font-medium transition"
+                          :class="
+                            getQuantity(variant.id) > 0
+                              ? 'bg-dark text-white'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          "
+                          @click="
+                            setQuantity(
+                              variant.id,
+                              getQuantity(variant.id) ||
+                                Number(product.moq ?? 1),
+                            )
+                          "
+                        >
+                          {{ option.name }}
+                        </button>
+                        <div
+                          class="flex shrink-0 items-center overflow-hidden rounded-full border border-gray-200"
+                        >
+                          <button
+                            type="button"
+                            class="flex size-8 items-center justify-center text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-300"
+                            :disabled="getQuantity(variant.id) <= 0"
+                            @click="decrementVariant(variant)"
+                          >
+                            <UIcon name="i-lucide-minus" class="size-3.5" />
+                          </button>
+                          <span
+                            class="min-w-10 border-x border-gray-200 px-2 text-center text-sm font-medium"
+                          >
+                            {{ getQuantity(variant.id) }}
+                          </span>
+                          <button
+                            type="button"
+                            class="flex size-8 items-center justify-center text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-300"
+                            :disabled="
+                              variant.quantity > 0 &&
+                              getQuantity(variant.id) >= variant.quantity
+                            "
+                            @click="incrementVariant(variant)"
+                          >
+                            <UIcon name="i-lucide-plus" class="size-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                      <div
+                        v-if="
+                          getQuantity(variant.id) > 0 &&
+                          getVariantPricing(variant)
+                        "
+                        class="flex items-center justify-between"
+                      >
+                        <span class="text-xs text-gray-400">
+                          {{ getVariantPricing(variant)?.min_quantity }}
+                          <template
+                            v-if="getVariantPricing(variant)?.max_quantity"
+                          >
+                            - {{ getVariantPricing(variant)?.max_quantity }}
+                          </template>
+                          <template v-else>+</template> pcs
+                        </span>
+                        <span class="text-xs font-semibold text-gray-700">
+                          {{
+                            $currency(
+                              getVariantPrice(variant),
+                              product.currency,
+                            )
+                          }}
+                          / {{ product.unit }}
+                        </span>
+                      </div>
+                    </template>
+                  </template>
+                </div>
+              </div>
+              <div
+                v-if="hasSelection"
+                class="rounded-xl border border-gray-100 bg-gray-50 p-3"
+              >
+                <div class="mb-2 flex items-center justify-between">
+                  <p class="text-xs font-bold text-gray-900">
+                    Selected variants
+                  </p>
+                  <span class="text-xs text-gray-500">
+                    {{ selectedVariants.length }} variants
+                  </span>
+                </div>
+                <div class="space-y-2">
+                  <div
+                    v-for="variant in selectedVariants"
+                    :key="variant.id"
+                    class="flex items-center justify-between text-xs"
+                  >
+                    <div class="flex items-center gap-2">
+                      <span class="font-medium text-gray-700">
+                        {{ getVariantLabel(variant) }}
+                      </span>
+
+                      <span class="text-xs text-gray-500">
+                        {{ $currency(variant.price, product.currency) }} x
+                        {{ getQuantity(variant.id) }}
+                      </span>
+                    </div>
+                    <span class="font-semibold text-gray-900">
+                      {{
+                        $currency(getVariantTotal(variant), product.currency)
+                      }}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
+            <footer class="shrink-0 px-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-semibold text-gray-700">Subtotal</p>
+                  <p class="mt-0.5 text-xs text-gray-400">
+                    {{ totalQuantity }} {{ product.unit }} selected
+                  </p>
+                </div>
+                <span class="text-base font-bold text-gray-900">
+                  {{ $currency(subtotal, product.currency) }}
+                </span>
+              </div>
+              <div class="grid grid-cols-2 gap-2 py-8">
+                <button
+                  type="button"
+                  class="flex items-center justify-center gap-1.5 rounded-full text-xs font-bold transition disabled:cursor-not-allowed"
+                  :class="
+                    !hasSelection || cartStore.loading
+                      ? 'bg-primary text-white cursor-not-allowed opacity-70'
+                      : 'bg-primary text-white hover:bg-primary-hover'
+                  "
+                  :disabled="!hasSelection || cartStore.loading"
+                  @click="addToCart"
+                >
+                  <UIcon
+                    :name="
+                      cartStore.loading
+                        ? 'i-lucide-loader'
+                        : 'i-lucide-shopping-cart'
+                    "
+                    class="size-4"
+                    :class="{ 'animate-spin': cartStore.loading }"
+                  />
+                  {{ cartStore.loading ? "Adding..." : "Add to cart" }}
+                </button>
+                <button
+                  type="button"
+                  class="h-11 rounded-full border text-xs font-bold transition disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-300"
+                  :class="
+                    hasSelection
+                      ? 'border-gray-900 bg-white text-gray-900 hover:bg-gray-50'
+                      : 'bg-white'
+                  "
+                  :disabled="!hasSelection"
+                  @click="sendInquiry"
+                >
+                  Send inquiry
+                </button>
+              </div>
+            </footer>
           </div>
         </Transition>
       </div>

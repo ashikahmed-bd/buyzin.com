@@ -102,7 +102,7 @@ const sendInquiry = async () => {
         :image="product?.cover_url"
       />
 
-      <div class="border-b border-slate-200 bg-white">
+      <div class="bg-white">
         <div class="mx-auto py-2">
           <div class="flex items-center justify-between gap-4">
             <nav class="flex min-w-0 items-center gap-2 text-sm">
@@ -402,11 +402,11 @@ const sendInquiry = async () => {
                 <table
                   v-for="section in product?.specifications"
                   :key="section.title"
-                  class="mb-6 border max-w-5xl w-full"
+                  class="mb-6 border w-full"
                 >
                   <thead>
-                    <tr class="bg-gray-100">
-                      <th class="text-left p-2" colspan="2">
+                    <tr>
+                      <th class="text-left" colspan="2">
                         {{ section.title }}
                       </th>
                     </tr>

@@ -86,24 +86,6 @@ const logout = async () => {
                   </span>
                 </div>
               </div>
-
-              <div class="mt-4 grid grid-cols-2 gap-2">
-                <NuxtLink
-                  to="/account/profile"
-                  class="flex items-center justify-center rounded bg-primary px-3 py-2 text-sm font-semibold text-white transition hover:opacity-90"
-                >
-                  Edit Profile
-                </NuxtLink>
-
-                <button
-                  type="button"
-                  class="flex items-center justify-center gap-1.5 rounded border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-body transition hover:opacity-90"
-                >
-                  <UIcon name="i-lucide-coins" class="size-4 text-amber-500" />
-
-                  <span>{{ user?.points ?? 0 }}</span>
-                </button>
-              </div>
             </div>
 
             <nav class="mt-4 space-y-1">

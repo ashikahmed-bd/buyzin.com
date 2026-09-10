@@ -5,7 +5,7 @@ const settings = useSettings();
 <template>
   <footer class="bg-white z-10">
     <div class="bg-primary text-white py-8 md:py-10 lg:py-12">
-      <div class="max-w-7xl mx-auto px-4">
+      <div class="container mx-auto px-4">
         <div
           class="flex flex-wrap items-center justify-between gap-4 md:gap-16"
         >
@@ -43,7 +43,7 @@ const settings = useSettings();
       </div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4">
+    <div class="container mx-auto px-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 py-12">
         <div class="flex w-full flex-col items-start">
           <NuxtLink to="/" class="mb-3">

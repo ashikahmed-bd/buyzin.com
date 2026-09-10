@@ -76,7 +76,7 @@ const { data: categories } = useAsyncData("categories", async () => {
               :src="item.image_url"
               :alt="item.name"
               loading="lazy"
-              class="mx-auto object-cover rounded-xl transition-transform duration-500"
+              class="mx-auto object-cover rounded transition-transform duration-500"
             />
 
             <h3 class="text-sm text-body font-semibold truncate w-full py-1.5">
@@ -219,37 +219,6 @@ const { data: categories } = useAsyncData("categories", async () => {
           >
             Load more</NuxtLink
           >
-        </div>
-      </div>
-    </section>
-
-    <section class="py-4">
-      <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <div
-            v-for="item in home?.features"
-            :key="item.title"
-            class="group flex items-start gap-4 rounded-xl border border-gray-100 bg-white p-4 transition-all duration-300 hover:-translate-y-1"
-          >
-            <div
-              class="flex size-14 items-center justify-center rounded-lg bg-gray-100 group-hover:bg-primary/10 transition"
-            >
-              <NuxtImg
-                :src="item.icon_url"
-                :alt="item.title"
-                class="size-12 object-contain"
-              />
-            </div>
-
-            <div>
-              <h4 class="text-base font-semibold text-gray-900 leading-tight">
-                {{ item.title }}
-              </h4>
-              <p class="text-sm text-gray-500 leading-relaxed">
-                {{ item.subtitle }}
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </section>
