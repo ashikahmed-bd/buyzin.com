@@ -70,7 +70,7 @@ const { data: categories } = useAsyncData("categories", async () => {
         >
           <NuxtLink
             :to="`/categories/${item.slug}`"
-            class="group relative block overflow-hidden border border-border rounded-xl bg-white transition-all duration-300 hover:-translate-y-1 text-center p-2.5"
+            class="group relative block overflow-hidden rounded bg-white transition-all duration-300 hover:-translate-y-1 text-center"
           >
             <NuxtImg
               :src="item.image_url"
@@ -79,7 +79,7 @@ const { data: categories } = useAsyncData("categories", async () => {
               class="mx-auto object-cover rounded-xl transition-transform duration-500"
             />
 
-            <h3 class="text-sm text-body font-semibold truncate w-full mt-2.5">
+            <h3 class="text-sm text-body font-semibold truncate w-full py-1.5">
               {{ item.name }}
             </h3>
           </NuxtLink>

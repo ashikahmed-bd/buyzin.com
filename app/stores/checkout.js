@@ -7,31 +7,6 @@ export const useCheckoutStore = defineStore("checkout", {
   getters: {},
 
   actions: {
-    async getShippings() {
-      const { $api } = useNuxtApp();
-      try {
-        const response = await $api("/api/shippings");
-        return response;
-      } catch (error) {
-        this.errors = error?.response?._data;
-        throw error;
-      }
-    },
-
-    async getShippingCost(payload) {
-      const { $api } = useNuxtApp();
-      try {
-        const response = await $api("/api/shipping/calculate", {
-          method: "PUT",
-          body: payload,
-        });
-        return response;
-      } catch (error) {
-        this.errors = error?.response?._data;
-        throw error;
-      }
-    },
-
     async placeOrder(payload) {
       const { $api } = useNuxtApp();
       this.loading = true;

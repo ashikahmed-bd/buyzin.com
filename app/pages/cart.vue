@@ -7,7 +7,7 @@ const {
   error,
   refresh,
 } = await useAsyncData("cart", () => {
-  return cartStore.items();
+  return cartStore.getItems();
 });
 
 const update = async (item, quantity) => {
@@ -79,11 +79,11 @@ const goToCheckout = () => {
             <article
               v-for="item in cart.items"
               :key="item.id"
-              class="group space-y-3 p-4"
+              class="group p-4"
             >
-              <div class="flex gap-4">
+              <div class="flex items-stretch gap-4">
                 <div
-                  class="size-20 shrink-0 overflow-hidden rounded bg-gray-50"
+                  class="size-24 shrink-0 overflow-hidden rounded bg-gray-50"
                 >
                   <NuxtImg
                     :src="item.product?.cover_url"
@@ -114,12 +114,8 @@ const goToCheckout = () => {
                   </div>
 
                   <div
-                    v-if="
-                      item.product?.sku ||
-                      item.variant?.options?.length ||
-                      item.product?.unit
-                    "
-                    class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-body"
+                    v-if="item.product?.sku"
+                    class="flex flex-wrap items-center gap-x-3 text-xs text-body"
                   >
                     <span v-if="item.product?.sku">
                       SKU:
@@ -146,7 +142,33 @@ const goToCheckout = () => {
                     </span>
                   </div>
 
-                  <div class="flex items-center justify-between gap-4">
+                  <div class="flex flex-wrap items-center gap-x-4 text-sm">
+                    <div class="flex items-baseline gap-1.5">
+                      <span class="text-xs font-medium text-body">
+                        Unit Price
+                      </span>
+
+                      <span class="text-xs font-semibold text-title">
+                        {{ $currency(item.unit_price) }}
+                      </span>
+                    </div>
+
+                    <div
+                      v-if="item.tax_rate > 0"
+                      class="flex items-baseline gap-1.5"
+                    >
+                      <span class="text-xs font-medium text-body"> Tax </span>
+
+                      <span class="text-xs font-semibold text-title">
+                        {{ item.tax_rate }}%
+                        <span class="font-normal text-body">
+                          · {{ $currency(item.tax) }}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-between gap-x-4 py-1.5">
                     <div class="flex items-center">
                       <button
                         type="button"
@@ -192,48 +214,6 @@ const goToCheckout = () => {
                       {{ $currency(item.total) }}
                     </p>
                   </div>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-                <div class="flex items-baseline gap-1.5">
-                  <span class="text-xs font-medium text-body">
-                    Unit Price
-                  </span>
-
-                  <span class="text-xs font-semibold text-title">
-                    {{ $currency(item.unit_price) }}
-                  </span>
-                </div>
-
-                <div
-                  v-if="item.product?.moq"
-                  class="flex items-baseline gap-1.5"
-                >
-                  <span class="text-xs font-medium text-body"> MOQ </span>
-
-                  <span class="font-semibold text-gray-800">
-                    {{ item.product.moq }}
-                    <span class="text-xs font-normal text-body">
-                      {{ item.product.unit }}
-                    </span>
-                  </span>
-                </div>
-
-                <div
-                  v-if="item.product?.order_step"
-                  class="flex items-baseline gap-1.5"
-                >
-                  <span class="text-xs font-medium text-body">
-                    Order Step
-                  </span>
-
-                  <span class="font-semibold text-gray-800">
-                    {{ item.product.order_step }}
-                    <span class="text-xs font-normal text-body">
-                      {{ item.product.unit }}
-                    </span>
-                  </span>
                 </div>
               </div>
 
@@ -283,25 +263,20 @@ const goToCheckout = () => {
 
             <div class="flex items-center justify-between gap-4">
               <span class="text-sm text-body"> Shipping Charge </span>
-              <span
-                v-if="cart.shipping > 0"
-                class="shrink-0 text-sm font-semibold text-gray-800"
-              >
-                {{ $currency(cart.subtotal, cart.currency) }}
+              <span class="shrink-0 text-sm font-semibold text-gray-800">
+                {{ $currency(cart.shipping, cart.currency) }}
               </span>
-
-              <span v-else class="shrink-0 text-sm font-semibold"> Free </span>
             </div>
 
             <div class="flex items-center justify-between gap-4">
-              <span class="text-sm text-body">VAT (5%)</span>
+              <span class="text-sm text-body">VAT</span>
               <span class="shrink-0 text-sm font-semibold text-gray-800">
                 {{ $currency(cart.tax, cart.currency) }}
               </span>
             </div>
 
             <div class="flex items-center justify-between gap-4">
-              <span class="text-sm text-body">Discount (10%)</span>
+              <span class="text-sm text-body">Discount</span>
               <span class="shrink-0 text-sm font-semibold text-gray-800">
                 {{ $currency(cart.discount, cart.currency) }}
               </span>

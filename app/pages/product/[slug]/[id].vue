@@ -210,14 +210,12 @@ const sendInquiry = async () => {
                     </span>
                   </div>
 
-                  <!-- Reviews -->
                   <span
                     class="font-medium text-blue-600 after:ml-2 after:text-slate-300 after:content-['•']"
                   >
                     ({{ product?.review_count ?? 0 }} reviews)
                   </span>
 
-                  <!-- Sold -->
                   <span
                     class="font-medium text-slate-500 after:ml-2 after:text-slate-300 after:content-['•']"
                   >
@@ -225,11 +223,9 @@ const sendInquiry = async () => {
                   </span>
                 </div>
 
-                <!-- Product Meta -->
                 <div
                   class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm"
                 >
-                  <!-- SKU -->
                   <div class="flex items-center gap-1.5">
                     <span class="text-slate-400">SKU:</span>
                     <span class="font-medium text-slate-700">
@@ -237,7 +233,6 @@ const sendInquiry = async () => {
                     </span>
                   </div>
 
-                  <!-- Brand -->
                   <div class="flex items-center gap-1.5">
                     <span class="text-slate-400">Brand:</span>
                     <span class="font-medium text-slate-700">
@@ -245,7 +240,6 @@ const sendInquiry = async () => {
                     </span>
                   </div>
 
-                  <!-- Category -->
                   <div class="flex items-center gap-1.5">
                     <span class="text-slate-400">Category:</span>
                     <span class="font-medium text-slate-700">
@@ -257,7 +251,6 @@ const sendInquiry = async () => {
                 </div>
               </div>
 
-              <!-- Pricing -->
               <div class="space-y-4">
                 <div class="flex items-end justify-between">
                   <div>
@@ -284,41 +277,51 @@ const sendInquiry = async () => {
                   </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  <div
-                    v-for="tier in product?.pricing?.tiers ?? []"
-                    :key="tier.id"
-                    class="group relative rounded-xl border border-border bg-white p-2.5 transition hover:-translate-y-0.5"
-                  >
-                    <span class="text-xl font-bold text-title">
-                      {{ $currency(tier.price, product.currency) }}
-                    </span>
-                    <div>
+                <UCarousel
+                  :items="product?.pricing?.tiers ?? []"
+                  :ui="{
+                    item: 'basis-1/2 lg:basis-1/3',
+                  }"
+                >
+                  <template #default="{ item: tier }">
+                    <div
+                      class="group relative rounded-xl border border-border bg-white p-2.5 transition hover:-translate-y-0.5"
+                    >
+                      <span class="text-xl font-bold text-title">
+                        {{ $currency(tier.price, product.currency) }}
+                      </span>
+
                       <p class="font-semibold text-body">
                         {{ tier.min_quantity }}
-                        <span class="text-body">-</span>
+                        <span>-</span>
                         {{ tier.max_quantity }}
                         pcs
                       </p>
-                    </div>
 
-                    <div class="block">
-                      <span class="text-2xs text-body line-through">
-                        {{ $currency(tier.compare_price, product.currency) }}
-                      </span>
+                      <div class="block">
+                        <span
+                          v-if="tier.compare_price"
+                          class="text-2xs text-body line-through"
+                        >
+                          {{ $currency(tier.compare_price, product.currency) }}
+                        </span>
 
-                      <span class="ml-2 text-2xs font-medium text-success">
-                        {{
-                          $currency(
-                            Number(tier.compare_price) - Number(tier.price),
-                            product.currency,
-                          )
-                        }}
-                        OFF
-                      </span>
+                        <span
+                          v-if="tier.compare_price"
+                          class="ml-2 text-2xs font-medium text-success"
+                        >
+                          {{
+                            $currency(
+                              Number(tier.compare_price) - Number(tier.price),
+                              product.currency,
+                            )
+                          }}
+                          OFF
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  </template>
+                </UCarousel>
               </div>
 
               <!-- Attributes -->
@@ -430,20 +433,28 @@ const sendInquiry = async () => {
 
         <aside class="min-w-0">
           <div class="sticky top-20 space-y-4 bg-white p-4">
-            <div class="flex items-start gap-3.5">
+            <section class="flex items-start gap-3.5">
               <div
-                class="flex size-11 shrink-0 items-center justify-center rounded bg-slate-100 text-slate-700"
+                class="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded bg-slate-100 text-slate-700"
               >
-                <UIcon name="i-lucide-store" class="size-5" />
+                <img
+                  v-if="product?.store?.logo_url"
+                  :src="product.store.logo_url"
+                  :alt="product.store.name"
+                  class="size-full object-cover"
+                />
+
+                <UIcon v-else name="i-lucide-store" class="size-5" />
               </div>
 
               <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-1.5">
                   <h2 class="truncate text-sm font-bold text-slate-950">
-                    Buyzin Express
+                    {{ product?.store?.name }}
                   </h2>
 
                   <UIcon
+                    v-if="product?.store?.verified"
                     name="i-lucide-badge-check"
                     class="size-4 shrink-0 text-blue-600"
                   />
@@ -459,19 +470,19 @@ const sendInquiry = async () => {
                     class="size-3.5 fill-amber-400 text-amber-400"
                   />
 
-                  <span class="text-xs font-semibold text-slate-700">
-                    4.9
+                  <span class="text-xs font-semibold text-body">
+                    {{ product?.store?.rating ?? "0.00" }}
                   </span>
 
-                  <span class="text-xs text-slate-400">
-                    · 98% response rate
+                  <span class="text-xs text-body">
+                    · {{ product?.store?.reviews_count ?? 0 }} reviews
                   </span>
                 </div>
               </div>
-            </div>
+            </section>
 
             <!-- Shipping -->
-            <section class="space-y-4">
+            <section v-if="product?.shipping?.available" class="space-y-4">
               <div class="flex items-start gap-2">
                 <div
                   class="flex size-7 shrink-0 items-center justify-center rounded bg-blue-50 text-blue-600"
@@ -481,9 +492,8 @@ const sendInquiry = async () => {
 
                 <div class="min-w-0">
                   <h4 class="text-xs font-medium text-muted">Shipping</h4>
-
                   <p class="mt-0.5 text-sm font-normal text-body">
-                    Flexible wholesale delivery
+                    {{ product?.shipping?.title }}
                   </p>
                 </div>
               </div>
@@ -499,7 +509,7 @@ const sendInquiry = async () => {
                   <h4 class="text-xs font-medium text-muted">Ships from</h4>
 
                   <p class="mt-0.5 break-words text-sm font-normal text-body">
-                    {{ product?.ships_from }}
+                    {{ product?.shipping?.ships_from ?? "Not specified" }}
                   </p>
                 </div>
               </div>
@@ -517,7 +527,7 @@ const sendInquiry = async () => {
                   </h4>
 
                   <p class="mt-0.5 text-sm font-normal text-body">
-                    {{ product?.processing_days }} days
+                    {{ product?.shipping?.processing_days ?? 0 }} days
                   </p>
                 </div>
               </div>
@@ -533,23 +543,36 @@ const sendInquiry = async () => {
                   <h4 class="text-xs font-medium text-muted">Delivery</h4>
 
                   <p class="mt-0.5 text-sm font-normal text-body">
-                    Negotiable with supplier
+                    <template v-if="product?.shipping?.delivery">
+                      {{ product.shipping.delivery.min_days }}–{{
+                        product.shipping.delivery.max_days
+                      }}
+                      days
+
+                      <span
+                        v-if="product.shipping.delivery.negotiable"
+                        class="text-primary"
+                      >
+                        Negotiable with supplier
+                      </span>
+                    </template>
+
+                    <span v-else> Negotiable with supplier </span>
                   </p>
                 </div>
               </div>
 
-              <div class="flex items-center gap-2">
+              <div class="flex items-start gap-2">
                 <div
                   class="flex size-7 shrink-0 items-center justify-center rounded bg-violet-50 text-violet-600"
                 >
                   <UIcon name="i-lucide-credit-card" class="size-4" />
                 </div>
 
-                <div class="min-w-0">
+                <div class="min-w-0 flex-1">
                   <h4 class="text-xs font-medium text-muted">Payment Terms</h4>
-
-                  <p class="mt-0.5 text-sm font-normal text-body">
-                    T/T, L/C, Western Union
+                  <p class="mt-0.5 break-words text-sm font-normal text-body">
+                    {{ product?.shipping?.payment_terms ?? "Not specified" }}
                   </p>
                 </div>
               </div>
@@ -573,55 +596,6 @@ const sendInquiry = async () => {
                 <UIcon name="i-lucide-message-circle" class="size-5" />
                 Chat now
               </button>
-            </section>
-
-            <!-- Payment Methods -->
-            <section class="space-y-4">
-              <h3 class="text-sm font-semibold text-slate-900">
-                Payment methods
-              </h3>
-
-              <div class="flex items-center gap-4">
-                <NuxtImg
-                  src="/visa.png"
-                  alt="Visa"
-                  class="h-5 w-auto object-contain"
-                />
-
-                <NuxtImg
-                  src="/mastercard.png"
-                  alt="Mastercard"
-                  class="h-5 w-auto object-contain"
-                />
-
-                <NuxtImg
-                  src="/paypal.png"
-                  alt="PayPal"
-                  class="h-5 w-auto object-contain"
-                />
-
-                <NuxtImg
-                  src="/applepay.png"
-                  alt="Apple Pay"
-                  class="h-5 w-auto object-contain"
-                />
-              </div>
-            </section>
-
-            <!-- Buyer Protection -->
-            <section class="flex items-start gap-2">
-              <UIcon name="i-lucide-shield-check" class="size-6" />
-
-              <div class="block">
-                <h4 class="text-sm font-semibold text-slate-900">
-                  Buyer Protection
-                </h4>
-
-                <p class="mt-1 text-xs leading-5 text-slate-600">
-                  Get a full refund if the item is not as described or is not
-                  delivered.
-                </p>
-              </div>
             </section>
           </div>
         </aside>

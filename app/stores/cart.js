@@ -11,10 +11,13 @@ export const useCartStore = defineStore("cart", {
 
   getters: {
     itemCount: (state) => state.cart?.items?.length ?? 0,
+
+    totalItems: (state) =>
+      state.cart?.items?.reduce((total, item) => total + item.quantity, 0) ?? 0,
   },
 
   actions: {
-    async items() {
+    async getItems() {
       const { $api } = useNuxtApp();
       try {
         const response = await $api("/api/cart");
