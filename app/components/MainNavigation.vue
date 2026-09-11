@@ -11,33 +11,6 @@ const {
 });
 
 const categoryOpen = ref(false);
-
-const menus = [
-  {
-    label: "Home",
-    to: "/",
-  },
-  {
-    label: "Products",
-    to: "/",
-  },
-  {
-    label: "Brands",
-    to: "/",
-  },
-  {
-    label: "Deals",
-    to: "/",
-  },
-  {
-    label: "Request a Quote",
-    to: "/",
-  },
-  {
-    label: "Become a Seller",
-    to: "/",
-  },
-];
 </script>
 
 <template>
@@ -72,6 +45,7 @@ const menus = [
               v-for="category in categories?.data ?? []"
               :key="category.id"
               :item="category"
+              :path="`/categories/${category.slug}`"
             />
           </ul>
 

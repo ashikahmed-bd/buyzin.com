@@ -4,6 +4,11 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+
+  path: {
+    type: String,
+    required: true,
+  },
 });
 
 const isOpen = ref(false);
@@ -17,10 +22,7 @@ const toggle = (e) => {
 <template>
   <li class="group block">
     <div class="flex items-center justify-between hover:text-primary py-0.5">
-      <a
-        :href="`/shop?categories/${item.slug}`"
-        class="flex items-center gap-2 w-1/2"
-      >
+      <a :href="path" class="flex items-center gap-2 w-1/2">
         <NuxtImg
           v-if="item.image_url"
           :src="item.image_url"
@@ -52,6 +54,7 @@ const toggle = (e) => {
         v-for="child in item.children"
         :key="child.id"
         :item="child"
+        :path="`${path}/${child.slug}`"
       />
     </ul>
   </li>
