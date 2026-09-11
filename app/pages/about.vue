@@ -1,11 +1,12 @@
 <script setup>
-const route = useRoute()
-const config = useRuntimeConfig()
+const route = useRoute();
+const config = useRuntimeConfig();
 
 useSchemaOrg([
   defineWebPage({
     name: "About Us | Buyzin.com Bangladesh",
-    description: "Learn about Buyzin, a trusted online shopping platform in Bangladesh offering fashion, electronics, gadgets, and lifestyle products with secure payments and reliable nationwide delivery.",
+    description:
+      "Learn about Buyzin, a trusted online shopping platform in Bangladesh offering fashion, electronics, gadgets, and lifestyle products with secure payments and reliable nationwide delivery.",
     url: new URL(route.fullPath, config.public.siteUrl).toString(),
     inLanguage: "en-US",
   }),
@@ -13,16 +14,15 @@ useSchemaOrg([
   defineBreadcrumb({
     itemListElement: [
       {
-        name: 'Home',
-        item: new URL('/', config.public.siteUrl).toString(),
+        name: "Home",
+        item: new URL("/", config.public.siteUrl).toString(),
       },
       {
-        name: 'About Us',
+        name: "About Us",
         item: new URL(route.fullPath, config.public.siteUrl).toString(),
       },
     ],
   }),
-
 ]);
 </script>
 
@@ -33,7 +33,7 @@ useSchemaOrg([
     keywords="Buyzin About Us, online shopping Bangladesh, ecommerce platform Bangladesh, trusted online store, genuine products, fast delivery, Buyzin mission vision"
   />
 
-  <main class="max-w-7xl mx-auto px-4 py-4">
+  <main class="container mx-auto px-4 py-4">
     <!-- Hero Section -->
     <section
       class="bg-gradient-to-br from-blue-50 to-blue-100 py-16 text-center"

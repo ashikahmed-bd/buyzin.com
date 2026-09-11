@@ -1,0 +1,153 @@
+<script setup>
+const categoryStore = useCategoryStore();
+
+const {
+  data: categories,
+  pending,
+  error,
+  refresh,
+} = await useAsyncData("categories", async () => {
+  return await categoryStore.getCategories();
+});
+
+const categoryOpen = ref(false);
+
+const menus = [
+  {
+    label: "Home",
+    to: "/",
+  },
+  {
+    label: "Products",
+    to: "/",
+  },
+  {
+    label: "Brands",
+    to: "/",
+  },
+  {
+    label: "Deals",
+    to: "/",
+  },
+  {
+    label: "Request a Quote",
+    to: "/",
+  },
+  {
+    label: "Become a Seller",
+    to: "/",
+  },
+];
+</script>
+
+<template>
+  <nav class="z-40 hidden bg-white lg:block border-b border-border py-2.5">
+    <div class="container mx-auto flex items-center px-4">
+      <div class="relative shrink-0">
+        <button
+          type="button"
+          @click="categoryOpen = !categoryOpen"
+          class="flex items-center gap-2 text-sm font-medium text-body"
+        >
+          <UIcon name="i-lucide-menu" class="size-4" />
+          <span>All Categories</span>
+
+          <UIcon
+            :name="
+              categoryOpen ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'
+            "
+            class="size-5"
+          />
+        </button>
+
+        <div
+          v-if="categoryOpen"
+          @mouseleave="categoryOpen = false"
+          class="absolute left-0 top-full z-50 mt-2 w-72 rounded-b-xl bg-white"
+        >
+          <ul
+            class="max-h-[calc(100vh-180px)] space-y-1 overflow-y-auto scrollbar p-2"
+          >
+            <NavigationItem
+              v-for="category in categories?.data ?? []"
+              :key="category.id"
+              :item="category"
+            />
+          </ul>
+
+          <a
+            href="/categories"
+            class="flex items-center justify-between border-t border-gray-100 px-4 py-3 text-xs font-semibold text-primary transition hover:bg-gray-50"
+          >
+            <span>View All Categories</span>
+            <UIcon name="i-lucide-arrow-right" class="size-4" />
+          </a>
+        </div>
+      </div>
+
+      <div class="ml-8 flex items-center gap-4">
+        <div class="ml-8 flex items-center gap-4">
+          <NuxtLink
+            to="/"
+            class="relative flex h-full items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
+          >
+            Home
+          </NuxtLink>
+
+          <NuxtLink
+            to="/products"
+            class="relative flex h-full items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
+          >
+            Products
+          </NuxtLink>
+
+          <NuxtLink
+            to="/brands"
+            class="relative flex h-full items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
+          >
+            Brands
+          </NuxtLink>
+
+          <NuxtLink
+            to="/deals"
+            class="relative flex h-full items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
+          >
+            Deals
+          </NuxtLink>
+
+          <NuxtLink
+            to="/request-a-quote"
+            class="relative flex h-full items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
+          >
+            Request a Quote
+          </NuxtLink>
+
+          <NuxtLink
+            to="/become-a-seller"
+            class="relative flex h-full items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
+          >
+            Become a Seller
+          </NuxtLink>
+        </div>
+      </div>
+
+      <div class="ml-auto flex items-center gap-6">
+        <NuxtLink
+          to="/support"
+          class="flex items-center gap-2 text-xs font-medium text-gray-800 transition hover:text-primary"
+        >
+          <UIcon name="i-lucide-circle-help" class="size-4" />
+          <span>Support</span>
+        </NuxtLink>
+
+        <a
+          href="tel:+8801234567890"
+          class="flex items-center gap-2 text-xs font-medium text-gray-800 transition hover:text-primary"
+        >
+          <UIcon name="i-lucide-phone" class="size-4" />
+          <span>+880 1234 567890</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+</template>

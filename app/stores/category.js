@@ -8,12 +8,24 @@ export const useCategoryStore = defineStore("category", {
 
   actions: {
     async getCategories() {
-      const { $api } = useNuxtApp()
+      const { $api } = useNuxtApp();
       try {
-        return await $api("/api/categories")
+        const response = await $api("/api/categories");
+        return response;
       } catch (error) {
-        this.errors = error?.response?._data?.errors
-        throw error
+        this.errors = error?.response?._data?.errors;
+        throw error;
+      }
+    },
+
+    async getProducts(slug) {
+      const { $api } = useNuxtApp();
+      try {
+        const response = await $api(`/api/categories/${slug}/products`);
+        return response;
+      } catch (error) {
+        this.errors = error?.response?._data?.errors;
+        throw error;
       }
     },
   },

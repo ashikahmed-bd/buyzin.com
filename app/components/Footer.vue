@@ -300,7 +300,7 @@ const settings = useSettings();
                     to="/apply-vendor"
                     class="hover:text-primary transition-colors duration-200"
                   >
-                    Sell on Buyzin
+                    Become a Supplier
                   </NuxtLink>
                 </li>
               </ul>

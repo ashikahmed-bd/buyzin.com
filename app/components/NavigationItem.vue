@@ -15,10 +15,8 @@ const toggle = (e) => {
 </script>
 
 <template>
-  <li class="block">
-    <div
-      class="flex items-center justify-between hover:bg-gray-100 rounded-lg py-2 px-3"
-    >
+  <li class="group block">
+    <div class="flex items-center justify-between hover:text-primary py-0.5">
       <a
         :href="`/shop?categories/${item.slug}`"
         class="flex items-center gap-2 w-1/2"
@@ -27,11 +25,12 @@ const toggle = (e) => {
           v-if="item.image_url"
           :src="item.image_url"
           loading="eager"
-          class="w-6 h-6 rounded object-cover"
+          class="size-6 rounded object-cover"
         />
-        <span class="text-sm text-body font-medium whitespace-nowrap">{{
-          item.name
-        }}</span>
+        <span
+          class="text-sm text-body hover:text-primary font-medium whitespace-nowrap"
+          >{{ item.name }}</span
+        >
       </a>
 
       <div

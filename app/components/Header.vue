@@ -3,50 +3,44 @@ const authStore = useAuthStore();
 const cartStore = useCartStore();
 
 const { user } = storeToRefs(authStore);
+
+const sidebarOpen = ref(false);
 </script>
 
 <template>
-  <header class="bg-white border-b border-border sticky top-0 z-30">
-    <div class="hidden md:block bg-dark text-white">
-      <div class="container mx-auto px-4">
-        <div class="flex h-9 items-center justify-between text-xs">
-          <div class="flex items-center gap-6">
-            <span class="flex items-center gap-1.5 text-gray-300">
-              <UIcon
-                name="i-lucide-badge-check"
-                class="size-3.5 text-primary"
-              />
-              Verified B2B Marketplace
-            </span>
-            <span class="text-gray-500">|</span>
-            <span class="text-gray-300"> Wholesale pricing available </span>
-          </div>
-          <div class="flex items-center gap-5">
-            <NuxtLink to="/" class="text-gray-300 transition hover:text-white">
-              Become a Supplier
-            </NuxtLink>
-            <NuxtLink
-              to="/help"
-              class="text-gray-300 transition hover:text-white"
-            >
-              Help Center
-            </NuxtLink>
-            <span class="flex items-center gap-1.5 text-gray-300">
-              <UIcon name="i-lucide-globe-2" class="size-3.5" /> EN
-            </span>
-          </div>
+  <div class="hidden md:block bg-dark text-white">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between text-xs py-2">
+        <div class="flex items-center gap-6">
+          <span class="flex items-center gap-1.5 text-gray-300">
+            <UIcon name="i-lucide-badge-check" class="size-3.5 text-primary" />
+            Verified B2B Marketplace
+          </span>
+          <span class="text-gray-500">|</span>
+          <span class="text-gray-300"> Wholesale pricing available </span>
+        </div>
+        <div class="flex items-center gap-5">
+          <NuxtLink to="/" class="text-gray-300 transition hover:text-white">
+            Become a Supplier
+          </NuxtLink>
+          <NuxtLink
+            to="/help"
+            class="text-gray-300 transition hover:text-white"
+          >
+            Help Center
+          </NuxtLink>
+          <span class="flex items-center gap-1.5 text-gray-300">
+            <UIcon name="i-lucide-globe-2" class="size-3.5" /> EN
+          </span>
         </div>
       </div>
     </div>
-    <div class="container mx-auto">
-      <div class="flex items-center justify-between px-4 py-2.5">
-        <button
-          type="button"
-          class="p-2 rounded hover:text-primary hover:bg-gray-100 md:hidden"
-        >
-          <UIcon name="i-lucide-menu" class="size-6 text-body" />
-        </button>
+  </div>
 
+  <div class="bg-white sticky top-0 z-30">
+    <header class="container mx-auto px-4 border-b border-border">
+      <div class="flex items-center justify-between py-2.5">
+        <MobileNavigation />
         <div class="flex-none">
           <a href="/" class="block">
             <NuxtImg
@@ -133,7 +127,7 @@ const { user } = storeToRefs(authStore);
       </div>
 
       <!-- Mobile search -->
-      <form class="relative w-full mx-auto mt-3 block md:hidden">
+      <form class="relative w-full block md:hidden">
         <input
           type="search"
           placeholder="Search products..."
@@ -146,8 +140,9 @@ const { user } = storeToRefs(authStore);
           <UIcon name="i-lucide-search" class="size-5 text-white" />
         </button>
       </form>
-    </div>
-  </header>
+    </header>
+    <MainNavigation />
+  </div>
 </template>
 
 <style scoped></style>
