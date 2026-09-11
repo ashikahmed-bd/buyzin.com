@@ -105,7 +105,7 @@ const addToWishlist = async (product) => {
           </div>
         </div>
 
-        <div class="flex items-center justify-between gap-2">
+        <div class="flex flex-wrap items-center justify-between gap-2">
           <span class="inline-flex items-center text-xs font-medium text-body">
             MOQ: {{ product.moq }} {{ product.unit }}
           </span>

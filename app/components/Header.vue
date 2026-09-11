@@ -1,17 +1,8 @@
 <script setup>
 const authStore = useAuthStore();
-const categoryStore = useCategoryStore();
 const cartStore = useCartStore();
 
 const { user } = storeToRefs(authStore);
-
-const {
-  data: categories,
-  error,
-  pending,
-} = useAsyncData("categories", async () => {
-  return categoryStore.getCategories();
-});
 </script>
 
 <template>
@@ -66,48 +57,8 @@ const {
           </a>
         </div>
 
-        <div class="hidden lg:block grow max-w-2xl mx-12">
-          <div
-            class="flex w-full items-center bg-white border border-border rounded-full transition"
-          >
-            <select
-              class="max-w-40 bg-transparent px-4 py-2 text-sm text-body focus:outline-none"
-            >
-              <option value="">All Categories</option>
-              <template v-for="parent in categories?.data" :key="parent.id">
-                <optgroup :label="parent.name">
-                  <option :value="parent.slug">All {{ parent.name }}</option>
-                  <option
-                    v-for="child in parent.children"
-                    :key="child.id"
-                    :value="child.slug"
-                  >
-                    {{ child.name }}
-                  </option>
-                  <template v-for="child in parent.children">
-                    <option
-                      v-for="item in child.children"
-                      :key="item.id"
-                      :value="item.slug"
-                    >
-                      — {{ item.name }}
-                    </option>
-                  </template>
-                </optgroup>
-              </template>
-            </select>
-            <input
-              type="search"
-              placeholder="Search products..."
-              class="flex-1 px-4 py-2 text-sm text-body placeholder-gray-400 bg-transparent focus:outline-none"
-            />
-            <button
-              class="m-1 px-5 py-2 bg-primary text-white text-sm font-medium rounded-full hover:bg-primary/90 active:scale-[0.98] transition"
-            >
-              Search
-            </button>
-          </div>
-        </div>
+        <!-- search -->
+        <SearchBar />
 
         <div class="flex items-center gap-6">
           <NuxtLink
@@ -154,28 +105,30 @@ const {
             </template>
           </NuxtLink>
 
-          <NuxtLink
-            to="/wishlist"
-            class="relative hidden md:block cursor-pointer"
-          >
-            <UIcon name="i-lucide-heart" class="size-5 text-body" />
-            <span
-              class="absolute -top-2 -right-2 bg-danger text-white text-xs px-1 rounded-full"
+          <div class="flex items-center gap-4">
+            <NuxtLink
+              to="/wishlist"
+              class="relative hidden md:block cursor-pointer"
             >
-              0
-            </span>
-          </NuxtLink>
-
-          <NuxtLink to="/cart" class="relative cursor-pointer">
-            <UIcon name="i-lucide-shopping-cart" class="size-5 text-body" />
-            <ClientOnly>
+              <UIcon name="i-lucide-heart" class="size-5 text-body" />
               <span
-                class="absolute -top-2 -right-2 bg-primary text-white text-xs px-1 rounded-full"
+                class="absolute -top-2 -right-2 bg-danger text-white text-xs px-1 rounded-full"
               >
-                {{ cartStore.itemCount }}
+                0
               </span>
-            </ClientOnly>
-          </NuxtLink>
+            </NuxtLink>
+
+            <NuxtLink to="/cart" class="relative cursor-pointer">
+              <UIcon name="i-lucide-shopping-cart" class="size-5 text-body" />
+              <ClientOnly>
+                <span
+                  class="absolute -top-2 -right-2 bg-primary text-white text-xs px-1 rounded-full"
+                >
+                  {{ cartStore.itemCount }}
+                </span>
+              </ClientOnly>
+            </NuxtLink>
+          </div>
         </div>
       </div>
 

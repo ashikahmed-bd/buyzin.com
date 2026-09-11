@@ -13,11 +13,7 @@ const menu = [
     to: "/account/orders",
     icon: "i-lucide-package",
   },
-  {
-    label: "Return & Refund",
-    to: "/account/returns",
-    icon: "i-lucide-rotate-ccw",
-  },
+
   {
     label: "My Reviews",
     to: "/account/reviews",
@@ -42,11 +38,6 @@ const menu = [
     label: "Notifications",
     to: "/account/notifications",
     icon: "i-lucide-bell",
-  },
-  {
-    label: "Help & Support",
-    to: "/account/support",
-    icon: "i-lucide-circle-help",
   },
 ];
 

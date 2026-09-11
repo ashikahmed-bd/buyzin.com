@@ -13,7 +13,7 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ['@nuxt/image', '@nuxt/ui', '@nuxtjs/mdc', '@nuxtjs/sitemap', '@pinia/nuxt', 'pinia-plugin-persistedstate/nuxt', 'nuxt-gtag', 'nuxt-schema-org'],
+  modules: ['@nuxt/image', '@nuxt/ui', '@nuxtjs/mdc', '@nuxtjs/sitemap', '@pinia/nuxt', 'pinia-plugin-persistedstate/nuxt', 'nuxt-gtag', 'nuxt-schema-org', '@vueuse/nuxt'],
 
 
   css: ['~/assets/css/main.css'],

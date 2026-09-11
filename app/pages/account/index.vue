@@ -367,7 +367,7 @@ const scrollNext = () => {
               </NuxtLink>
 
               <NuxtLink
-                to="/account/returns"
+                to="/account"
                 class="group flex items-center gap-2 p-2.5"
               >
                 <span
