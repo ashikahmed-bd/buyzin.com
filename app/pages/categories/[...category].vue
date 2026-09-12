@@ -144,7 +144,7 @@ const { data, pending, error, refresh } = await useAsyncData(
         </section>
 
         <section class="py-6">
-          <div class="flex items-center justify-between gap-4 py-4">
+          <div class="flex flex-wrap items-center justify-between gap-4 py-4">
             <div>
               <h2 class="text-base font-semibold text-title">
                 {{ data?.meta?.total ?? data?.data?.length ?? 0 }}

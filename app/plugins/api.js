@@ -14,8 +14,6 @@ export default defineNuxtPlugin(() => {
       options.headers = new Headers(options.headers);
       options.headers.set("Accept", "application/json");
 
-      const xsrfToken = useCookie("XSRF-TOKEN");
-
       if (authStore.token) {
         options.headers.set("Authorization", `Bearer ${authStore.token}`);
       }
@@ -32,8 +30,6 @@ export default defineNuxtPlugin(() => {
             color: "error",
           });
           authStore.$reset();
-
-          navigateTo("/auth/login");
 
           break;
 
