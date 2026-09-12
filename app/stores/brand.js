@@ -16,27 +16,24 @@ export const useBrandStore = defineStore("brand", {
         this.brands = response;
         return response;
       } catch (error) {
-        this.errors = error?.response?._data?.errors
-        throw error
+        this.errors = error?.response?._data?.errors;
+        throw error;
       }
     },
 
-    async getProducts(brand, params = {}) {
+    async getProducts(brand, query = {}) {
       this.loading = true;
       const { $api } = useNuxtApp();
       try {
         const response = await $api(`/api/brands/${brand}/products`, {
-          params: {
-            page: params.page,
-            limit: params.limit,
-            sort: params.sort,
-          },
+          method: "GET",
+          query: query,
         });
 
         return response;
       } catch (error) {
-        this.errors = error?.response?._data?.errors
-        throw error
+        this.errors = error?.response?._data?.errors;
+        throw error;
       }
     },
   },

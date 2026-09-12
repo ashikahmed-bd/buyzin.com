@@ -48,34 +48,6 @@ useSchemaOrg([
     foundingDate: "2025-01-01",
   }),
 ]);
-
-const menuItems = [
-  {
-    label: "Home",
-    icon: "i-lucide-house",
-    to: "/",
-  },
-  {
-    label: "Shop",
-    icon: "i-lucide-shopping-bag",
-    to: "/shop",
-  },
-  {
-    label: "Categories",
-    icon: "i-lucide-layout-grid",
-    to: "/categories",
-  },
-  {
-    label: "Wishlist",
-    icon: "i-lucide-heart",
-    to: "/wishlist",
-  },
-  {
-    label: "Account",
-    icon: "i-lucide-user-round",
-    to: "/account",
-  },
-];
 </script>
 
 <template>
@@ -89,50 +61,50 @@ const menuItems = [
       aria-label="Mobile navigation"
     >
       <div class="mx-auto grid max-w-lg grid-cols-5 py-3">
-        <NuxtLink
-          to="/"
+        <a
+          href="/"
           exact-active-class="text-primary"
           class="flex flex-col items-center justify-center gap-1 text-gray-500 router-link-exact-active:font-semibold"
         >
           <UIcon name="i-lucide-house" class="size-5" />
           <span class="text-xs leading-none">Home</span>
-        </NuxtLink>
+        </a>
 
-        <NuxtLink
-          to="/shop"
+        <a
+          href="/shop"
           active-class="text-primary"
           class="flex flex-col items-center justify-center gap-1 text-gray-500"
         >
           <UIcon name="i-lucide-shopping-bag" class="size-5" />
           <span class="text-xs leading-none">Shop</span>
-        </NuxtLink>
+        </a>
 
-        <NuxtLink
-          to="/categories"
+        <a
+          href="/categories"
           active-class="text-primary"
           class="flex flex-col items-center justify-center gap-1 text-gray-500"
         >
           <UIcon name="i-lucide-layout-grid" class="size-5" />
           <span class="text-xs leading-none">Categories</span>
-        </NuxtLink>
+        </a>
 
-        <NuxtLink
-          to="/account/messages"
+        <a
+          href="/account/messages"
           active-class="text-primary"
           class="flex flex-col items-center justify-center gap-1 text-gray-500"
         >
           <UIcon name="i-lucide-messages-square" class="size-5" />
           <span class="text-xs leading-none">Messages</span>
-        </NuxtLink>
+        </a>
 
-        <NuxtLink
-          to="/account"
+        <a
+          href="/account"
           active-class="text-primary"
           class="flex flex-col items-center justify-center gap-1 text-gray-500"
         >
           <UIcon name="i-lucide-user-round" class="size-5" />
           <span class="text-xs leading-none">Account</span>
-        </NuxtLink>
+        </a>
       </div>
     </nav>
   </NuxtLayout>

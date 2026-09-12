@@ -155,41 +155,33 @@ const shareLink = async (product) => {
       <div class="bg-white">
         <div class="mx-auto py-2">
           <div class="flex items-center justify-between gap-4">
-            <nav class="flex min-w-0 items-center gap-2 text-sm">
-              <a href="#" class="shrink-0 text-slate-500 hover:text-slate-900">
-                Home
+            <nav class="flex items-center gap-2 text-sm text-body">
+              <a href="/" class="flex items-center gap-2 text-body">
+                <span>Home</span>
+                <UIcon name="i-lucide-chevron-right" class="size-4" />
               </a>
-              <span class="text-slate-300">/</span>
-              <a
-                href="#"
-                class="hidden text-slate-500 hover:text-slate-900 sm:block"
+              <template
+                v-for="(item, index) in product?.breadcrumbs"
+                :key="index"
               >
-                Apparel
-              </a>
+                <a
+                  v-if="index < product.breadcrumbs.length - 1"
+                  :to="item.slug"
+                  class="hover:text-primary"
+                >
+                  {{ item.name }}
+                </a>
 
-              <span class="hidden text-slate-300 sm:block">/</span>
+                <span v-else>
+                  {{ item.name }}
+                </span>
 
-              <a
-                href="#"
-                class="hidden text-slate-500 hover:text-slate-900 md:block"
-              >
-                Men's Wear
-              </a>
-
-              <span class="hidden text-slate-300 md:block">/</span>
-
-              <a
-                href="#"
-                class="hidden text-slate-500 hover:text-slate-900 lg:block"
-              >
-                T-Shirts
-              </a>
-
-              <span class="text-slate-300">/</span>
-
-              <span class="truncate font-medium text-slate-900">
-                {{ product?.name }}
-              </span>
+                <UIcon
+                  v-if="index < product.breadcrumbs.length - 1"
+                  name="i-lucide-chevron-right"
+                  class="size-4"
+                />
+              </template>
             </nav>
 
             <div class="hidden items-center gap-3 sm:flex">
@@ -571,7 +563,7 @@ const shareLink = async (product) => {
                   <div class="min-w-0 flex-1">
                     <h4 class="text-xs font-medium text-muted">Ships from</h4>
 
-                    <p class="mt-0.5 break-words text-sm font-normal text-body">
+                    <p class="mt-0.5 text-sm font-normal text-body">
                       {{ product?.shipping?.ships_from ?? "Not specified" }}
                     </p>
                   </div>

@@ -22,7 +22,7 @@ const categoryOpen = ref(false);
           @click="categoryOpen = !categoryOpen"
           class="flex items-center gap-2 text-sm font-medium text-body"
         >
-          <UIcon name="i-lucide-menu" class="size-4" />
+          <UIcon name="i-lucide-grip" class="size-4" />
           <span>All Categories</span>
 
           <UIcon
@@ -60,63 +60,56 @@ const categoryOpen = ref(false);
       </div>
 
       <div class="ml-8 flex items-center gap-4">
-        <div class="ml-8 flex items-center gap-4">
-          <NuxtLink
-            to="/"
-            class="relative flex h-full items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
+        <div class="ml-8 flex items-center gap-6">
+          <a
+            href="/"
+            class="relative flex items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
           >
             Home
-          </NuxtLink>
+          </a>
 
-          <NuxtLink
-            to="/products"
-            class="relative flex h-full items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
-          >
-            Products
-          </NuxtLink>
-
-          <NuxtLink
-            to="/brands"
-            class="relative flex h-full items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
+          <a
+            href="/"
+            class="relative flex items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
           >
             Brands
-          </NuxtLink>
+          </a>
 
-          <NuxtLink
-            to="/deals"
-            class="relative flex h-full items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
+          <a
+            href="/"
+            class="relative flex items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
           >
             Deals
-          </NuxtLink>
+          </a>
 
-          <NuxtLink
-            to="/request-a-quote"
-            class="relative flex h-full items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
+          <a
+            href="/"
+            class="relative flex items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
           >
             Request a Quote
-          </NuxtLink>
+          </a>
 
-          <NuxtLink
-            to="/become-a-seller"
-            class="relative flex h-full items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
+          <a
+            href="/"
+            class="relative flex items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
           >
             Become a Seller
-          </NuxtLink>
+          </a>
         </div>
       </div>
 
       <div class="ml-auto flex items-center gap-6">
-        <NuxtLink
-          to="/support"
-          class="flex items-center gap-2 text-xs font-medium text-gray-800 transition hover:text-primary"
+        <a
+          href="/support"
+          class="flex items-center gap-2 text-sm font-medium text-gray-800 transition hover:text-primary"
         >
           <UIcon name="i-lucide-circle-help" class="size-4" />
           <span>Support</span>
-        </NuxtLink>
+        </a>
 
         <a
           href="tel:+8801234567890"
-          class="flex items-center gap-2 text-xs font-medium text-gray-800 transition hover:text-primary"
+          class="flex items-center gap-2 text-sm font-medium text-gray-800 transition hover:text-primary"
         >
           <UIcon name="i-lucide-phone" class="size-4" />
           <span>+880 1234 567890</span>

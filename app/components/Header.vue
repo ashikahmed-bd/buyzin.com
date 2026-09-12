@@ -3,8 +3,6 @@ const authStore = useAuthStore();
 const cartStore = useCartStore();
 
 const { user } = storeToRefs(authStore);
-
-const sidebarOpen = ref(false);
 </script>
 
 <template>
@@ -20,15 +18,12 @@ const sidebarOpen = ref(false);
           <span class="text-gray-300"> Wholesale pricing available </span>
         </div>
         <div class="flex items-center gap-5">
-          <NuxtLink to="/" class="text-gray-300 transition hover:text-white">
+          <a to="/" class="text-gray-300 transition hover:text-white">
             Become a Supplier
-          </NuxtLink>
-          <NuxtLink
-            to="/help"
-            class="text-gray-300 transition hover:text-white"
-          >
+          </a>
+          <a to="/help" class="text-gray-300 transition hover:text-white">
             Help Center
-          </NuxtLink>
+          </a>
           <span class="flex items-center gap-1.5 text-gray-300">
             <UIcon name="i-lucide-globe-2" class="size-3.5" /> EN
           </span>
@@ -55,8 +50,8 @@ const sidebarOpen = ref(false);
         <SearchBar />
 
         <div class="flex items-center gap-6">
-          <NuxtLink
-            :to="user ? '/account' : '/auth/login'"
+          <a
+            :href="user ? '/account' : '/auth/login'"
             class="hidden md:flex items-center gap-2.5 rounded-xl px-2.5"
           >
             <template v-if="user">
@@ -97,22 +92,19 @@ const sidebarOpen = ref(false);
                 <p class="text-sm font-semibold text-gray-900">Sign In</p>
               </div>
             </template>
-          </NuxtLink>
+          </a>
 
           <div class="flex items-center gap-4">
-            <NuxtLink
-              to="/wishlist"
-              class="relative hidden md:block cursor-pointer"
-            >
+            <a href="/wishlist" class="relative hidden md:block cursor-pointer">
               <UIcon name="i-lucide-heart" class="size-5 text-body" />
               <span
                 class="absolute -top-2 -right-2 bg-danger text-white text-xs px-1 rounded-full"
               >
                 0
               </span>
-            </NuxtLink>
+            </a>
 
-            <NuxtLink to="/cart" class="relative cursor-pointer">
+            <a href="/cart" class="relative cursor-pointer">
               <UIcon name="i-lucide-shopping-cart" class="size-5 text-body" />
               <ClientOnly>
                 <span
@@ -121,7 +113,7 @@ const sidebarOpen = ref(false);
                   {{ cartStore.itemCount }}
                 </span>
               </ClientOnly>
-            </NuxtLink>
+            </a>
           </div>
         </div>
       </div>

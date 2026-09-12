@@ -41,7 +41,7 @@ const addToWishlist = async (product) => {
       </button>
     </div>
 
-    <NuxtLink :to="`/product/${product.slug}/${product.id}`">
+    <a :href="`/product/${product.slug}/${product.id}`">
       <div
         class="relative shine__img__wrapper aspect-square bg-gray-50 overflow-hidden"
       >
@@ -52,16 +52,16 @@ const addToWishlist = async (product) => {
           loading="lazy"
         />
       </div>
-    </NuxtLink>
+    </a>
 
     <div class="p-2.5">
-      <NuxtLink :to="`/product/${product.slug}/${product.id}`">
+      <a :href="`/product/${product.slug}/${product.id}`">
         <h3
           class="text-sm font-semibold text-title line-clamp-2 transition hover:opacity-90"
         >
           {{ product.name }}
         </h3>
-      </NuxtLink>
+      </a>
 
       <div class="flex items-center gap-2 py-2">
         <div class="flex items-center">

@@ -46,9 +46,13 @@ const settings = useSettings();
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 py-12">
         <div class="flex w-full flex-col items-start">
-          <NuxtLink to="/" class="mb-3">
-            <img src="/logo.svg" alt="logo" class="h-12 object-cover w-auto" />
-          </NuxtLink>
+          <a href="/" class="mb-3">
+            <NuxtImg
+              src="/logo.svg"
+              alt="logo"
+              class="h-12 object-cover w-auto"
+            />
+          </a>
           <p class="text-body">
             We are committed to providing 100% genuine and authentic products at
             the best prices. Our mission is to make your shopping experience
@@ -148,24 +152,24 @@ const settings = useSettings();
                     name="i-lucide-chevrons-right"
                     class="size-4 mr-1 group-hover:text-primary transition"
                   />
-                  <NuxtLink
-                    to="/privacy-policy"
+                  <a
+                    href="/privacy-policy"
                     class="group-hover:text-primary transition-colors duration-200"
                   >
                     Privacy Policy
-                  </NuxtLink>
+                  </a>
                 </li>
                 <li class="flex items-center group">
                   <LazyUIcon
                     name="i-lucide-chevrons-right"
                     class="size-4 mr-1 group-hover:text-primary transition"
                   />
-                  <NuxtLink
-                    to="/terms-and-conditions"
+                  <a
+                    href="/terms-and-conditions"
                     class="group-hover:text-primary transition-colors duration-200"
                   >
                     Terms & Conditions
-                  </NuxtLink>
+                  </a>
                 </li>
 
                 <li class="flex items-center group">
@@ -173,12 +177,12 @@ const settings = useSettings();
                     name="i-lucide-chevrons-right"
                     class="size-4 mr-1 group-hover:text-primary transition"
                   />
-                  <NuxtLink
-                    to="/returns-refunds"
+                  <a
+                    href="/returns-refunds"
                     class="group-hover:text-primary transition-colors duration-200"
                   >
                     Return & Refund
-                  </NuxtLink>
+                  </a>
                 </li>
 
                 <li class="flex items-center group">
@@ -186,12 +190,12 @@ const settings = useSettings();
                     name="i-lucide-chevrons-right"
                     class="size-4 mr-1 group-hover:text-primary transition"
                   />
-                  <NuxtLink
-                    to="/shipping-delivery"
+                  <a
+                    href="/shipping-delivery"
                     class="group-hover:text-primary transition-colors duration-200"
                   >
                     Shipping & Delivery
-                  </NuxtLink>
+                  </a>
                 </li>
 
                 <li class="flex items-center group">
@@ -199,12 +203,12 @@ const settings = useSettings();
                     name="i-lucide-chevrons-right"
                     class="size-4 mr-1 group-hover:text-primary transition"
                   />
-                  <NuxtLink
-                    to="/warranty-policy"
+                  <a
+                    href="/warranty-policy"
                     class="group-hover:text-primary transition-colors duration-200"
                   >
                     Warranty Policy
-                  </NuxtLink>
+                  </a>
                 </li>
 
                 <li class="flex items-center group">
@@ -212,12 +216,12 @@ const settings = useSettings();
                     name="i-lucide-chevrons-right"
                     class="size-4 mr-1 group-hover:text-primary transition"
                   />
-                  <NuxtLink
-                    to="/cookie-policy"
+                  <a
+                    href="/cookie-policy"
                     class="group-hover:text-primary transition-colors duration-200"
                   >
                     Cookie Policy
-                  </NuxtLink>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -232,12 +236,12 @@ const settings = useSettings();
                     name="i-lucide-chevrons-right"
                     class="size-4 mr-1 group-hover:text-primary transition"
                   />
-                  <NuxtLink
-                    to="/"
+                  <a
+                    href="/"
                     class="hover:text-primary transition-colors duration-200"
                   >
                     FAQ
-                  </NuxtLink>
+                  </a>
                 </li>
 
                 <li class="flex items-center group">
@@ -245,12 +249,12 @@ const settings = useSettings();
                     name="i-lucide-chevrons-right"
                     class="size-4 mr-1 group-hover:text-primary transition"
                   />
-                  <NuxtLink
-                    to="/help"
+                  <a
+                    href="/help"
                     class="hover:text-primary transition-colors duration-200"
                   >
                     Help Center
-                  </NuxtLink>
+                  </a>
                 </li>
 
                 <li class="flex items-center group">
@@ -258,12 +262,12 @@ const settings = useSettings();
                     name="i-lucide-chevrons-right"
                     class="size-4 mr-1 group-hover:text-primary transition"
                   />
-                  <NuxtLink
-                    to="/about"
+                  <a
+                    href="/about"
                     class="hover:text-primary transition-colors duration-200"
                   >
                     Blog
-                  </NuxtLink>
+                  </a>
                 </li>
 
                 <li class="flex items-center group">
@@ -271,24 +275,24 @@ const settings = useSettings();
                     name="i-lucide-chevrons-right"
                     class="size-4 mr-1 group-hover:text-primary transition"
                   />
-                  <NuxtLink
-                    to="/"
+                  <a
+                    href="/"
                     class="hover:text-primary transition-colors duration-200"
                   >
                     About Us
-                  </NuxtLink>
+                  </a>
                 </li>
                 <li class="flex items-center group">
                   <LazyUIcon
                     name="i-lucide-chevrons-right"
                     class="size-4 mr-1 group-hover:text-primary transition"
                   />
-                  <NuxtLink
-                    to="/"
+                  <a
+                    href="/"
                     class="hover:text-primary transition-colors duration-200"
                   >
                     Contact Us
-                  </NuxtLink>
+                  </a>
                 </li>
 
                 <li class="flex items-center group">
@@ -296,12 +300,12 @@ const settings = useSettings();
                     name="i-lucide-chevrons-right"
                     class="size-4 mr-1 group-hover:text-primary transition"
                   />
-                  <NuxtLink
-                    to="/apply-vendor"
+                  <a
+                    href="/apply-vendor"
                     class="hover:text-primary transition-colors duration-200"
                   >
                     Become a Supplier
-                  </NuxtLink>
+                  </a>
                 </li>
               </ul>
             </div>

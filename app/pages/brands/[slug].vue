@@ -1,84 +1,301 @@
 <script setup>
-const route = useRoute()
+const route = useRoute();
+const router = useRouter();
 
-// dummy brand data (replace with API later)
-const brand = {
-  name: "Apple",
-  logo: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
-  description: "Premium consumer electronics and software products.",
-  total_products: 24,
-}
+const brandStore = useBrandStore();
 
-// dummy products
-const products = Array.from({ length: 12 }).map((_, i) => ({
-  id: i + 1,
-  name: `Product ${i + 1}`,
-  price: (100 + i * 25).toFixed(2),
-  image: "https://via.placeholder.com/300",
-  slug: `product-${i + 1}`,
-}))
+const filters = reactive({
+  category: route.query.category ? route.query.category.split(",") : [],
+  availability: route.query.availability,
+  rating: route.query.rating,
+  sort: route.query.sort,
+});
+
+const mobileFilterOpen = ref(false);
+
+const { data, pending, error, refresh } = await useAsyncData(
+  `brand-${route.params.slug}`,
+  () => brandStore.getProducts(route.params.slug, route.query),
+  {
+    watch: [
+      () => route.params.slug,
+      () => route.query.category,
+      () => route.query.availability,
+      () => route.query.rating,
+      () => route.query.sort,
+    ],
+  },
+);
+
+watch(
+  filters,
+  (value) => {
+    router.replace({
+      query: {
+        ...(value.category?.length && {
+          category: value.category.join(","),
+        }),
+
+        ...(value.availability && {
+          availability: value.availability,
+        }),
+
+        ...(value.rating && {
+          rating: value.rating,
+        }),
+
+        ...(value.sort && {
+          sort: value.sort,
+        }),
+      },
+    });
+  },
+  { deep: true },
+);
+
+const clear = () => {
+  router.push({
+    query: {},
+  });
+};
 </script>
 
 <template>
-  <main class="max-w-7xl mx-auto px-4 py-10">
-    <div class="bg-white border rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6">
+  <main class="container mx-auto px-4 py-6">
+    <div class="mb-4 flex items-center gap-2 text-sm text-body">
+      <template v-for="(item, index) in data?.breadcrumbs" :key="index">
+        <a
+          v-if="index < data.breadcrumbs.length - 1 && item?.slug"
+          :href="item.slug.startsWith('/') ? item.slug : `/${item.slug}`"
+          class="hover:text-primary"
+        >
+          {{ item.name }}
+        </a>
 
-      <img
-        :src="brand.logo"
-        class="h-20 w-20 object-contain"
-        alt="brand logo"
+        <span v-else class="text-body">
+          {{ item.name }}
+        </span>
+
+        <UIcon
+          v-if="index < data.breadcrumbs.length - 1"
+          name="i-lucide-chevron-right"
+          class="size-4"
+        />
+      </template>
+    </div>
+
+    <SeoMeta
+      v-if="data?.brand"
+      :title="data?.brand?.meta_title"
+      :description="data?.brand?.meta_description"
+      :keywords="data?.brand?.meta_keywords"
+      :url="data?.brand?.canonical_url"
+    />
+
+    <section
+      v-if="data?.brand"
+      class="relative h-56 overflow-hidden rounded bg-white sm:h-64 lg:h-72"
+    >
+      <NuxtImg
+        :src="data.brand.banner_url"
+        :alt="data.brand.name"
+        loading="lazy"
+        class="absolute inset-0 size-full object-cover"
       />
 
-      <div class="text-center md:text-left">
-        <h1 class="text-3xl font-bold text-gray-800">
-          {{ brand.name }}
-        </h1>
+      <div class="absolute inset-0 flex items-center px-6">
+        <div class="max-w-xl text-white">
+          <div class="flex items-center gap-4">
+            <div
+              class="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/30 bg-white"
+            >
+              <NuxtImg
+                :src="data.brand.logo_url"
+                :alt="data.brand.name"
+                class="size-full object-contain p-2"
+                loading="lazy"
+              />
+            </div>
 
-        <p class="text-gray-500 mt-2 max-w-xl">
-          {{ brand.description }}
-        </p>
+            <div>
+              <h1 class="text-2xl font-bold sm:text-3xl">
+                {{ data.brand.name }}
+              </h1>
 
-        <div class="mt-3 text-sm text-gray-400">
-          Total Products: {{ brand.total_products }}
-        </div>
-      </div>
-    </div>
+              <span
+                v-if="data.brand.featured"
+                class="mt-1 inline-flex items-center gap-1 text-sm font-medium text-white"
+              >
+                <UIcon name="i-lucide-badge-check" class="size-4" />
+                Verified
+              </span>
+            </div>
+          </div>
 
-    <div class="mt-10 flex items-center justify-between">
-      <h2 class="text-xl font-semibold text-gray-800">
-        Products
-      </h2>
-
-      <span class="text-sm text-gray-500">
-        {{ products.length }} items
-      </span>
-    </div>
-
-    <div class="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-
-      <NuxtLink
-        v-for="product in products"
-        :key="product.id"
-        :to="`/products/${product.slug}`"
-        class="group bg-white border rounded-2xl p-3 hover:shadow-md transition"
-      >
-        <img
-          :src="product.image"
-          class="h-28 w-full object-cover rounded-xl"
-        />
-
-        <div class="mt-3">
-          <h3 class="text-sm font-medium text-gray-700 group-hover:text-primary">
-            {{ product.name }}
-          </h3>
-
-          <p class="text-sm text-gray-500 mt-1">
-            ${{ product.price }}
+          <p
+            v-if="data.brand.description"
+            class="mt-4 text-sm leading-6 text-white/90"
+          >
+            {{ data.brand.description }}
           </p>
         </div>
-      </NuxtLink>
+      </div>
+    </section>
 
-    </div>
+    <section class="mt-4">
+      <div class="mb-3 flex items-center justify-between">
+        <button
+          type="button"
+          class="flex items-center gap-2 rounded border border-gray-200 bg-white px-3 py-2 text-sm text-body lg:hidden"
+          @click="mobileFilterOpen = !mobileFilterOpen"
+        >
+          <UIcon name="i-lucide-sliders-horizontal" class="size-4" />
 
+          Filters
+        </button>
+
+        <div class="ml-auto flex items-center gap-2 text-sm text-body">
+          <span>Sort by:</span>
+
+          <select
+            v-model="filters.sort"
+            class="rounded border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-primary"
+          >
+            <option value="popular">Popular</option>
+            <option value="latest">Latest</option>
+            <option value="price_low">Price: Low to High</option>
+            <option value="price_high">Price: High to Low</option>
+            <option value="rating">Top Rated</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr]">
+        <aside
+          class="rounded-lg border border-gray-100 bg-white p-4"
+          :class="mobileFilterOpen ? 'block' : 'hidden lg:block'"
+        >
+          <div class="mb-5 flex items-center justify-between">
+            <h2 class="text-sm font-bold text-title">Filters</h2>
+
+            <button type="button" class="text-sm text-primary" @click="clear">
+              Clear All
+            </button>
+          </div>
+
+          <div
+            v-if="data?.brand?.categories?.length"
+            class="border-b border-gray-100 pb-4"
+          >
+            <div class="mb-3 text-sm font-semibold text-title">Categories</div>
+
+            <label
+              v-for="category in data.brand.categories"
+              :key="category.id"
+              class="mb-2 flex cursor-pointer items-center gap-2 text-sm text-body"
+            >
+              <input
+                v-model="filters.category"
+                type="checkbox"
+                :value="category.slug"
+                class="size-4 rounded border-gray-300 text-primary"
+              />
+
+              <span class="flex-1"> {{ category.name }} </span>
+              <span> ({{ category.count }}) </span>
+            </label>
+          </div>
+
+          <div
+            v-if="data?.availability?.length"
+            class="border-b border-gray-100 py-5"
+          >
+            <div class="mb-3 text-sm font-semibold text-title">
+              Availability
+            </div>
+
+            <label
+              v-for="item in data.availability"
+              :key="item.value"
+              class="mb-2 flex cursor-pointer items-center gap-2 text-sm text-body"
+            >
+              <input
+                v-model="filters.availability"
+                type="radio"
+                :value="item.value"
+                class="size-4 rounded border-gray-300 text-primary"
+              />
+
+              <span class="flex-1">
+                {{ item.label }}
+              </span>
+
+              <span> ({{ item.count }}) </span>
+            </label>
+          </div>
+
+          <div v-if="data?.rating?.length" class="py-5">
+            <div class="mb-3 text-sm font-semibold text-title">Reviews</div>
+
+            <label
+              v-for="item in data.rating"
+              :key="item.value"
+              class="mb-2 flex cursor-pointer items-center gap-2 text-sm text-body"
+            >
+              <input
+                v-model="filters.rating"
+                type="radio"
+                :value="item.value"
+                class="size-4 rounded border-gray-300 text-primary"
+              />
+
+              <span class="flex shrink-0">
+                <UIcon
+                  v-for="star in 5"
+                  :key="star"
+                  name="i-lucide-star"
+                  class="size-3.5"
+                  :class="
+                    star <= item.value
+                      ? 'fill-yellow-400 text-yellow-400'
+                      : 'text-gray-300'
+                  "
+                />
+              </span>
+
+              <span class="text-sm text-body">
+                {{ item.label }}
+              </span>
+            </label>
+          </div>
+
+          <button
+            type="button"
+            class="w-full rounded border border-primary px-3 py-2 text-sm font-semibold text-primary hover:bg-primary hover:text-white"
+            @click="clear"
+          >
+            Clear All Filters
+          </button>
+        </aside>
+
+        <div class="w-full">
+          <LoadingState v-if="pending" />
+
+          <ErrorState v-else-if="error" :retry="refresh" />
+
+          <EmptyState v-else-if="!data?.data.length" />
+
+          <template v-else>
+            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+              <ProductCard
+                v-for="product in data?.data"
+                :key="product.id"
+                :product="product"
+              />
+            </div>
+          </template>
+        </div>
+      </div>
+    </section>
   </main>
 </template>
