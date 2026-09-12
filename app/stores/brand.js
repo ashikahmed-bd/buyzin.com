@@ -2,18 +2,19 @@ export const useBrandStore = defineStore("brand", {
   state: () => ({
     loading: false,
     errors: {},
-    brands: [],
-    brand: {},
   }),
 
   getters: {},
 
   actions: {
-    async getBrands() {
+    async getBrands(query = {}) {
       const { $api } = useNuxtApp();
       try {
-        const response = await $api(`/api/brands`);
-        this.brands = response;
+        const response = await $api(`/api/brands`, {
+          method: "GET",
+          query: query,
+        });
+
         return response;
       } catch (error) {
         this.errors = error?.response?._data?.errors;

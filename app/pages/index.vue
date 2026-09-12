@@ -18,9 +18,9 @@ const {
 
     <template v-else>
       <SeoMeta
-        title="Buyzin | Simplify Your Shopping. | Best Deals on Fashion, Gadgets & Lifestyle in Bangladesh"
-        description="Buyzin is Bangladesh’s trusted online shopping platform offering authentic fashion, electronics, gadgets, and lifestyle products with fast delivery and secure payments."
-        keywords="ecommerce, online shopping, buy online, fashion, gadgets, electronics, Bangladesh, best price, quick delivery, Buyzin"
+        title="Buyzin B2B | Wholesale & Bulk Buying Marketplace in Bangladesh"
+        description="Source products at competitive wholesale prices with Buyzin B2B. Connect with suppliers, discover products for your business, place bulk orders, and simplify wholesale purchasing across Bangladesh."
+        keywords="Buyzin B2B, B2B Bangladesh, wholesale Bangladesh, wholesale marketplace, bulk buying, bulk order, wholesale suppliers, suppliers in Bangladesh, retailer marketplace, reseller marketplace, distributor, business products, wholesale price"
       />
 
       <section class="bg-white py-2.5">

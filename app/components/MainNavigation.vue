@@ -69,7 +69,7 @@ const categoryOpen = ref(false);
           </a>
 
           <a
-            href="/"
+            href="/brands"
             class="relative flex items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
           >
             Brands

@@ -5,10 +5,11 @@ const router = useRouter();
 const brandStore = useBrandStore();
 
 const filters = reactive({
-  category: route.query.category ? route.query.category.split(",") : [],
-  availability: route.query.availability,
-  rating: route.query.rating,
-  sort: route.query.sort,
+  category: route.query.category ? String(route.query.category).split(",") : [],
+  pricing: [0, 0],
+  availability: String(route.query.availability),
+  rating: Number(route.query.rating),
+  sort: String(route.query.sort),
 });
 
 const mobileFilterOpen = ref(false);
@@ -20,10 +21,27 @@ const { data, pending, error, refresh } = await useAsyncData(
     watch: [
       () => route.params.slug,
       () => route.query.category,
+      () => route.query.min_price,
+      () => route.query.max_price,
       () => route.query.availability,
       () => route.query.rating,
       () => route.query.sort,
     ],
+  },
+);
+
+watch(
+  () => data.value?.pricing,
+  (pricing) => {
+    if (!pricing) return;
+
+    filters.pricing = [
+      Number(route.query.min_price ?? pricing.min_price),
+      Number(route.query.max_price ?? pricing.max_price),
+    ];
+  },
+  {
+    immediate: true,
   },
 );
 
@@ -34,6 +52,11 @@ watch(
       query: {
         ...(value.category?.length && {
           category: value.category.join(","),
+        }),
+
+        ...(value.pricing?.length === 2 && {
+          min_price: value.pricing[0],
+          max_price: value.pricing[1],
         }),
 
         ...(value.availability && {
@@ -50,7 +73,9 @@ watch(
       },
     });
   },
-  { deep: true },
+  {
+    deep: true,
+  },
 );
 
 const clear = () => {
@@ -170,7 +195,7 @@ const clear = () => {
         </div>
       </div>
 
-      <div class="grid grid-cols-1 gap-4 lg:grid-cols-[220px_1fr]">
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-[260px_1fr]">
         <aside
           class="rounded-lg border border-gray-100 bg-white p-4"
           :class="mobileFilterOpen ? 'block' : 'hidden lg:block'"
@@ -201,9 +226,37 @@ const clear = () => {
                 class="size-4 rounded border-gray-300 text-primary"
               />
 
-              <span class="flex-1"> {{ category.name }} </span>
-              <span> ({{ category.count }}) </span>
+              <span> {{ category.name }} </span>
             </label>
+          </div>
+
+          <div class="w-full">
+            <div class="mb-2 flex items-center justify-between">
+              <span class="text-xs font-medium text-gray-700">
+                Price Range
+              </span>
+            </div>
+
+            <USlider
+              v-model="filters.pricing"
+              :min="Number(data?.pricing?.min_price)"
+              :max="Number(data?.pricing?.max_price)"
+              :step="0.01"
+              :ui="{
+                track: 'bg-gray-200',
+                range: 'bg-primary',
+                thumb: 'bg-white border-2 border-primary',
+              }"
+            />
+
+            <div class="flex items-center justify-between py-2">
+              <span class="text-sm text-body">{{
+                $currency(filters.pricing[0], data?.pricing?.currency)
+              }}</span>
+              <span class="text-sm text-body">{{
+                $currency(filters.pricing[1], data?.pricing?.currency)
+              }}</span>
+            </div>
           </div>
 
           <div
