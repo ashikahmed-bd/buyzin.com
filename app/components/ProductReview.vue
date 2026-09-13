@@ -8,8 +8,8 @@ const {
   error,
   refresh,
 } = await useAsyncData(
-  () => `reviews-${route.params.slug}-${route.params.id}`,
-  () => productStore.getReviews(route.params.id),
+  () => `reviews-${route.params.slug}-${route.params.code}`,
+  () => productStore.getReviews(route.params.slug, route.params.code),
 );
 </script>
 

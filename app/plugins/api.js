@@ -30,7 +30,7 @@ export default defineNuxtPlugin(() => {
             color: "error",
           });
           authStore.$reset();
-
+          navigateTo("/auth/login");
           break;
 
         case 403:

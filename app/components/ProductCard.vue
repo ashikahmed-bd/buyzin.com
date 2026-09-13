@@ -41,7 +41,7 @@ const addToWishlist = async (product) => {
       </button>
     </div>
 
-    <a :href="`/product/${product.slug}/${product.id}`">
+    <a :href="`/product/${product.slug}/${product.code}`">
       <div
         class="relative shine__img__wrapper aspect-square bg-gray-50 overflow-hidden"
       >
@@ -55,7 +55,7 @@ const addToWishlist = async (product) => {
     </a>
 
     <div class="p-2.5">
-      <a :href="`/product/${product.slug}/${product.id}`">
+      <a :href="`/product/${product.slug}/${product.code}`">
         <h3
           class="text-sm font-semibold text-title line-clamp-2 transition hover:opacity-90"
         >

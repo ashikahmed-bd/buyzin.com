@@ -15,6 +15,12 @@ const menu = [
   },
 
   {
+    label: "Messages",
+    to: "/account/messages",
+    icon: "i-lucide-messages-square",
+  },
+
+  {
     label: "My Reviews",
     to: "/account/reviews",
     icon: "i-lucide-star",

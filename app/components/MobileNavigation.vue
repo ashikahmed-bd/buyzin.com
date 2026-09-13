@@ -1,118 +1,99 @@
 <script setup>
-const sidebarOpen = ref(false);
+const props = defineProps({
+  open: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const emit = defineEmits(["close"]);
+
+const close = () => {
+  emit("close");
+};
 </script>
+
 <template>
-  <button
-    type="button"
-    class="inline-flex items-center justify-center rounded-lg p-2 text-body transition hover:bg-gray-100 hover:text-primary md:hidden"
-    @click="sidebarOpen = true"
+  <transition
+    enter-active-class="transition duration-200 ease-out"
+    enter-from-class="opacity-0 -translate-y-2"
+    enter-to-class="opacity-100 translate-y-0"
+    leave-active-class="transition duration-150 ease-in"
+    leave-from-class="opacity-100 translate-y-0"
+    leave-to-class="opacity-0 -translate-y-2"
   >
-    <UIcon name="i-lucide-menu" class="size-6" />
-  </button>
-  <Teleport to="body">
-    <Transition name="overlay">
-      <div
-        v-if="sidebarOpen"
-        class="fixed inset-0 z-40 bg-black/40 md:hidden"
-        @click="sidebarOpen = false"
-      />
-    </Transition>
-    <Transition name="sidebar">
-      <aside
-        v-if="sidebarOpen"
-        class="fixed inset-y-0 left-0 z-50 flex flex-col w-full bg-white md:hidden"
-      >
-        <div
-          class="flex h-16 shrink-0 items-center justify-between border-b border-gray-100 px-4"
-        >
-          <NuxtLink to="/" @click="sidebarOpen = false">
-            <img src="/logo.svg" alt="Logo" class="h-10 w-auto" />
-          </NuxtLink>
-          <button
-            type="button"
-            class="inline-flex size-9 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-900"
-            @click="sidebarOpen = false"
-          >
-            <UIcon name="i-lucide-x" class="size-5" />
-          </button>
-        </div>
-        <nav class="flex-1 overflow-y-auto">
-          <NuxtLink
-            to="/"
-            class="block border-b border-gray-100 px-5 py-4 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-primary"
-            active-class="bg-primary/5 text-primary"
-            @click="sidebarOpen = false"
-          >
-            Home
-          </NuxtLink>
-          <NuxtLink
-            to="/products"
-            class="block border-b border-gray-100 px-5 py-4 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-primary"
-            active-class="bg-primary/5 text-primary"
-            @click="sidebarOpen = false"
-          >
-            Products
-          </NuxtLink>
-          <NuxtLink
-            to="/brands"
-            class="block border-b border-gray-100 px-5 py-4 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-primary"
-            active-class="bg-primary/5 text-primary"
-            @click="sidebarOpen = false"
-          >
-            Brands
-          </NuxtLink>
-          <NuxtLink
-            to="/deals"
-            class="block border-b border-gray-100 px-5 py-4 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-primary"
-            active-class="bg-primary/5 text-primary"
-            @click="sidebarOpen = false"
-          >
-            Deals
-          </NuxtLink>
-          <NuxtLink
-            to="/request-a-quote"
-            class="block border-b border-gray-100 px-5 py-4 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-primary"
-            active-class="bg-primary/5 text-primary"
-            @click="sidebarOpen = false"
-          >
-            Request a Quote
-          </NuxtLink>
-          <NuxtLink
-            to="/become-a-seller"
-            class="block border-b border-gray-100 px-5 py-4 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-primary"
-            active-class="bg-primary/5 text-primary"
-            @click="sidebarOpen = false"
-          >
-            Become a Seller
-          </NuxtLink>
-          <NuxtLink
-            to="/support"
-            class="block px-5 py-4 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-primary"
-            active-class="bg-primary/5 text-primary"
-            @click="sidebarOpen = false"
-          >
-            Support
-          </NuxtLink>
+    <div
+      v-if="props.open"
+      class="bg-white absolute left-0 top-full z-50 border border-border w-full rounded-b-xl"
+      @click.stop
+    >
+      <aside @click.stop>
+        <nav class="py-4">
+          <div class="space-y-1">
+            <a
+              href="/"
+              class="flex items-center justify-between rounded px-4 py-2.5 text-sm font-medium text-body transition hover:bg-slate-100"
+              @click="close"
+            >
+              <span>Become a Supplier</span>
+              <UIcon name="i-lucide-chevron-right" class="size-4" />
+            </a>
+            <a
+              href="/help-center"
+              class="flex items-center justify-between rounded px-4 py-2.5 text-sm font-medium text-body transition hover:bg-slate-100"
+              @click="close"
+            >
+              <span>Help Center</span>
+              <UIcon name="i-lucide-chevron-right" class="size-4" />
+            </a>
+            <a
+              href="/contact"
+              class="flex items-center justify-between rounded px-4 py-2.5 text-sm font-medium text-body transition hover:bg-slate-100"
+              @click="close"
+            >
+              <span>Contact</span>
+              <UIcon name="i-lucide-chevron-right" class="size-4" />
+            </a>
+            <a
+              href="/about"
+              class="flex items-center justify-between rounded px-4 py-2.5 text-sm font-medium text-body transition hover:bg-slate-100"
+              @click="close"
+            >
+              <span>About US</span>
+              <UIcon name="i-lucide-chevron-right" class="size-4" />
+            </a>
+            <a
+              href="/blog"
+              class="flex items-center justify-between rounded px-4 py-2.5 text-sm font-medium text-body transition hover:bg-slate-100"
+              @click="close"
+            >
+              <span>Blog</span>
+              <UIcon name="i-lucide-chevron-right" class="size-4" />
+            </a>
+          </div>
         </nav>
+
+        <div class="border-t border-border border-dashed p-4">
+          <div class="grid grid-cols-2 gap-3">
+            <NuxtLink
+              to="/auth/login"
+              class="inline-flex items-center justify-center rounded border border-border px-4 py-3 text-sm font-medium text-body transition hover:bg-slate-100"
+              @click="close"
+            >
+              Sign in
+            </NuxtLink>
+            <NuxtLink
+              to="/auth/register"
+              class="inline-flex items-center justify-center rounded bg-primary px-4 py-3 text-sm font-medium text-white transition hover:bg-primary-hover"
+              @click="close"
+            >
+              Sign up
+            </NuxtLink>
+          </div>
+        </div>
       </aside>
-    </Transition>
-  </Teleport>
+    </div>
+  </transition>
 </template>
-<style scoped>
-.sidebar-enter-active,
-.sidebar-leave-active {
-  transition: transform 0.25s ease;
-}
-.sidebar-enter-from,
-.sidebar-leave-to {
-  transform: translateX(-100%);
-}
-.overlay-enter-active,
-.overlay-leave-active {
-  transition: opacity 0.2s ease;
-}
-.overlay-enter-from,
-.overlay-leave-to {
-  opacity: 0;
-}
-</style>
+
+<style scoped></style>

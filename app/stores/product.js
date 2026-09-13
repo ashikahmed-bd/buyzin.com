@@ -19,11 +19,22 @@ export const useProductStore = defineStore("product", {
       }
     },
 
-    async getProduct(slug, product) {
+    async getProduct(product, code) {
       const { $api } = useNuxtApp();
       try {
-        const response = await $api(`/api/products/${slug}/${product}`);
+        const response = await $api(`/api/products/${product}/${code}`);
         return response.data;
+      } catch (error) {
+        this.errors = error?.response?._data;
+        return error?.response?._data;
+      }
+    },
+
+    async getReviews(product, code) {
+      const { $api } = useNuxtApp();
+      try {
+        const response = await $api(`/api/products/${product}/${code}/reviews`);
+        return response;
       } catch (error) {
         this.errors = error?.response?._data;
         return error?.response?._data;
@@ -35,17 +46,6 @@ export const useProductStore = defineStore("product", {
       try {
         const response = await $api(`/api/products/${product}/related`);
         return response.data;
-      } catch (error) {
-        this.errors = error?.response?._data;
-        return error?.response?._data;
-      }
-    },
-
-    async getReviews(product) {
-      const { $api } = useNuxtApp();
-      try {
-        const response = await $api(`/api/products/${product}/reviews`);
-        return response;
       } catch (error) {
         this.errors = error?.response?._data;
         return error?.response?._data;

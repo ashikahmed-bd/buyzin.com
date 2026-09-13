@@ -2,6 +2,8 @@
 const route = useRoute();
 const toast = useToast();
 const productStore = useProductStore();
+const wishlistStore = useWishlistStore();
+const chatStore = useChatStore();
 
 const {
   data: product,
@@ -9,8 +11,8 @@ const {
   error,
   refresh,
 } = await useAsyncData(
-  `product-${route.params.slug}-${route.params.id}`,
-  () => productStore.getProduct(route.params.slug, route.params.id),
+  `product-${route.params.slug}-${route.params.code}`,
+  () => productStore.getProduct(route.params.slug, route.params.code),
   {
     watch: [() => route.params.slug, () => route.params.id],
   },
@@ -23,68 +25,6 @@ const selectOption = (attribute, option) => {
   selectedOptions.value[attribute.id] = option.id;
 
   cartDialog.value = true;
-};
-
-const selectedVariant = computed(() => {
-  const variants = product.value?.variants ?? [];
-  const attributes = product.value?.attributes ?? [];
-
-  if (Object.keys(selectedOptions.value).length !== attributes.length) {
-    return null;
-  }
-
-  return (
-    variants.find((variant) =>
-      attributes.every((attribute) =>
-        variant.options?.some(
-          (item) =>
-            String(item.attribute?.id) === String(attribute.id) &&
-            String(item.option?.id) ===
-              String(selectedOptions.value[attribute.id]),
-        ),
-      ),
-    ) ?? null
-  );
-});
-
-const inquiryOpen = ref(false);
-
-const inquiryForm = ref({
-  quantity: 1,
-  target_price: null,
-  message: "",
-});
-
-const openInquiry = () => {
-  if (product.value?.variants?.length && !selectedVariant.value) {
-    return;
-  }
-
-  inquiryForm.value = {
-    quantity: product.value?.moq ?? 1,
-    message: "",
-  };
-
-  inquiryOpen.value = true;
-};
-
-const sendInquiry = async () => {
-  const payload = {
-    product_id: product.value.id,
-    variant_id: selectedVariant.value?.id ?? null,
-    quantity: inquiryForm.value.quantity,
-    message: inquiryForm.value.message,
-    options: Object.entries(selectedOptions.value).map(
-      ([attribute_id, attribute_option_id]) => ({
-        attribute_id,
-        attribute_option_id,
-      }),
-    ),
-  };
-
-  console.log("Inquiry:", payload);
-
-  inquiryOpen.value = false;
 };
 
 const shareLink = async (product) => {
@@ -135,6 +75,10 @@ const shareLink = async (product) => {
       color: "error",
     });
   }
+};
+
+const addToWishlist = async (product) => {
+  await wishlistStore.addItem(product);
 };
 </script>
 
@@ -196,6 +140,7 @@ const shareLink = async (product) => {
 
               <button
                 type="button"
+                @click="addToWishlist(product.id)"
                 class="inline-flex items-center gap-2 text-sm font-medium text-primary"
               >
                 <UIcon name="i-lucide-heart" class="size-4" />
@@ -230,8 +175,7 @@ const shareLink = async (product) => {
                   >
                     {{ product?.name }}
                   </h1>
-                  <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-                    <!-- Rating -->
+                  <div class="flex flex-wrap items-center gap-x-4">
                     <div class="flex items-center">
                       <UIcon
                         v-for="i in 5"
@@ -254,39 +198,30 @@ const shareLink = async (product) => {
                       </span>
                     </div>
 
-                    <span
-                      class="font-medium text-blue-600 after:ml-2 after:text-slate-300 after:content-['•']"
-                    >
+                    <span class="font-medium text-primary">
                       ({{ product?.review_count ?? 0 }} reviews)
                     </span>
 
-                    <span
-                      class="font-medium text-slate-500 after:ml-2 after:text-slate-300 after:content-['•']"
-                    >
+                    <span class="font-medium text-body">
                       {{ product?.sold_count ?? 0 }}+ Sold
                     </span>
                   </div>
 
-                  <div
-                    class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm"
-                  >
+                  <div class="flex flex-wrap items-center gap-x-4">
                     <div class="flex items-center gap-1.5">
-                      <span class="text-muted">SKU:</span>
-                      <span class="font-medium text-body">
-                        {{ product?.sku ?? "N/A" }}
-                      </span>
+                      <span class="text-sm text-muted">Brand:</span>
+                      <a
+                        :href="`/brands/${product?.brand?.slug}`"
+                        target="_blank"
+                        class="text-sm font-medium text-body"
+                      >
+                        {{ product?.brand?.name ?? "N/A" }}
+                      </a>
                     </div>
 
                     <div class="flex items-center gap-1.5">
-                      <span class="text-muted">Brand:</span>
-                      <span class="font-medium text-body">
-                        {{ product?.brand?.name ?? product?.brand ?? "N/A" }}
-                      </span>
-                    </div>
-
-                    <div class="flex items-center gap-1.5">
-                      <span class="text-muted">Category:</span>
-                      <span class="font-medium text-body">
+                      <span class="text-sm text-muted">Category:</span>
+                      <span class="text-sm font-medium text-body">
                         {{
                           product?.category?.name ?? product?.category ?? "N/A"
                         }}
@@ -442,10 +377,6 @@ const shareLink = async (product) => {
                     label: 'Reviews',
                     slot: 'reviews',
                   },
-                  {
-                    label: 'FAQ',
-                    slot: 'faq',
-                  },
                 ]"
               >
                 <template #description>
@@ -478,9 +409,6 @@ const shareLink = async (product) => {
                 </template>
                 <template #reviews>
                   <ProductReview />
-                </template>
-                <template #faq>
-                  <ProductFaq />
                 </template>
               </UTabs>
             </div>
@@ -628,7 +556,7 @@ const shareLink = async (product) => {
                     <h4 class="text-xs font-medium text-muted">
                       Payment Terms
                     </h4>
-                    <p class="mt-0.5 break-words text-sm font-normal text-body">
+                    <p class="mt-0.5 text-sm font-normal text-body">
                       {{ product?.shipping?.payment_terms ?? "Not specified" }}
                     </p>
                   </div>
@@ -648,6 +576,7 @@ const shareLink = async (product) => {
 
                 <button
                   type="button"
+                  @click="chatStore.open()"
                   class="flex w-full items-center justify-center gap-2 rounded border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
                 >
                   <UIcon name="i-lucide-message-circle" class="size-5" />
@@ -661,6 +590,8 @@ const shareLink = async (product) => {
     </template>
 
     <DialogCart v-model:open="cartDialog" :product="product" />
+
+    <ChatDrawer :store="product.store" :product="product" />
   </main>
 </template>
 

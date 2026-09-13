@@ -6,10 +6,16 @@ const brandStore = useBrandStore();
 
 const filters = reactive({
   category: route.query.category ? String(route.query.category).split(",") : [],
+
   pricing: [0, 0],
-  availability: String(route.query.availability),
-  rating: Number(route.query.rating),
-  sort: String(route.query.sort),
+
+  availability: route.query.availability
+    ? String(route.query.availability)
+    : "",
+
+  rating: Number(route.query.rating) || 0,
+
+  sort: route.query.sort ? String(route.query.sort) : "latest",
 });
 
 const mobileFilterOpen = ref(false);
@@ -33,11 +39,14 @@ const { data, pending, error, refresh } = await useAsyncData(
 watch(
   () => data.value?.pricing,
   (pricing) => {
-    if (!pricing) return;
+    if (!pricing) {
+      filters.pricing = [0, 0];
+      return;
+    }
 
     filters.pricing = [
-      Number(route.query.min_price ?? pricing.min_price),
-      Number(route.query.max_price ?? pricing.max_price),
+      Math.round(Number(route.query.min_price ?? pricing.min_price ?? 0)),
+      Math.round(Number(route.query.max_price ?? pricing.max_price ?? 0)),
     ];
   },
   {
@@ -48,30 +57,35 @@ watch(
 watch(
   filters,
   (value) => {
-    router.replace({
-      query: {
-        ...(value.category?.length && {
-          category: value.category.join(","),
-        }),
+    const query = {};
 
-        ...(value.pricing?.length === 2 && {
-          min_price: value.pricing[0],
-          max_price: value.pricing[1],
-        }),
+    if (value.category?.length) {
+      query.category = value.category.join(",");
+    }
 
-        ...(value.availability && {
-          availability: value.availability,
-        }),
+    if (
+      Array.isArray(value.pricing) &&
+      value.pricing.length === 2 &&
+      value.pricing[0] !== 0 &&
+      value.pricing[1] !== 0
+    ) {
+      query.min_price = Math.round(value.pricing[0]);
+      query.max_price = Math.round(value.pricing[1]);
+    }
 
-        ...(value.rating && {
-          rating: value.rating,
-        }),
+    if (value.availability) {
+      query.availability = value.availability;
+    }
 
-        ...(value.sort && {
-          sort: value.sort,
-        }),
-      },
-    });
+    if (value.rating) {
+      query.rating = value.rating;
+    }
+
+    if (value.sort) {
+      query.sort = value.sort;
+    }
+
+    router.replace({ query });
   },
   {
     deep: true,
@@ -230,7 +244,14 @@ const clear = () => {
             </label>
           </div>
 
-          <div class="w-full">
+          <div
+            v-if="
+              data?.pricing &&
+              Number(data.pricing.min_price) >= 0 &&
+              Number(data.pricing.max_price) > 0
+            "
+            class="w-full"
+          >
             <div class="mb-2 flex items-center justify-between">
               <span class="text-xs font-medium text-gray-700">
                 Price Range

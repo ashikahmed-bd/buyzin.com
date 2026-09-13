@@ -79,20 +79,6 @@ const categoryOpen = ref(false);
             href="/"
             class="relative flex items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
           >
-            Deals
-          </a>
-
-          <a
-            href="/"
-            class="relative flex items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
-          >
-            Request a Quote
-          </a>
-
-          <a
-            href="/"
-            class="relative flex items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
-          >
             Become a Seller
           </a>
         </div>

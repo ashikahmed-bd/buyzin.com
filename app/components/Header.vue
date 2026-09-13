@@ -3,39 +3,28 @@ const authStore = useAuthStore();
 const cartStore = useCartStore();
 
 const { user } = storeToRefs(authStore);
+
+const mobileNavigation = ref(false);
+
+const closeMobileNavigation = () => {
+  mobileNavigation.value = false;
+};
 </script>
 
 <template>
-  <div class="hidden md:block bg-dark text-white">
-    <div class="container mx-auto px-4">
-      <div class="flex items-center justify-between text-xs py-2">
-        <div class="flex items-center gap-6">
-          <span class="flex items-center gap-1.5 text-gray-300">
-            <UIcon name="i-lucide-badge-check" class="size-3.5 text-primary" />
-            Verified B2B Marketplace
-          </span>
-          <span class="text-gray-500">|</span>
-          <span class="text-gray-300"> Wholesale pricing available </span>
-        </div>
-        <div class="flex items-center gap-5">
-          <a to="/" class="text-gray-300 transition hover:text-white">
-            Become a Supplier
-          </a>
-          <a to="/help" class="text-gray-300 transition hover:text-white">
-            Help Center
-          </a>
-          <span class="flex items-center gap-1.5 text-gray-300">
-            <UIcon name="i-lucide-globe-2" class="size-3.5" /> EN
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="bg-white sticky top-0 z-30">
-    <header class="container mx-auto px-4 border-b border-border">
+  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur">
+    <div class="container mx-auto px-4 border-b border-border">
       <div class="flex items-center justify-between py-2.5">
-        <MobileNavigation />
+        <button
+          type="button"
+          @click="mobileNavigation = !mobileNavigation"
+          class="inline-flex items-center justify-center rounded-lg p-2 text-body transition hover:bg-gray-100 hover:text-primary md:hidden"
+        >
+          <UIcon
+            :name="mobileNavigation ? 'i-lucide-x' : 'i-lucide-menu'"
+            class="size-6"
+          />
+        </button>
         <div class="flex-none">
           <a href="/" class="block">
             <NuxtImg
@@ -132,9 +121,15 @@ const { user } = storeToRefs(authStore);
           <UIcon name="i-lucide-search" class="size-5 text-white" />
         </button>
       </form>
-    </header>
+
+      <!-- Mobile navigation -->
+      <MobileNavigation
+        :open="mobileNavigation"
+        @close="closeMobileNavigation"
+      />
+    </div>
     <MainNavigation />
-  </div>
+  </header>
 </template>
 
 <style scoped></style>
