@@ -4,46 +4,48 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-});
 
-const user = computed(() => props.conversation?.user);
+  user: {
+    type: Object,
+    required: true,
+  },
+});
 </script>
 <template>
   <header
-    class="flex shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 py-3.5"
+    class="flex shrink-0 items-center justify-between border-b border-border bg-white px-4 py-3"
   >
     <div class="flex min-w-0 items-center gap-3">
       <NuxtImg
         :src="user?.photo_url"
         :alt="user?.name"
-        class="size-9 shrink-0 rounded-full border border-gray-100 object-cover"
+        class="size-10 shrink-0 rounded-full border border-gray-100 object-cover"
       />
       <div class="min-w-0">
-        <h2 class="truncate text-sm font-semibold text-title">
-          {{ user?.name ?? "Unknown" }}
+        <h2 class="truncate text-sm font-semibold">
+          {{ user.name }}
         </h2>
-        <div class="mt-0.5 flex items-center gap-1.5">
-          <span class="size-2 rounded-full bg-success" />
-          <span class="text-xs text-success"> Active now </span>
-        </div>
-      </div>
-      <div
-        v-if="conversation.product"
-        class="ml-2 hidden min-w-0 items-center gap-2 border-l border-gray-200 pl-3 sm:flex"
-      >
-        <NuxtImg
-          :src="conversation.product.cover_url"
-          :alt="conversation.product.name"
-          class="size-9 shrink-0 rounded-md border border-gray-100 object-cover"
-        />
-        <div class="min-w-0">
-          <p class="max-w-50 truncate text-xs font-medium text-title">
-            {{ conversation.product.name }}
-          </p>
-          <p class="mt-0.5 text-xs text-body">Product</p>
+
+        <div class="flex items-center gap-1.5">
+          <span class="relative flex size-2.5">
+            <span
+              v-if="user.is_online"
+              class="absolute inline-flex size-full animate-ping rounded-full bg-success opacity-75"
+            />
+
+            <span
+              class="relative inline-flex size-2.5 rounded-full"
+              :class="user.is_online ? 'bg-success' : 'bg-gray-400'"
+            />
+          </span>
+
+          <span class="text-xs text-muted">
+            {{ user.is_online ? "Active now" : "Offline" }}
+          </span>
         </div>
       </div>
     </div>
+
     <div class="flex shrink-0 items-center gap-1">
       <button
         type="button"

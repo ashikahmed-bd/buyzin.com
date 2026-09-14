@@ -19,15 +19,15 @@ defineProps({
   >
     <div class="flex gap-3">
       <NuxtImg
-        :src="conversation.user?.photo_url"
-        :alt="conversation.user?.name"
+        :src="conversation.store?.logo_url"
+        :alt="conversation.store?.name"
         class="size-10 shrink-0 rounded-full object-cover"
       />
 
       <div class="min-w-0 flex-1">
         <div class="flex items-center justify-between gap-2">
           <h3 class="truncate text-sm font-semibold text-title">
-            {{ conversation.user?.name ?? "Unknown" }}
+            {{ conversation.store?.name ?? "Unknown" }}
           </h3>
 
           <span class="shrink-0 text-xs text-body">
@@ -40,9 +40,9 @@ defineProps({
         </div>
 
         <div class="mt-1 flex items-center justify-between gap-2">
-          <p class="truncate text-xs text-body">
-            {{ conversation.last_message ?? "No messages" }}
-          </p>
+          <h4 class="truncate text-xs text-body">
+            {{ conversation.product?.name ?? "No messages" }}
+          </h4>
 
           <span
             v-if="conversation.unread_count > 0"

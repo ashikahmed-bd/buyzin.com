@@ -1,6 +1,10 @@
 <script setup>
 const dashboardStore = useDashboardStore();
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const {
   data: dashboard,
   pending,

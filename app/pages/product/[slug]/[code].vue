@@ -576,10 +576,10 @@ const addToWishlist = async (product) => {
 
                 <button
                   type="button"
-                  @click="chatStore.open()"
+                  @click="chatStore.dialog = true"
                   class="flex w-full items-center justify-center gap-2 rounded border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
                 >
-                  <UIcon name="i-lucide-message-circle" class="size-5" />
+                  <UIcon name="i-lucide-messages-square" class="size-5" />
                   Chat now
                 </button>
               </section>
@@ -591,7 +591,7 @@ const addToWishlist = async (product) => {
 
     <DialogCart v-model:open="cartDialog" :product="product" />
 
-    <ChatDrawer :store="product.store" :product="product" />
+    <ChatDrawer :product="product" />
   </main>
 </template>
 

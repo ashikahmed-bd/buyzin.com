@@ -22,7 +22,6 @@ export default defineNuxtPlugin(() => {
     onResponseError({ response }) {
       switch (response.status) {
         case 401:
-          console.warn("You are not authenticated. Please log in to continue.");
           toast.add({
             title: "Authentication Required",
             description:
@@ -30,7 +29,8 @@ export default defineNuxtPlugin(() => {
             color: "error",
           });
           authStore.$reset();
-          navigateTo("/auth/login");
+          window.location.replace("/auth/login");
+
           break;
 
         case 403:

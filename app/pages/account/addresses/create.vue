@@ -50,13 +50,11 @@ const cancel = () => {
 <template>
   <Dashboard>
     <Head>
-      <Title>Add New Address | Buyzin</Title>
-
+      <Title>Messages | Buyzin</Title>
       <Meta
         name="description"
-        content="Add a new delivery and billing address to your Buyzin account."
+        content="Manage your conversations and communicate with buyers and sellers on Buyzin."
       />
-
       <Meta name="robots" content="noindex, nofollow" />
     </Head>
 

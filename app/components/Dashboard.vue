@@ -62,13 +62,11 @@ const logout = async () => {
           <div class="sticky top-24 rounded-2xl bg-white p-4">
             <div class="border-b border-slate-100 pb-5">
               <div v-if="user" class="flex items-center gap-3">
-                <div
-                  class="h-14 w-14 shrink-0 overflow-hidden rounded-full border border-slate-200"
-                >
+                <div class="shrink-0 overflow-hidden">
                   <NuxtImg
                     :src="user?.photo_url"
                     :alt="user?.name"
-                    class="h-full w-full object-cover p-0.5"
+                    class="size-12 object-cover rounded-full"
                     loading="lazy"
                   />
                 </div>

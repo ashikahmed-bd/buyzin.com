@@ -4,11 +4,14 @@ defineProps({
     type: Object,
     required: true,
   },
-  user: {
-    type: Object,
-    default: null,
-  },
 });
+
+const isToday = (date) => {
+  const createdAt = new Date(date).getTime();
+  const now = Date.now();
+
+  return now - createdAt < 24 * 60 * 60 * 1000;
+};
 </script>
 
 <template>
@@ -17,11 +20,20 @@ defineProps({
       class="flex max-w-[85%] gap-2 sm:max-w-[70%]"
       :class="message.self ? 'flex-row-reverse' : 'flex-row'"
     >
-      <div
-        class="flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
-        :class="message.self ? 'bg-primary' : 'bg-gray-400'"
-      >
-        {{ message.self ? "ME" : (user?.name ?? "U").charAt(0) }}
+      <div class="size-7 shrink-0 overflow-hidden rounded-full">
+        <NuxtImg
+          v-if="message.sender"
+          :src="message.sender.photo_url"
+          :alt="message.sender.name"
+          class="size-full object-cover"
+        />
+        <div
+          v-else
+          class="flex size-full items-center justify-center text-xs font-semibold text-white"
+          :class="message.self ? 'bg-primary' : 'bg-gray-400'"
+        >
+          {{ message.self ? "ME" : (message.sender?.name ?? "U").charAt(0) }}
+        </div>
       </div>
 
       <div class="min-w-0">
@@ -40,9 +52,9 @@ defineProps({
           class="mt-1 flex items-center gap-1 text-xs text-body"
           :class="message.self ? 'justify-end' : 'justify-start'"
         >
-          <span>
-            {{ message.time }}
-          </span>
+          {{
+            isToday(message.created_at) ? message.humans : message.display_time
+          }}
 
           <UIcon
             v-if="message.self"

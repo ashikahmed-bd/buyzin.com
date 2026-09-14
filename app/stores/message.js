@@ -7,6 +7,7 @@ export const useMessageStore = defineStore("message", {
 
   persist: {
     pick: ["messages"],
+    storage: piniaPluginPersistedstate.localStorage(),
   },
 
   getters: {},
@@ -33,6 +34,7 @@ export const useMessageStore = defineStore("message", {
 
     async sendMessage(conversation, payload) {
       const { $api } = useNuxtApp();
+      this.loading = true;
 
       try {
         const response = await $api(
@@ -47,6 +49,8 @@ export const useMessageStore = defineStore("message", {
       } catch (error) {
         this.errors = error?.response?._data ?? {};
         throw error;
+      } finally {
+        this.loading = false;
       }
     },
 

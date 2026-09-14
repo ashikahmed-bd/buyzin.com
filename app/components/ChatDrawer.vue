@@ -2,205 +2,166 @@
 const chatStore = useChatStore();
 
 const props = defineProps({
-  open: {
-    type: Boolean,
-    default: false,
-  },
-
-  store: {
-    type: Object,
-    default: () => ({
-      name: "Supplier",
-      logo_url: null,
-    }),
-  },
-
   product: {
     type: Object,
     default: null,
   },
 });
 
-const emit = defineEmits(["update:open"]);
+const form = reactive({
+  product_id: props.product.id,
+  subject: "",
+  message: "",
+});
 
-const message = ref("");
-
-const close = () => {
-  emit("update:open", false);
-};
-
-const sendMessage = () => {
-  const text = message.value.trim();
-
-  if (!text) {
+const submit = async () => {
+  if (!form.message.trim()) {
     return;
   }
 
-  console.log("Send message:", {
-    supplier: props.supplier,
-    product: props.product,
-    message: text,
-  });
-
-  message.value = "";
+  await chatStore.store(form);
 };
 </script>
 
 <template>
-  <USlideover v-model:open="chatStore.dialog" side="right">
-    <template #content>
-      <div class="flex h-full flex-col bg-white">
-        <header class="flex items-center justify-between px-5 py-4">
-          <div class="flex items-center gap-2.5">
-            <div class="bg-white size-10 shrink-0">
-              <NuxtImg
-                v-if="store.logo_url"
-                :src="store.logo_url"
-                :alt="store.name"
-                class="size-full object-contain rounded-full"
-              />
-              <UIcon v-else name="i-lucide-store" class="size-5 text-primary" />
-            </div>
+  <Transition
+    enter-active-class="transition duration-200 ease-out"
+    enter-from-class="translate-y-4 opacity-0 sm:translate-y-0 sm:translate-x-4"
+    enter-to-class="translate-y-0 opacity-100 sm:translate-x-0"
+    leave-active-class="transition duration-150 ease-in"
+    leave-from-class="translate-y-0 opacity-100 sm:translate-x-0"
+    leave-to-class="translate-y-4 opacity-0 sm:translate-y-0 sm:translate-x-4"
+  >
+    <div
+      v-if="chatStore.dialog"
+      @click.self="chatStore.dialog = false"
+      class="fixed bottom-0 right-4 z-50 w-[calc(100vw-2rem)] max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+    >
+      <div
+        class="flex items-center justify-between border-b border-dashed bg-white px-5 py-4"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="flex size-10 items-center justify-center rounded-full bg-primary/10"
+          >
+            <NuxtImg
+              :src="product.store.logo_url"
+              :alt="product.store?.name"
+              class="size-full object-cover"
+            />
+          </div>
 
-            <div class="block">
-              <h3 class="text-sm font-semibold text-title">
-                {{ store.name }}
+          <div class="min-w-0">
+            <div class="flex items-center gap-1">
+              <h3 class="truncate text-sm font-semibold text-slate-900">
+                {{ product.store?.name }}
               </h3>
 
-              <div class="mt-0.5 flex items-center gap-1.5">
-                <span class="relative flex size-2">
-                  <span
-                    class="absolute inline-flex size-full animate-ping rounded-full bg-success opacity-75"
-                  ></span>
-                  <span
-                    class="relative inline-flex size-2 rounded-full bg-success"
-                  ></span>
-                </span>
-                <span class="text-xs text-slate-500"> Online </span>
-              </div>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            class="size-8 text-body hover:text-danger transition duration-150"
-            @click="chatStore.close()"
-          >
-            <UIcon name="i-lucide-x" class="size-5" />
-          </button>
-        </header>
-
-        <div class="flex-1 space-y-4 overflow-y-auto bg-slate-50 px-5 py-5">
-          <div class="flex items-start gap-2">
-            <div
-              class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10"
-            >
-              <UIcon name="i-lucide-store" class="size-4 text-primary" />
+              <UIcon
+                v-if="product.store?.verified"
+                name="i-lucide-badge-check"
+                class="size-4 shrink-0 text-blue-500"
+              />
             </div>
 
-            <div class="max-w-[80%]">
-              <div class="rounded rounded-tl-none bg-white px-4 py-3">
-                <p class="text-sm leading-5 text-slate-700">
-                  Hello! How can we help you today?
-                </p>
-              </div>
-
-              <p class="mt-1 text-[11px] text-slate-400">
-                Usually responds within 24 hours
-              </p>
-            </div>
-          </div>
-
-          <div class="flex min-h-40 items-center justify-center">
-            <div class="text-center">
-              <div
-                class="mx-auto flex size-12 items-center justify-center rounded-full bg-white"
-              >
-                <UIcon
-                  name="i-lucide-message-circle"
-                  class="size-6 text-slate-300"
-                />
-              </div>
-
-              <p class="mt-3 text-sm font-medium text-slate-500">
-                Start a conversation
-              </p>
-
-              <p class="mt-1 max-w-xs text-xs text-slate-400">
-                Ask about wholesale prices, MOQ, availability or delivery.
-              </p>
-            </div>
+            <p class="text-xs text-slate-500">Send a message to the seller</p>
           </div>
         </div>
 
-        <!-- Product -->
+        <button
+          type="button"
+          @click="chatStore.dialog = false"
+          class="flex size-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+        >
+          <UIcon name="i-lucide-x" class="size-5" />
+        </button>
+      </div>
+
+      <form @submit.prevent="submit" class="space-y-4 px-4 py-5">
         <div
           v-if="product"
-          class="border-t border-slate-200 bg-white px-4 py-3"
+          class="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3"
         >
-          <div
-            class="flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3"
-          >
-            <div
-              class="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded bg-white"
+          <NuxtImg
+            :src="product.cover_url"
+            :alt="product.name"
+            loading="lazy"
+            class="size-12 shrink-0 rounded-lg object-cover"
+          />
+
+          <div class="min-w-0">
+            <p
+              class="mb-0.5 text-xs font-medium uppercase tracking-wide text-slate-400"
             >
-              <NuxtImg
-                v-if="product.image_url"
-                :src="product.image_url"
-                :alt="product.name"
-                class="size-full object-contain"
-              />
+              Product
+            </p>
 
-              <UIcon
-                v-else
-                name="i-lucide-package"
-                class="size-5 text-slate-400"
-              />
-            </div>
-
-            <div class="min-w-0 flex-1">
-              <p class="truncate text-xs font-semibold text-slate-700">
-                {{ product.name }}
-              </p>
-
-              <p
-                v-if="product.price"
-                class="mt-0.5 text-xs font-medium text-primary"
-              >
-                {{ product.price }}
-              </p>
-
-              <p v-if="product.moq" class="text-xs text-slate-500">
-                MOQ: {{ product.moq }}
-              </p>
-            </div>
+            <p class="truncate text-sm font-medium text-slate-800">
+              {{ product.name }}
+            </p>
           </div>
         </div>
 
-        <!-- Message -->
-        <div class="border-t border-slate-200 bg-white p-4">
-          <div
-            class="flex items-end gap-2 rounded-lg border border-slate-200 p-2 focus-within:border-primary"
-          >
-            <textarea
-              v-model="message"
-              rows="1"
-              placeholder="Type your message..."
-              class="min-h-10 flex-1 resize-none border-0 bg-transparent px-2 py-2 text-sm text-slate-700 outline-none focus:ring-0"
-              @keydown.enter.exact.prevent="sendMessage"
-            />
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-slate-700">
+            Subject
+            <span class="text-red-500">*</span>
+          </label>
 
-            <button
-              type="button"
-              :disabled="!message.trim()"
-              class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-              @click="sendMessage"
-            >
-              <UIcon name="i-lucide-send" class="size-5" />
-            </button>
-          </div>
+          <USelect
+            v-model="form.subject"
+            :items="[
+              'Wholesale Price',
+              'Product Availability',
+              'Bulk Order',
+              'MOQ Inquiry',
+              'Shipping & Delivery',
+              'Sample Request',
+              'Custom Order',
+              'Payment & Pricing',
+              'Other',
+            ]"
+            placeholder="Select a subject"
+            size="lg"
+            class="w-full"
+          />
         </div>
-      </div>
-    </template>
-  </USlideover>
+
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-slate-700">
+            Message
+            <span class="text-red-500">*</span>
+          </label>
+
+          <UTextarea
+            v-model="form.message"
+            placeholder="Write your message..."
+            :rows="4"
+            size="lg"
+            class="w-full"
+          />
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-1">
+          <UButton
+            type="button"
+            color="neutral"
+            variant="ghost"
+            @click="chatStore.dialog = false"
+          >
+            Cancel
+          </UButton>
+
+          <UButton
+            type="submit"
+            :loading="chatStore.loading"
+            :disabled="!form.subject.trim() || !form.message.trim()"
+            icon="i-lucide-send"
+          >
+            Send Message
+          </UButton>
+        </div>
+      </form>
+    </div>
+  </Transition>
 </template>

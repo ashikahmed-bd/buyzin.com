@@ -1,8 +1,11 @@
 <script setup>
 const chatStore = useChatStore();
 const messageStore = useMessageStore();
+
 const { conversation } = storeToRefs(chatStore);
 const { messages } = storeToRefs(messageStore);
+
+const { $echo } = useNuxtApp();
 
 const search = ref("");
 
@@ -33,10 +36,10 @@ const selectedUser = computed(() => {
   if (!data?.participants?.length) {
     return null;
   }
-  const currentUserId = data.user_id;
+
   return (
     data.participants.find(
-      (participant) => participant.user_id !== currentUserId,
+      (participant) => participant.user_id !== data.user_id,
     )?.user ?? null
   );
 });
@@ -45,28 +48,51 @@ const selectConversation = async (item) => {
   await chatStore.show(item.id);
   await messageStore.getMessages(item.id);
   await messageStore.markAsRead(item.id);
-  await refresh();
 };
 
-const sendMessage = async (text) => {
-  if (!conversation.value?.id || !text?.trim()) {
+const message = ref("");
+
+const sendMessage = async () => {
+  if (!conversation.value?.id || !message.value.trim()) {
     return;
   }
 
-  await messageStore.sendMessage(conversation.value?.id, {
-    message: text.trim(),
+  await messageStore.sendMessage(conversation.value.id, {
+    message: message.value.trim(),
     type: "text",
   });
 
-  await messageStore.getMessages(conversation.value?.id);
+  message.value = "";
 
   await refresh();
 };
+
+const subscribeToConversation = () => {
+  if (!conversation.value?.id) return;
+
+  const channel = `conversations.${conversation.value.id}`;
+
+  $echo.private(channel).listen(".message.created", async () => {
+    await messageStore.getMessages(conversation.value.id);
+    await refresh();
+  });
+};
+
+onMounted(subscribeToConversation);
 </script>
 
 <template>
   <Dashboard>
-    <div class="mb-6">
+    <Head>
+      <Title>Messages | Buyzin</Title>
+      <Meta
+        name="description"
+        content="Manage your conversations and communicate with buyers and sellers on Buyzin."
+      />
+      <Meta name="robots" content="noindex, nofollow" />
+    </Head>
+
+    <div class="mb-6 sticky top-5">
       <h1 class="text-2xl font-bold text-title">Messages</h1>
       <p class="mt-1 text-sm text-body">
         Communicate with your buyers and manage all conversations.
@@ -74,7 +100,7 @@ const sendMessage = async (text) => {
     </div>
 
     <div
-      class="flex h-[calc(100dvh-180px)] min-h-0 overflow-hidden rounded-xl bg-white"
+      class="flex h-[calc(100dvh-20px)] min-h-0 overflow-hidden rounded-xl bg-white"
     >
       <aside
         class="flex w-full min-h-0 shrink-0 flex-col border-r border-gray-200 md:w-80"
@@ -153,7 +179,10 @@ const sendMessage = async (text) => {
 
       <section class="hidden min-h-0 min-w-0 flex-1 flex-col md:flex">
         <div v-if="conversation" class="shrink-0">
-          <LazyChatHeader :conversation="conversation" />
+          <LazyChatHeader
+            :conversation="conversation"
+            :user="conversation.sender"
+          />
         </div>
 
         <template v-if="messages">
@@ -170,13 +199,52 @@ const sendMessage = async (text) => {
                 v-for="item in messages"
                 :key="item.id"
                 :message="item"
-                :user="selectedUser"
               />
             </div>
           </main>
 
           <div class="shrink-0">
-            <LazyChatMessageComposer @send="sendMessage" />
+            <footer class="border-t border-gray-200 bg-white p-3">
+              <form
+                @submit.prevent="sendMessage"
+                class="flex items-center gap-2"
+              >
+                <input
+                  v-model="message"
+                  @keydown.enter.exact.prevent="sendMessage"
+                  type="text"
+                  autocomplete="off"
+                  placeholder="Type your message..."
+                  class="min-w-0 flex-1 rounded border border-gray-200 bg-white px-3 py-2 text-sm text-body outline-none transition placeholder:text-body focus:border-primary focus:ring-1 focus:ring-primary"
+                />
+                <button
+                  type="button"
+                  class="flex size-10 shrink-0 items-center justify-center rounded border border-gray-200 text-body transition hover:bg-gray-50 hover:text-title"
+                >
+                  <UIcon name="i-lucide-smile" class="size-4" />
+                </button>
+                <button
+                  type="button"
+                  class="flex size-10 shrink-0 items-center justify-center rounded border border-gray-200 text-body transition hover:bg-gray-50 hover:text-title"
+                >
+                  <UIcon name="i-lucide-paperclip" class="size-4" />
+                </button>
+
+                <button
+                  type="submit"
+                  :disabled="!message.trim() || messageStore.loading"
+                  class="flex shrink-0 items-center gap-2 rounded bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <span class="hidden sm:inline"> Send </span>
+                  <UIcon
+                    v-if="messageStore.loading"
+                    name="i-lucide-loader"
+                    class="size-4 animate-spin"
+                  />
+                  <UIcon v-else name="i-lucide-send" class="size-4" />
+                </button>
+              </form>
+            </footer>
           </div>
         </template>
 
