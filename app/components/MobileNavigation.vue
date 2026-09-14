@@ -4,6 +4,11 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+
+  categories: {
+    type: Object,
+    default: {},
+  },
 });
 
 const emit = defineEmits(["close"]);
@@ -28,49 +33,12 @@ const close = () => {
       @click.stop
     >
       <aside @click.stop>
-        <nav class="py-4">
-          <div class="space-y-1">
-            <a
-              href="/"
-              class="flex items-center justify-between rounded px-4 py-2.5 text-sm font-medium text-body transition hover:bg-slate-100"
-              @click="close"
-            >
-              <span>Become a Supplier</span>
-              <UIcon name="i-lucide-chevron-right" class="size-4" />
-            </a>
-            <a
-              href="/help-center"
-              class="flex items-center justify-between rounded px-4 py-2.5 text-sm font-medium text-body transition hover:bg-slate-100"
-              @click="close"
-            >
-              <span>Help Center</span>
-              <UIcon name="i-lucide-chevron-right" class="size-4" />
-            </a>
-            <a
-              href="/contact"
-              class="flex items-center justify-between rounded px-4 py-2.5 text-sm font-medium text-body transition hover:bg-slate-100"
-              @click="close"
-            >
-              <span>Contact</span>
-              <UIcon name="i-lucide-chevron-right" class="size-4" />
-            </a>
-            <a
-              href="/about"
-              class="flex items-center justify-between rounded px-4 py-2.5 text-sm font-medium text-body transition hover:bg-slate-100"
-              @click="close"
-            >
-              <span>About US</span>
-              <UIcon name="i-lucide-chevron-right" class="size-4" />
-            </a>
-            <a
-              href="/blog"
-              class="flex items-center justify-between rounded px-4 py-2.5 text-sm font-medium text-body transition hover:bg-slate-100"
-              @click="close"
-            >
-              <span>Blog</span>
-              <UIcon name="i-lucide-chevron-right" class="size-4" />
-            </a>
-          </div>
+        <nav class="px-4 py-4">
+          <NavigationItem
+            v-for="category in props.categories.data"
+            :key="category.id"
+            :item="category"
+          />
         </nav>
 
         <div class="border-t border-border border-dashed p-4">

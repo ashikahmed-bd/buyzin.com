@@ -4,11 +4,16 @@ const props = defineProps({
   open: { type: Boolean, default: false },
 });
 const emit = defineEmits(["update:open", "send-inquiry"]);
+
 const cartStore = useCartStore();
 const quantities = ref({});
+
 const close = () => emit("update:open", false);
+
 const variants = computed(() => props.product?.variants ?? []);
+
 const getQuantity = (id) => Number(quantities.value[id] ?? 0);
+
 const setQuantity = (id, value) => {
   const variant = variants.value.find((item) => item.id === id);
   if (!variant) return;
@@ -24,18 +29,21 @@ const setQuantity = (id, value) => {
   }
   quantities.value[id] = quantity;
 };
+
 const incrementVariant = (variant) => {
   setQuantity(
     variant.id,
     getQuantity(variant.id) + Number(props.product?.order_step ?? 1),
   );
 };
+
 const decrementVariant = (variant) => {
   setQuantity(
     variant.id,
     getQuantity(variant.id) - Number(props.product?.order_step ?? 1),
   );
 };
+
 const getVariantLabel = (variant) => {
   if (!variant?.options?.length) return variant?.name ?? "";
   return variant.options
@@ -43,6 +51,7 @@ const getVariantLabel = (variant) => {
     .filter(Boolean)
     .join(" / ");
 };
+
 const getVariantPricing = (variant) => {
   const pricing = variant?.pricings ?? [];
   const quantity = getQuantity(variant.id);
@@ -55,30 +64,37 @@ const getVariantPricing = (variant) => {
     }) ?? null
   );
 };
+
 const getVariantPrice = (variant) => {
   const pricing = getVariantPricing(variant);
   if (pricing) return Number(pricing.price ?? 0);
   if (variant?.price) return Number(variant.price);
   return Number(props.product?.pricing?.min_price ?? 0);
 };
+
 const getVariantTotal = (variant) =>
   getQuantity(variant.id) * getVariantPrice(variant);
+
 const selectedVariants = computed(() =>
   variants.value.filter((variant) => getQuantity(variant.id) > 0),
 );
+
 const totalQuantity = computed(() =>
   selectedVariants.value.reduce(
     (total, variant) => total + getQuantity(variant.id),
     0,
   ),
 );
+
 const subtotal = computed(() =>
   selectedVariants.value.reduce(
     (total, variant) => total + getVariantTotal(variant),
     0,
   ),
 );
+
 const hasSelection = computed(() => selectedVariants.value.length > 0);
+
 const resetQuantities = () => {
   quantities.value = Object.fromEntries(
     variants.value.map((variant, index) => [
@@ -87,10 +103,12 @@ const resetQuantities = () => {
     ]),
   );
 };
+
 watch(
   () => props.open,
   (open) => open && resetQuantities(),
 );
+
 const addToCart = async () => {
   if (!hasSelection.value) return;
   for (const variant of selectedVariants.value) {
@@ -98,6 +116,7 @@ const addToCart = async () => {
   }
   close();
 };
+
 const sendInquiry = () => {
   if (!hasSelection.value) return;
   emit("send-inquiry", {
@@ -115,6 +134,7 @@ const sendInquiry = () => {
   });
 };
 </script>
+
 <template>
   <Teleport to="body">
     <Transition
@@ -332,7 +352,7 @@ const sendInquiry = () => {
               <div class="grid grid-cols-2 gap-2 py-8">
                 <button
                   type="button"
-                  class="flex items-center justify-center gap-1.5 rounded-full text-xs font-bold transition disabled:cursor-not-allowed"
+                  class="flex items-center justify-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition disabled:cursor-not-allowed"
                   :class="
                     !hasSelection || cartStore.loading
                       ? 'bg-primary text-white cursor-not-allowed opacity-70'
@@ -347,17 +367,17 @@ const sendInquiry = () => {
                         ? 'i-lucide-loader'
                         : 'i-lucide-shopping-cart'
                     "
-                    class="size-4"
+                    class="size-5"
                     :class="{ 'animate-spin': cartStore.loading }"
                   />
                   {{ cartStore.loading ? "Adding..." : "Add to cart" }}
                 </button>
                 <button
                   type="button"
-                  class="h-11 rounded-full border text-xs font-bold transition disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-300"
+                  class="rounded-full border-2 text-sm font-bold px-4 py-2 transition disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-300"
                   :class="
                     hasSelection
-                      ? 'border-gray-900 bg-white text-gray-900 hover:bg-gray-50'
+                      ? 'border-border bg-white text-body hover:bg-gray-50'
                       : 'bg-white'
                   "
                   :disabled="!hasSelection"

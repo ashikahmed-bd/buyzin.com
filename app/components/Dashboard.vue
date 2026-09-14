@@ -57,55 +57,30 @@ const logout = async () => {
 <template>
   <div class="bg-background py-4">
     <div class="container mx-auto px-4">
-      <div class="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
+      <div class="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
         <aside>
-          <div class="sticky top-24 rounded-2xl bg-white p-4">
-            <div class="border-b border-slate-100 pb-5">
-              <div v-if="user" class="flex items-center gap-3">
-                <div class="shrink-0 overflow-hidden">
-                  <NuxtImg
-                    :src="user?.photo_url"
-                    :alt="user?.name"
-                    class="size-12 object-cover rounded-full"
-                    loading="lazy"
-                  />
-                </div>
+          <nav class="bg-white rounded-2xl space-y-1 sticky top-28 px-4 py-6">
+            <a
+              v-for="item in menu"
+              :key="item.to"
+              :href="item.to"
+              :exact="item.exact"
+              class="group flex items-center gap-3 rounded px-3 py-2.5 text-sm font-medium text-body transition hover:bg-primary/10 hover:text-primary"
+              active-class="bg-primary text-white hover:bg-primary hover:text-white"
+            >
+              <UIcon :name="item.icon" class="size-5 shrink-0" />
+              <span>{{ item.label }}</span>
+            </a>
+            <button
+              type="button"
+              @click="logout"
+              class="group flex w-full items-center gap-3 rounded px-3 py-2.5 text-sm font-medium text-body transition hover:bg-red-50 hover:text-red-600"
+            >
+              <UIcon name="i-lucide-log-out" class="size-5 shrink-0" />
 
-                <div class="min-w-0">
-                  <h3 class="truncate font-semibold text-slate-900">
-                    {{ user?.name }}
-                  </h3>
-
-                  <span class="text-xs text-body">
-                    Since {{ user?.since }}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <nav class="mt-4 space-y-1">
-              <NuxtLink
-                v-for="item in menu"
-                :key="item.to"
-                :to="item.to"
-                :exact="item.exact"
-                class="group flex items-center gap-3 rounded px-3 py-2.5 text-sm font-medium text-body transition hover:bg-primary/10 hover:text-primary"
-                active-class="!bg-primary !text-white hover:!bg-primary hover:!text-white"
-              >
-                <UIcon :name="item.icon" class="size-5 shrink-0" />
-                <span>{{ item.label }}</span>
-              </NuxtLink>
-              <button
-                type="button"
-                @click="logout"
-                class="group flex w-full items-center gap-3 rounded px-3 py-2.5 text-sm font-medium text-body transition hover:bg-red-50 hover:text-red-600"
-              >
-                <UIcon name="i-lucide-log-out" class="size-5 shrink-0" />
-
-                <span>Logout</span>
-              </button>
-            </nav>
-          </div>
+              <span>Logout</span>
+            </button>
+          </nav>
         </aside>
 
         <main class="min-w-0 space-y-3">

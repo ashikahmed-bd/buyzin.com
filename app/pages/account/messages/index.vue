@@ -31,19 +31,6 @@ const filteredConversations = computed(() => {
   });
 });
 
-const selectedUser = computed(() => {
-  const data = conversation.value?.data;
-  if (!data?.participants?.length) {
-    return null;
-  }
-
-  return (
-    data.participants.find(
-      (participant) => participant.user_id !== data.user_id,
-    )?.user ?? null
-  );
-});
-
 const selectConversation = async (item) => {
   await chatStore.show(item.id);
   await messageStore.getMessages(item.id);
@@ -63,8 +50,6 @@ const sendMessage = async () => {
   });
 
   message.value = "";
-
-  await refresh();
 };
 
 const subscribeToConversation = () => {
@@ -74,7 +59,6 @@ const subscribeToConversation = () => {
 
   $echo.private(channel).listen(".message.created", async () => {
     await messageStore.getMessages(conversation.value.id);
-    await refresh();
   });
 };
 

@@ -21,7 +21,7 @@ const toggle = (e) => {
 
 <template>
   <li class="group block">
-    <div class="flex items-center justify-between hover:text-primary py-0.5">
+    <div class="flex items-center justify-between hover:text-primary py-1">
       <a :href="path" class="flex items-center gap-2 w-1/2">
         <NuxtImg
           v-if="item.image_url"

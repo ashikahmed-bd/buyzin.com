@@ -1,13 +1,9 @@
 <script setup>
-const categoryStore = useCategoryStore();
-
-const {
-  data: categories,
-  pending,
-  error,
-  refresh,
-} = await useAsyncData("categories", async () => {
-  return await categoryStore.getCategories();
+const props = defineProps({
+  categories: {
+    type: Object,
+    default: {},
+  },
 });
 
 const categoryOpen = ref(false);

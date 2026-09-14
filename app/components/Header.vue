@@ -1,6 +1,7 @@
 <script setup>
 const authStore = useAuthStore();
 const cartStore = useCartStore();
+const categoryStore = useCategoryStore();
 
 const { user } = storeToRefs(authStore);
 
@@ -9,6 +10,10 @@ const mobileNavigation = ref(false);
 const closeMobileNavigation = () => {
   mobileNavigation.value = false;
 };
+
+const { data: categories } = await useAsyncData("categories", async () => {
+  return await categoryStore.getCategories();
+});
 </script>
 
 <template>
@@ -108,7 +113,7 @@ const closeMobileNavigation = () => {
       </div>
 
       <!-- Mobile search -->
-      <form class="relative w-full block md:hidden">
+      <form class="relative w-full block md:hidden mb-2">
         <input
           type="search"
           placeholder="Search products..."
@@ -124,11 +129,12 @@ const closeMobileNavigation = () => {
 
       <!-- Mobile navigation -->
       <MobileNavigation
+        :categories="categories"
         :open="mobileNavigation"
         @close="closeMobileNavigation"
       />
     </div>
-    <MainNavigation />
+    <MainNavigation :categories="categories" />
   </header>
 </template>
 

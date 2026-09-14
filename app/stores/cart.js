@@ -41,7 +41,7 @@ export const useCartStore = defineStore("cart", {
             quantity: quantity,
           },
         });
-
+        $toast.success(response.message);
         return response;
       } catch (error) {
         this.errors = error?.response?._data;
@@ -62,7 +62,6 @@ export const useCartStore = defineStore("cart", {
           },
         });
 
-        await this.items();
         return response;
       } catch (error) {
         this.errors = error?.response?._data || {};
@@ -79,8 +78,6 @@ export const useCartStore = defineStore("cart", {
         const response = await $api(`/api/cart/items/${item}`, {
           method: "DELETE",
         });
-
-        await this.items();
         return response;
       } catch (error) {
         this.errors = error?.response?._data?.errors || {};
@@ -98,7 +95,6 @@ export const useCartStore = defineStore("cart", {
           method: "DELETE",
         });
 
-        await this.items();
         return response;
       } catch (error) {
         this.errors = error?.response?._data?.errors || {};

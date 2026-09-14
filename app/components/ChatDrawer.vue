@@ -35,7 +35,7 @@ const submit = async () => {
     <div
       v-if="chatStore.dialog"
       @click.self="chatStore.dialog = false"
-      class="fixed bottom-0 right-4 z-50 w-[calc(100vw-2rem)] max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+      class="fixed bottom-20 right-4 z-50 w-[calc(100vw-2rem)] max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
     >
       <div
         class="flex items-center justify-between border-b border-dashed bg-white px-5 py-4"
@@ -78,31 +78,7 @@ const submit = async () => {
       </div>
 
       <form @submit.prevent="submit" class="space-y-4 px-4 py-5">
-        <div
-          v-if="product"
-          class="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3"
-        >
-          <NuxtImg
-            :src="product.cover_url"
-            :alt="product.name"
-            loading="lazy"
-            class="size-12 shrink-0 rounded-lg object-cover"
-          />
-
-          <div class="min-w-0">
-            <p
-              class="mb-0.5 text-xs font-medium uppercase tracking-wide text-slate-400"
-            >
-              Product
-            </p>
-
-            <p class="truncate text-sm font-medium text-slate-800">
-              {{ product.name }}
-            </p>
-          </div>
-        </div>
-
-        <div>
+        <div class="form__group">
           <label class="mb-1.5 block text-sm font-medium text-slate-700">
             Subject
             <span class="text-red-500">*</span>
@@ -127,7 +103,7 @@ const submit = async () => {
           />
         </div>
 
-        <div>
+        <div class="form__group">
           <label class="mb-1.5 block text-sm font-medium text-slate-700">
             Message
             <span class="text-red-500">*</span>
