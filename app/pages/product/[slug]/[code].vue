@@ -286,7 +286,7 @@ const addToWishlist = async (product) => {
                         <div class="block">
                           <span
                             v-if="tier.compare_price"
-                            class="text-2xs text-body line-through"
+                            class="text-2xs text-body line-through truncate"
                           >
                             {{
                               $currency(tier.compare_price, product.currency)
@@ -295,7 +295,7 @@ const addToWishlist = async (product) => {
 
                           <span
                             v-if="tier.compare_price"
-                            class="ml-2 text-2xs font-medium text-success"
+                            class="ml-2 text-2xs font-medium text-success truncate"
                           >
                             {{
                               $currency(

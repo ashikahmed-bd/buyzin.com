@@ -7,10 +7,13 @@ export const useNotificationStore = defineStore("notification", {
   getters: {},
 
   actions: {
-    async getNotifications() {
+    async getNotifications(params = {}) {
       const { $api } = useNuxtApp();
       try {
-        const response = await $api("/api/notifications");
+        const response = await $api("/api/notifications", {
+          method: "GET",
+          query: params,
+        });
         return response;
       } catch (error) {
         this.errors = error?.response?._data;

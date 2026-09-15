@@ -63,40 +63,23 @@ const destroy = async (item) => {
             label: 'Wishlist',
           },
         ]"
-        class="py-4 text-sm"
+        class="text-sm"
       />
 
       <div class="space-y-4 text-sm">
         <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
           <main class="min-w-0 space-y-4">
-            <section
-              class="overflow-hidden rounded-lg border border-border bg-white"
-            >
-              <div
-                class="flex flex-col gap-3 border-b border-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div>
-                  <h1
-                    class="text-lg font-bold tracking-tight text-title sm:text-xl"
-                  >
-                    My Wishlist ({{ wishlist?.data?.length ?? 0 }})
-                  </h1>
-
-                  <p class="mt-0.5 text-sm text-body">
-                    Items you love, all in one place.
-                  </p>
-                </div>
-
-                <select
-                  v-model="sortBy"
-                  aria-label="Sort wishlist"
-                  class="h-9 w-full rounded-md border border-border bg-white px-3 text-sm font-medium text-title outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10 sm:w-auto"
+            <section class="bg-white rounded">
+              <div class="px-4 py-2 border-b border-border border-dashed">
+                <h1
+                  class="text-lg font-bold tracking-tight text-title sm:text-xl"
                 >
-                  <option value="recently">Sort by: Recently</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="rating">Highest Rated</option>
-                </select>
+                  My Wishlist
+                </h1>
+
+                <p class="mt-0.5 text-sm text-body">
+                  Items you love, all in one place.
+                </p>
               </div>
 
               <EmptyState v-if="!wishlist?.data?.length" />
@@ -125,7 +108,7 @@ const destroy = async (item) => {
                     >
                       <div class="min-w-0 flex-1">
                         <NuxtLink
-                          :to="`/product/${item.product?.slug}/${item.product?.id}`"
+                          :to="`/product/${item.product?.slug}/${item.product?.code}`"
                           target="_blank"
                           class="line-clamp-2 text-sm font-semibold leading-5 text-title transition-colors hover:text-primary"
                         >
@@ -155,78 +138,26 @@ const destroy = async (item) => {
                           </span>
                         </div>
                       </div>
-
-                      <div class="flex shrink-0 items-center gap-2">
-                        <p class="text-sm font-bold text-title">
-                          {{ $currency(item.product?.price) }}
-                        </p>
-
-                        <p
-                          v-if="
-                            (item.product?.base_price ?? 0) >
-                            (item.product?.price ?? 0)
-                          "
-                          class="text-sm text-muted line-through"
-                        >
-                          {{ $currency(item.product?.base_price) }}
-                        </p>
-                      </div>
                     </div>
 
-                    <div class="mt-2 flex items-center justify-between gap-3">
-                      <p class="text-sm font-medium text-success">
-                        {{ item.product?.stock ?? "Out of stock" }}
-                      </p>
+                    <div class="flex items-center justify-between gap-4">
+                      <h4 class="text-sm font-bold text-title">
+                        {{ $currency(item.product?.pricing?.min_price) }} -
+                        {{ $currency(item.product?.pricing?.max_price) }}
+                      </h4>
 
-                      <div class="flex shrink-0 items-center gap-1.5">
-                        <button
-                          type="button"
-                          title="Add to cart"
-                          class="inline-flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary transition-colors hover:bg-primary hover:text-white"
-                          @click="addToCart(item)"
-                        >
-                          <UIcon name="i-lucide-shopping-cart" class="size-4" />
-                        </button>
-                        <button
-                          type="button"
-                          title="Remove from wishlist"
-                          @click="destroy(item.id)"
-                          class="inline-flex size-8 items-center justify-center rounded bg-red-50 text-red-500 transition-colors hover:bg-red-500 hover:text-white"
-                        >
-                          <UIcon name="i-lucide-trash-2" class="size-4" />
-                        </button>
-                      </div>
+                      <button
+                        type="button"
+                        title="Remove from wishlist"
+                        @click="destroy(item.id)"
+                        class="inline-flex size-8 items-center justify-center rounded bg-red-50 text-red-500 transition-colors hover:bg-red-500 hover:text-white"
+                      >
+                        <UIcon name="i-lucide-trash-2" class="size-4" />
+                      </button>
                     </div>
                   </div>
                 </article>
               </div>
-            </section>
-
-            <section
-              class="flex flex-col gap-3 rounded border border-border bg-white px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between"
-            >
-              <div class="flex items-center gap-3">
-                <div
-                  class="flex size-10 shrink-0 items-center justify-center rounded-full bg-violet-100 text-accent"
-                >
-                  <UIcon name="i-lucide-bell" class="size-4" />
-                </div>
-
-                <div>
-                  <h3 class="text-sm font-semibold text-title">Price Alert</h3>
-
-                  <p class="mt-0.5 text-sm leading-4 text-body">
-                    Get notified when wishlist items go on sale.
-                  </p>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                class="inline-flex h-8 items-center justify-center rounded-md border border-violet-300 bg-white px-3 text-sm font-medium text-violet-600 transition-colors hover:bg-violet-50"
-              >
-                Enable Alerts
-              </button>
             </section>
           </main>
 
@@ -244,26 +175,25 @@ const destroy = async (item) => {
 
                   <div>
                     <p class="text-sm font-bold text-title">
-                      ({{ wishlist?.summary?.items ?? 0 }}) Items
+                      ({{ wishlist?.count ?? 0 }}) Items
                     </p>
 
                     <p class="text-sm text-body">Items in wishlist</p>
                   </div>
                 </div>
 
-                <div class="flex items-center gap-3">
+                <div class="flex items-start gap-3">
                   <div
                     class="flex size-9 items-center justify-center rounded-full bg-pink-50 text-pink-500"
                   >
-                    <UIcon name="i-lucide-shopping-bag" class="size-4" />
+                    <UIcon name="i-lucide-bell" class="size-4 px-2" />
                   </div>
 
-                  <div>
-                    <p class="text-sm font-bold text-title">
-                      {{ $currency(wishlist?.summary?.total ?? 0) }}
+                  <div class="group">
+                    <h3 class="text-sm font-bold text-title">Price Alert</h3>
+                    <p class="text-sm text-body">
+                      Get notified when wishlist items go on sale.
                     </p>
-
-                    <p class="text-sm text-body">Estimated Total</p>
                   </div>
                 </div>
 
@@ -300,13 +230,13 @@ const destroy = async (item) => {
                   Prices may go up. Add your favorites to cart now.
                 </p>
 
-                <button
-                  type="button"
-                  class="mt-3 inline-flex h-8 items-center rounded-md bg-violet-600 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-700"
-                  @click="moveAllToCart"
+                <a
+                  href="/cart"
+                  target="_blank"
+                  class="mt-3 inline-flex items-center rounded bg-primary px-4 py-2 text-sm font-medium text-white hover:opacity-90"
                 >
                   Go to Cart ({{ wishlist?.data?.length ?? 0 }})
-                </button>
+                </a>
               </div>
 
               <div

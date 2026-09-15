@@ -28,7 +28,7 @@ const { data, pending, error, refresh } = await useAsyncData(
 
 <template>
   <main class="bg-gray-50">
-    <div class="container mx-auto px-4 py-6">
+    <div class="container mx-auto px-4">
       <LoadingState v-if="pending" />
 
       <ErrorState v-else-if="error" :retry="refresh" />
@@ -41,75 +41,68 @@ const { data, pending, error, refresh } = await useAsyncData(
           :image="data?.category?.image_url"
         />
 
-        <section
-          class="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-[1fr_2fr]"
-        >
-          <div class="flex flex-col justify-center">
-            <nav
-              class="flex flex-wrap items-center gap-1.5 text-sm text-body py-2"
-            >
-              <NuxtLink to="/" class="transition hover:text-primary">
-                Home
-              </NuxtLink>
+        <nav class="flex flex-wrap items-center gap-1.5 text-sm text-body py-2">
+          <NuxtLink to="/" class="transition hover:text-primary">
+            Home
+          </NuxtLink>
 
-              <UIcon
-                name="i-lucide-chevron-right"
-                class="size-4 shrink-0 text-muted"
-              />
+          <UIcon
+            name="i-lucide-chevron-right"
+            class="size-4 shrink-0 text-muted"
+          />
 
-              <template
-                v-for="(item, index) in slug.split('/')"
-                :key="`${item}-${index}`"
-              >
-                <NuxtLink
-                  v-if="index < slug.split('/').length - 1"
-                  :to="`/categories/${slug
-                    .split('/')
-                    .slice(0, index + 1)
-                    .join('/')}`"
-                  class="capitalize transition hover:text-primary"
-                >
-                  {{ item.replaceAll("-", " ") }}
-                </NuxtLink>
-
-                <span v-else class="font-medium capitalize text-title">
-                  {{ item.replaceAll("-", " ") }}
-                </span>
-
-                <UIcon
-                  v-if="index < slug.split('/').length - 1"
-                  name="i-lucide-chevron-right"
-                  class="size-4 shrink-0 text-muted"
-                />
-              </template>
-            </nav>
-
-            <h1
-              class="text-2xl font-bold tracking-tight text-title sm:text-3xl lg:text-4xl"
-            >
-              {{ data?.category?.name }}
-            </h1>
-
-            <p
-              v-if="data?.category?.description"
-              class="mt-2 max-w-2xl text-sm leading-6 text-body"
-            >
-              {{ data.category.description }}
-            </p>
-          </div>
-
-          <div
-            class="relative min-h-52 w-full overflow-hidden rounded-xl bg-gray-100 lg:min-h-0"
+          <template
+            v-for="(item, index) in slug.split('/')"
+            :key="`${item}-${index}`"
           >
+            <NuxtLink
+              v-if="index < slug.split('/').length - 1"
+              :to="`/categories/${slug
+                .split('/')
+                .slice(0, index + 1)
+                .join('/')}`"
+              class="capitalize transition hover:text-primary"
+            >
+              {{ item.replaceAll("-", " ") }}
+            </NuxtLink>
+
+            <span v-else class="font-medium capitalize text-title">
+              {{ item.replaceAll("-", " ") }}
+            </span>
+
+            <UIcon
+              v-if="index < slug.split('/').length - 1"
+              name="i-lucide-chevron-right"
+              class="size-4 shrink-0 text-muted"
+            />
+          </template>
+        </nav>
+
+        <section>
+          <div
+            class="relative min-h-52 w-full overflow-hidden rounded-xl bg-gray-100 lg:min-h-64"
+          >
+            <!-- Banner Image -->
             <NuxtImg
-              v-if="data?.category?.banner_url"
-              :src="data.category.banner_url"
-              :alt="data.category.name"
+              :src="data?.category?.banner_url"
+              :alt="data?.category?.name"
               class="absolute inset-0 h-full w-full object-cover"
             />
 
-            <div v-else class="flex h-full w-full items-center justify-center">
-              <UIcon name="i-lucide-image" class="size-10 text-gray-300" />
+            <div
+              class="relative z-10 flex min-h-52 max-w-3xl flex-col justify-center px-6 py-8 sm:px-8 lg:min-h-64 lg:px-10"
+            >
+              <h1
+                class="text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl"
+              >
+                {{ data?.category?.name }}
+              </h1>
+              <p
+                v-if="data?.category?.description"
+                class="mt-2 max-w-2xl text-sm leading-6 text-white/90 sm:text-base"
+              >
+                {{ data.category.description }}
+              </p>
             </div>
           </div>
         </section>

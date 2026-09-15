@@ -72,7 +72,8 @@ const categoryOpen = ref(false);
           </a>
 
           <a
-            href="/"
+            href="https://app.buyzin.com/register"
+            target="_blank"
             class="relative flex items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
           >
             Become a Seller
@@ -82,7 +83,7 @@ const categoryOpen = ref(false);
 
       <div class="ml-auto flex items-center gap-6">
         <a
-          href="/support"
+          href="/help"
           class="flex items-center gap-2 text-sm font-medium text-gray-800 transition hover:text-primary"
         >
           <UIcon name="i-lucide-circle-help" class="size-4" />
@@ -90,11 +91,11 @@ const categoryOpen = ref(false);
         </a>
 
         <a
-          href="tel:+8801234567890"
+          href="tel:+8809649492233"
           class="flex items-center gap-2 text-sm font-medium text-gray-800 transition hover:text-primary"
         >
           <UIcon name="i-lucide-phone" class="size-4" />
-          <span>+880 1234 567890</span>
+          <span>096 4949 2233</span>
         </a>
       </div>
     </div>

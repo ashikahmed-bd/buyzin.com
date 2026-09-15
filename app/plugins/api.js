@@ -34,7 +34,6 @@ export default defineNuxtPlugin(() => {
           break;
 
         case 403:
-          console.warn("You are not authorized to perform this action.");
           toast.add({
             title: "Access Denied",
             description: "You do not have permission to perform this action.",
@@ -43,7 +42,6 @@ export default defineNuxtPlugin(() => {
           break;
 
         case 404:
-          console.warn("The requested resource was not found.");
           toast.add({
             title: "Not Found",
             description: "The requested resource could not be found.",
@@ -52,7 +50,6 @@ export default defineNuxtPlugin(() => {
           break;
 
         case 422:
-          console.warn("The provided data is invalid.");
           toast.add({
             title: "Validation Error",
             description: "Please check your input and try again.",
@@ -61,7 +58,6 @@ export default defineNuxtPlugin(() => {
           break;
 
         case 429:
-          console.warn("Too many requests. Please try again later.");
           toast.add({
             title: "Too Many Requests",
             description:
@@ -71,7 +67,6 @@ export default defineNuxtPlugin(() => {
           break;
 
         case 500:
-          console.error("An unexpected server error occurred.");
           toast.add({
             title: "Server Error",
             description:
@@ -81,7 +76,11 @@ export default defineNuxtPlugin(() => {
           break;
 
         default:
-          console.error(`API error: ${response.status}`);
+          toast.add({
+            title: "Request Failed",
+            description: "Something went wrong. Please try again later.",
+            color: "error",
+          });
       }
     },
   });

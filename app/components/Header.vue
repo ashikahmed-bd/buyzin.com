@@ -43,27 +43,19 @@ const { data: categories } = await useAsyncData("categories", async () => {
         <!-- search -->
         <SearchBar />
 
-        <div class="flex items-center gap-6">
+        <div class="flex items-center md:gap-6">
           <a
             :href="user ? '/account' : '/auth/login'"
-            class="hidden md:flex items-center gap-2.5 rounded-xl px-2.5"
+            class="flex items-center gap-2.5 rounded-xl px-2.5"
           >
             <template v-if="user">
               <NuxtImg
-                v-if="user.photo_url"
                 :src="user.photo_url"
                 :alt="user.name"
-                class="h-10 w-10 rounded-full border object-cover p-0.5"
+                class="size-10 rounded-full border object-cover p-0.5"
               />
 
-              <div
-                v-else
-                class="flex h-10 w-10 items-center justify-center rounded-full border bg-gray-100 text-sm font-semibold"
-              >
-                {{ user.name?.charAt(0) }}
-              </div>
-
-              <div class="leading-tight">
+              <div class="hidden md:block leading-tight">
                 <p class="text-xs text-gray-500">Welcome back</p>
 
                 <p class="max-w-2xs truncate text-sm font-semibold text-title">
@@ -74,7 +66,7 @@ const { data: categories } = await useAsyncData("categories", async () => {
 
             <template v-else>
               <div
-                class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100"
+                class="flex items-center justify-center size-10 rounded-full bg-gray-100"
               >
                 <UIcon
                   name="i-lucide-user-round"
@@ -82,8 +74,8 @@ const { data: categories } = await useAsyncData("categories", async () => {
                 />
               </div>
               <div class="hidden md:block leading-tight">
-                <p class="text-xs text-gray-500">Account</p>
-                <p class="text-sm font-semibold text-gray-900">Sign In</p>
+                <p class="text-xs text-body">Account</p>
+                <p class="text-sm font-semibold text-body">Sign In</p>
               </div>
             </template>
           </a>
@@ -104,7 +96,7 @@ const { data: categories } = await useAsyncData("categories", async () => {
                 <span
                   class="absolute -top-2 -right-2 bg-primary text-white text-xs px-1 rounded-full"
                 >
-                  {{ cartStore.itemCount }}
+                  {{ cartStore.itemCount ?? 0 }}
                 </span>
               </ClientOnly>
             </a>
