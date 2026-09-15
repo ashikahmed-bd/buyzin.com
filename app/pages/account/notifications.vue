@@ -106,7 +106,7 @@ const markAsRead = async (notification) => {
           <div class="bg-white rounded-xl border border-border">
             <div class="flex overflow-x-auto border-b border-border px-2">
               <NuxtLink
-                v-for="tab in notifications.tabs"
+                v-for="tab in notifications?.tabs ?? []"
                 :key="tab.slug"
                 :to="{
                   query: {

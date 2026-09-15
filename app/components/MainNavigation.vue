@@ -94,7 +94,7 @@ const categoryOpen = ref(false);
           href="tel:+8809649492233"
           class="flex items-center gap-2 text-sm font-medium text-gray-800 transition hover:text-primary"
         >
-          <UIcon name="i-lucide-phone" class="size-4" />
+          <UIcon name="i-lucide-headset" class="size-4" />
           <span>096 4949 2233</span>
         </a>
       </div>

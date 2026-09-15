@@ -92,7 +92,7 @@ export const useAuthStore = defineStore("auth", {
         return navigateTo("/");
       } catch (error) {
         this.errors = error?.response?._data;
-        return error?.response?._data;
+        throw error;
       } finally {
         this.loading = false;
       }

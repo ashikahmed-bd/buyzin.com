@@ -23,10 +23,12 @@ const { data: categories } = await useAsyncData("categories", async () => {
         <button
           type="button"
           @click="mobileNavigation = !mobileNavigation"
-          class="inline-flex items-center justify-center rounded-lg p-2 text-body transition hover:bg-gray-100 hover:text-primary md:hidden"
+          class="text-body transition hover:text-primary md:hidden"
         >
           <UIcon
-            :name="mobileNavigation ? 'i-lucide-x' : 'i-lucide-menu'"
+            :name="
+              mobileNavigation ? 'i-lucide-x' : 'i-lucide-text-align-start'
+            "
             class="size-6"
           />
         </button>
@@ -43,64 +45,55 @@ const { data: categories } = await useAsyncData("categories", async () => {
         <!-- search -->
         <SearchBar />
 
-        <div class="flex items-center md:gap-6">
+        <div class="flex items-center gap-1">
           <a
-            :href="user ? '/account' : '/auth/login'"
-            class="flex items-center gap-2.5 rounded-xl px-2.5"
+            href="/account/notifications"
+            class="relative flex size-10 shrink-0 items-center justify-center rounded-full text-body transition hover:bg-gray-100"
           >
-            <template v-if="user">
-              <NuxtImg
-                :src="user.photo_url"
-                :alt="user.name"
-                class="size-10 rounded-full border object-cover p-0.5"
-              />
-
-              <div class="hidden md:block leading-tight">
-                <p class="text-xs text-gray-500">Welcome back</p>
-
-                <p class="max-w-2xs truncate text-sm font-semibold text-title">
-                  {{ user.name }}
-                </p>
-              </div>
-            </template>
-
-            <template v-else>
-              <div
-                class="flex items-center justify-center size-10 rounded-full bg-gray-100"
-              >
-                <UIcon
-                  name="i-lucide-user-round"
-                  class="size-5 text-gray-600"
-                />
-              </div>
-              <div class="hidden md:block leading-tight">
-                <p class="text-xs text-body">Account</p>
-                <p class="text-sm font-semibold text-body">Sign In</p>
-              </div>
-            </template>
+            <UIcon name="i-lucide-bell" class="size-5" />
+            <span
+              class="absolute right-2 top-2 size-2 rounded-full bg-red-500 ring-2 ring-white"
+            />
           </a>
 
-          <div class="flex items-center gap-4">
-            <a href="/wishlist" class="relative hidden md:block cursor-pointer">
-              <UIcon name="i-lucide-heart" class="size-5 text-body" />
-              <span
-                class="absolute -top-2 -right-2 bg-danger text-white text-xs px-1 rounded-full"
-              >
-                0
-              </span>
-            </a>
+          <a
+            :href="user ? '/account' : '/auth/login'"
+            class="group flex items-center gap-2 rounded-xl p-1.5 transition hover:bg-gray-50"
+          >
+            <div
+              class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-gray-200 bg-gray-50"
+            >
+              <NuxtImg
+                v-if="user?.photo_url"
+                :src="user.photo_url"
+                :alt="user.name"
+                class="size-full object-cover"
+              />
 
-            <a href="/cart" class="relative cursor-pointer">
-              <UIcon name="i-lucide-shopping-cart" class="size-5 text-body" />
-              <ClientOnly>
-                <span
-                  class="absolute -top-2 -right-2 bg-primary text-white text-xs px-1 rounded-full"
-                >
-                  {{ cartStore.itemCount ?? 0 }}
-                </span>
-              </ClientOnly>
-            </a>
-          </div>
+              <UIcon
+                v-else
+                name="i-lucide-user-round"
+                class="size-5 text-gray-500"
+              />
+            </div>
+
+            <div class="hidden min-w-0 text-left md:block">
+              <p class="text-xs leading-4 text-gray-500">
+                {{ user ? "Welcome back" : "Account" }}
+              </p>
+
+              <p
+                class="max-w-32 truncate text-sm font-semibold leading-5 text-title"
+              >
+                {{ user?.name || "Sign In" }}
+              </p>
+            </div>
+
+            <UIcon
+              name="i-lucide-chevron-down"
+              class="hidden size-4 text-gray-400 transition group-hover:text-gray-600 md:block"
+            />
+          </a>
         </div>
       </div>
 

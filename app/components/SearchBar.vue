@@ -68,30 +68,36 @@ const selectKeyword = async (keyword) => {
   <div class="max-w-2xl w-full hidden md:block">
     <div class="relative">
       <form
-        class="flex items-center border-2 border-primary rounded w-full"
+        class="flex w-full items-center overflow-hidden rounded-md border-2 border-primary bg-white transition focus-within:ring-2 focus-within:ring-primary/10"
         @submit.prevent="search"
       >
+        <UIcon
+          v-if="pending"
+          name="i-lucide-loader"
+          class="ml-3 size-5 shrink-0 animate-spin text-gray-500"
+        />
+
+        <UIcon
+          v-else
+          name="i-lucide-search"
+          class="ml-3 size-5 shrink-0 text-gray-500"
+        />
+
         <input
           v-model="form.search"
           type="search"
           placeholder="Search products, brands or categories..."
-          class="w-full placeholder-gray-400 px-2 text-sm pl-3 focus:outline-none"
+          class="min-w-0 flex-1 border-0 bg-transparent px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:outline-none focus:ring-0"
           @focus="searchStore.dialog = true"
           @blur="searchStore.dialog = false"
           @input="onSearchInput"
         />
 
-        <UIcon
-          v-if="pending"
-          name="i-lucide-loader-circle"
-          class="mr-2 size-6 animate-spin text-primary"
-        />
-
         <button
           type="submit"
-          class="flex items-center justify-center px-2 h-full p-1.5 bg-primary transition hover:bg-primary/90"
+          class="shrink-0 self-stretch bg-primary px-5 py-2 text-sm font-medium text-white transition hover:bg-primary/90"
         >
-          <UIcon name="i-lucide-search" class="size-6 text-white" />
+          Search
         </button>
       </form>
 
