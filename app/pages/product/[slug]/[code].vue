@@ -4,6 +4,7 @@ const toast = useToast();
 const productStore = useProductStore();
 const wishlistStore = useWishlistStore();
 const chatStore = useChatStore();
+const cartStore = useCartStore();
 
 const {
   data: product,
@@ -99,7 +100,7 @@ const addToWishlist = async (product) => {
       <div class="bg-white">
         <div class="mx-auto py-2">
           <div class="flex items-center justify-between gap-4">
-            <nav class="flex items-center gap-2 text-sm text-body">
+            <nav class="flex flex-wrap items-center gap-2 text-sm text-body">
               <a href="/" class="flex items-center gap-2 text-body">
                 <span>Home</span>
                 <UIcon name="i-lucide-chevron-right" class="size-4" />
@@ -111,7 +112,7 @@ const addToWishlist = async (product) => {
                 <a
                   v-if="index < product.breadcrumbs.length - 1"
                   :to="item.slug"
-                  class="hover:text-primary"
+                  class="whitespace-nowrap hover:text-primary"
                 >
                   {{ item.name }}
                 </a>
@@ -589,7 +590,14 @@ const addToWishlist = async (product) => {
       </div>
     </template>
 
+    <RelatedProducts :product="product" />
+
     <DialogCart v-model:open="cartDialog" :product="product" />
+
+    <DialogCartSuccess
+      :show="cartStore.dialog"
+      @close="cartStore.dialog = false"
+    />
 
     <ChatDrawer :product="product" />
   </main>

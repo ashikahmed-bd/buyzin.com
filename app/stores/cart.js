@@ -3,6 +3,7 @@ export const useCartStore = defineStore("cart", {
     loading: false,
     errors: {},
     cart: null,
+    dialog: false,
   }),
 
   persist: {
@@ -42,6 +43,7 @@ export const useCartStore = defineStore("cart", {
           },
         });
         $toast.success(response.message);
+        this.dialog = true;
         return response;
       } catch (error) {
         this.errors = error?.response?._data;

@@ -18,7 +18,6 @@ export const useAuthStore = defineStore("auth", {
   actions: {
     async login(payload) {
       const { $api } = useNuxtApp();
-      const toast = useToast();
       this.loading = true;
       try {
         const response = await $api("/api/auth/login", {
@@ -31,9 +30,7 @@ export const useAuthStore = defineStore("auth", {
         });
         this.token = response.token;
         this.user = response.user;
-        toast.add({
-          title: response.message,
-        });
+        $toast.success(response.message);
         return navigateTo("/account");
       } catch (error) {
         this.errors = error?.response?._data;
@@ -79,16 +76,12 @@ export const useAuthStore = defineStore("auth", {
 
     async logout() {
       const { $api } = useNuxtApp();
-      const toast = useToast();
       this.loading = true;
       try {
-        const response = await $api("/api/auth/logout", {
+        await $api("/api/auth/logout", {
           method: "POST",
         });
         this.$reset();
-        toast.add({
-          title: response.message,
-        });
         return navigateTo("/");
       } catch (error) {
         this.errors = error?.response?._data;

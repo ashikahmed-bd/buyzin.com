@@ -19,10 +19,10 @@ export const useProductStore = defineStore("product", {
       }
     },
 
-    async getProduct(product, code) {
+    async getProduct(slug, code) {
       const { $api } = useNuxtApp();
       try {
-        const response = await $api(`/api/products/${product}/${code}`);
+        const response = await $api(`/api/products/${slug}/${code}`);
         return response.data;
       } catch (error) {
         this.errors = error?.response?._data;
@@ -30,25 +30,23 @@ export const useProductStore = defineStore("product", {
       }
     },
 
-    async getReviews(product, code) {
+    async getReviews(slug, code) {
       const { $api } = useNuxtApp();
       try {
-        const response = await $api(`/api/products/${product}/${code}/reviews`);
+        const response = await $api(`/api/products/${slug}/${code}/reviews`);
         return response;
       } catch (error) {
-        this.errors = error?.response?._data;
-        return error?.response?._data;
+        throw error;
       }
     },
 
-    async getRelated(product) {
+    async getRelated(slug, code) {
       const { $api } = useNuxtApp();
       try {
-        const response = await $api(`/api/products/${product}/related`);
+        const response = await $api(`/api/products/${slug}/${code}/related`);
         return response.data;
       } catch (error) {
-        this.errors = error?.response?._data;
-        return error?.response?._data;
+        throw error;
       }
     },
   },

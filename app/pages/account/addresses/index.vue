@@ -50,7 +50,7 @@ const deleteAddress = async (address) => {
             label: 'Address',
           },
         ]"
-        class="py-4 text-sm"
+        class="text-sm"
       />
 
       <div class="rounded-2xl bg-white px-4 text-sm">

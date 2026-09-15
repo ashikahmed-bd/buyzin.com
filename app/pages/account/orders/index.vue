@@ -24,6 +24,23 @@ const {
       <Meta name="robots" content="noindex, nofollow" />
     </Head>
 
+    <UBreadcrumb
+      :items="[
+        {
+          label: 'Home',
+          to: '/',
+        },
+        {
+          label: 'My Account',
+          to: '/account',
+        },
+        {
+          label: 'Orders',
+        },
+      ]"
+      class="text-sm"
+    />
+
     <LoadingState v-if="pending" />
 
     <ErrorState v-else-if="error" :retry="refresh" />
@@ -56,7 +73,7 @@ const {
                   </h3>
 
                   <span
-                    class="rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-semibold text-gray-600"
+                    class="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-600"
                   >
                     {{ order.items_count }} items
                   </span>
@@ -180,7 +197,10 @@ const {
             </div>
           </article>
 
-          <div class="py-4">
+          <div
+            v-if="orders?.meta?.last_page > 1"
+            class="flex justify-center py-8"
+          >
             <UPagination
               v-model:page="page"
               show-edges

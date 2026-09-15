@@ -35,38 +35,40 @@ const scrollNext = () => {
       <Meta name="robots" content="noindex, nofollow" />
     </Head>
 
+    <UBreadcrumb
+      :items="[
+        {
+          label: 'Home',
+          to: '/',
+        },
+        {
+          label: 'My Account',
+          to: '/account',
+        },
+        {
+          label: 'Dashboard',
+        },
+      ]"
+      class="text-sm"
+    />
+
     <LoadingState v-if="pending" />
 
     <ErrorState v-else-if="error" :retry="refresh" />
 
     <template v-else class="w-full space-y-4">
-      <section
-        class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
-      >
-        <div class="w-full">
-          <h1 class="text-xl font-bold text-title">
-            Welcome back,
-            <span class="text-primary">{{ dashboard?.user?.name }}</span>
-          </h1>
+      <div class="w-full">
+        <h1 class="text-xl font-bold text-title">
+          Welcome back,
+          <span class="text-primary">{{ dashboard?.user?.name }}</span>
+        </h1>
 
-          <p class="font-body text-xs text-body">
-            Here's what's happening with your account today.
-          </p>
-        </div>
+        <p class="font-body text-xs text-body">
+          Here's what's happening with your account today.
+        </p>
+      </div>
 
-        <UButton
-          color="primary"
-          variant="outline"
-          size="sm"
-          :loading="pending"
-          @click="refresh()"
-        >
-          <UIcon name="i-lucide-refresh-cw" class="size-4" />
-          Refresh
-        </UButton>
-      </section>
-
-      <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section class="grid grid-cols-2 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div class="rounded-xl border border-default bg-white p-4">
           <div class="flex items-start justify-between">
             <div

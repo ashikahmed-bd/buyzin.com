@@ -19,68 +19,15 @@ export default defineNuxtPlugin(() => {
       }
     },
 
-    onResponseError({ response }) {
-      switch (response.status) {
-        case 401:
-          toast.add({
-            title: "Authentication Required",
-            description:
-              "You are not authenticated. Please log in to continue.",
-            color: "error",
-          });
-          authStore.$reset();
-          window.location.replace("/auth/login");
+    async onResponseError({ response }) {
+      if (response.status === 401) {
+        authStore.$reset();
 
-          break;
-
-        case 403:
-          toast.add({
-            title: "Access Denied",
-            description: "You do not have permission to perform this action.",
-            color: "error",
+        if (import.meta.client && window.location.pathname !== "/auth/login") {
+          await navigateTo("/auth/login", {
+            replace: true,
           });
-          break;
-
-        case 404:
-          toast.add({
-            title: "Not Found",
-            description: "The requested resource could not be found.",
-            color: "error",
-          });
-          break;
-
-        case 422:
-          toast.add({
-            title: "Validation Error",
-            description: "Please check your input and try again.",
-            color: "error",
-          });
-          break;
-
-        case 429:
-          toast.add({
-            title: "Too Many Requests",
-            description:
-              "You are making requests too quickly. Please try again later.",
-            color: "error",
-          });
-          break;
-
-        case 500:
-          toast.add({
-            title: "Server Error",
-            description:
-              "Something went wrong on our server. Please try again later.",
-            color: "error",
-          });
-          break;
-
-        default:
-          toast.add({
-            title: "Request Failed",
-            description: "Something went wrong. Please try again later.",
-            color: "error",
-          });
+        }
       }
     },
   });

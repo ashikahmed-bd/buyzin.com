@@ -1,6 +1,5 @@
 <script setup>
 const authStore = useAuthStore();
-const cartStore = useCartStore();
 const categoryStore = useCategoryStore();
 
 const { user } = storeToRefs(authStore);
@@ -14,6 +13,67 @@ const closeMobileNavigation = () => {
 const { data: categories } = await useAsyncData("categories", async () => {
   return await categoryStore.getCategories();
 });
+
+const logout = async () => {
+  if (confirm("Are you sure you want to logout?")) {
+    await authStore.logout();
+  }
+};
+
+const items = [
+  [
+    {
+      label: "Dashboard",
+      to: "/account",
+      icon: "i-lucide-layout-dashboard",
+    },
+    {
+      label: "My Orders",
+      to: "/account/orders",
+      icon: "i-lucide-package",
+    },
+
+    {
+      label: "Messages",
+      to: "/account/messages",
+      icon: "i-lucide-messages-square",
+    },
+
+    {
+      label: "My Reviews",
+      to: "/account/reviews",
+      icon: "i-lucide-star",
+    },
+    {
+      label: "Wishlist",
+      to: "/account/wishlist",
+      icon: "i-lucide-heart",
+    },
+    {
+      label: "My Profile",
+      to: "/account/profile",
+      icon: "i-lucide-user",
+    },
+    {
+      label: "Address",
+      to: "/account/addresses",
+      icon: "i-lucide-map-pin",
+    },
+    {
+      label: "Notifications",
+      to: "/account/notifications",
+      icon: "i-lucide-bell",
+    },
+  ],
+  [
+    {
+      label: "Logout",
+      icon: "i-lucide-log-out",
+      color: "error",
+      onSelect: logout,
+    },
+  ],
+];
 </script>
 
 <template>
@@ -56,18 +116,27 @@ const { data: categories } = await useAsyncData("categories", async () => {
             />
           </a>
 
-          <a
-            :href="user ? '/account' : '/auth/login'"
-            class="group flex items-center gap-2 rounded-xl p-1.5 transition hover:bg-gray-50"
+          <UDropdownMenu
+            :items="authStore.loggedIn ? items : []"
+            :content="{
+              align: 'start',
+              side: 'bottom',
+              sideOffset: 8,
+            }"
+            :ui="{
+              content: 'w-60',
+            }"
           >
-            <div
-              class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-gray-200 bg-gray-50"
+            <UButton
+              :to="authStore.loggedIn ? '/account' : '/auth/login'"
+              variant="link"
+              class="flex items-center gap-2 rounded-full px-1.5 hover:bg-gray-100"
             >
               <NuxtImg
                 v-if="user?.photo_url"
                 :src="user.photo_url"
                 :alt="user.name"
-                class="size-full object-cover"
+                class="size-10 object-cover rounded-full"
               />
 
               <UIcon
@@ -75,25 +144,23 @@ const { data: categories } = await useAsyncData("categories", async () => {
                 name="i-lucide-user-round"
                 class="size-5 text-gray-500"
               />
-            </div>
 
-            <div class="hidden min-w-0 text-left md:block">
-              <p class="text-xs leading-4 text-gray-500">
-                {{ user ? "Welcome back" : "Account" }}
-              </p>
-
-              <p
-                class="max-w-32 truncate text-sm font-semibold leading-5 text-title"
-              >
-                {{ user?.name || "Sign In" }}
-              </p>
-            </div>
-
-            <UIcon
-              name="i-lucide-chevron-down"
-              class="hidden size-4 text-gray-400 transition group-hover:text-gray-600 md:block"
-            />
-          </a>
+              <div class="hidden text-left sm:block">
+                <p class="text-xs leading-3 text-body">
+                  {{ user ? "Welcome back" : "Account" }}
+                </p>
+                <h4
+                  class="max-w-24 truncate text-sm font-semibold leading-5 text-body"
+                >
+                  {{ user?.name ?? "Sign In" }}
+                </h4>
+              </div>
+              <UIcon
+                name="i-lucide-chevron-down"
+                class="hidden size-4 text-gray-400 sm:block"
+              />
+            </UButton>
+          </UDropdownMenu>
         </div>
       </div>
 

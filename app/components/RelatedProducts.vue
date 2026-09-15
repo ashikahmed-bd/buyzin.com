@@ -13,8 +13,8 @@ const {
   pending,
   error,
   refresh,
-} = await useAsyncData(`related-products-${props.product}`, () =>
-  productStore.getRelated(props.product),
+} = await useAsyncData(`related-products-${props.product.code}`, () =>
+  productStore.getRelated(props.product.slug, props.product.code),
 );
 </script>
 

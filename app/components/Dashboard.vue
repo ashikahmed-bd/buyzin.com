@@ -58,7 +58,7 @@ const logout = async () => {
   <div class="bg-background py-4">
     <div class="container mx-auto px-4">
       <div class="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
-        <aside>
+        <aside class="hidden sm:block">
           <nav class="bg-white rounded-2xl space-y-1 sticky top-28 px-4 py-6">
             <a
               v-for="item in menu"

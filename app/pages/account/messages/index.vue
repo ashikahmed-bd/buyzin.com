@@ -76,6 +76,23 @@ onMounted(subscribeToConversation);
       <Meta name="robots" content="noindex, nofollow" />
     </Head>
 
+    <UBreadcrumb
+      :items="[
+        {
+          label: 'Home',
+          to: '/',
+        },
+        {
+          label: 'My Account',
+          to: '/account',
+        },
+        {
+          label: 'Messages',
+        },
+      ]"
+      class="text-sm"
+    />
+
     <div class="mb-6 sticky top-5">
       <h1 class="text-2xl font-bold text-title">Messages</h1>
       <p class="mt-1 text-sm text-body">

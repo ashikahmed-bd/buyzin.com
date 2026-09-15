@@ -192,7 +192,7 @@ const markAsRead = async (notification) => {
 
                           <span
                             v-if="!notification.read_at"
-                            class="ml-1.5 inline-block size-1.5 rounded-full bg-violet-600 align-middle"
+                            class="ml-1.5 inline-block size-1.5 rounded-full bg-primary align-middle"
                           />
                         </h3>
 
@@ -220,7 +220,7 @@ const markAsRead = async (notification) => {
                         <NuxtLink
                           v-if="notification.data?.url"
                           :to="notification.data.url"
-                          class="inline-flex items-center gap-1 text-xs font-semibold text-violet-600 transition hover:text-violet-700"
+                          class="inline-flex items-center gap-1 text-xs font-semibold text-primary"
                         >
                           {{ notification.data.label }}
 
@@ -317,7 +317,7 @@ const markAsRead = async (notification) => {
 
             <NuxtLink
               to="/account/notifications"
-              class="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-violet-600 hover:text-violet-700"
+              class="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:text-primary-hover"
             >
               Notification Settings
 
@@ -329,19 +329,17 @@ const markAsRead = async (notification) => {
             class="relative overflow-hidden rounded border border-border bg-white px-5 py-6 text-center"
           >
             <div
-              class="relative mx-auto flex size-16 items-center justify-center rounded-full bg-violet-100"
+              class="relative mx-auto flex size-16 items-center justify-center rounded-full bg-primary/20"
             >
-              <UIcon name="i-lucide-bell-ring" class="size-8 text-violet-600" />
-
+              <UIcon name="i-lucide-bell-ring" class="size-8 text-primary" />
               <span
-                v-if="notifications?.unread"
-                class="absolute right-0 top-0 flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white"
+                class="absolute right-0 top-0 flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1 text-xs font-bold text-white"
               >
-                {{ notifications.unread }}
+                {{ notifications.unread ?? 0 }}
               </span>
             </div>
 
-            <h3 class="relative mt-4 text-sm font-semibold text-gray-900">
+            <h3 class="relative mt-4 text-sm font-semibold text-body">
               You have {{ notifications?.unread ?? 0 }}
               unread notifications
             </h3>
@@ -352,7 +350,7 @@ const markAsRead = async (notification) => {
 
             <NuxtLink
               to="/account/notifications"
-              class="relative mt-4 inline-flex h-8 w-full items-center justify-center rounded-md bg-violet-600 px-4 text-xs font-semibold text-white transition hover:bg-violet-700"
+              class="relative mt-4 inline-flex h-8 w-full items-center justify-center rounded bg-primary px-4 text-xs font-semibold text-white transition hover:opacity-90"
             >
               View All Notifications
             </NuxtLink>

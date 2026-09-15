@@ -39,6 +39,31 @@ const moreReviewActions = (review) => {
 
 <template>
   <Dashboard>
+    <Head>
+      <Title>My Reviews | Buyzin</Title>
+      <Meta
+        name="description"
+        content="Manage your conversations and communicate with buyers and sellers on Buyzin."
+      />
+      <Meta name="robots" content="noindex, nofollow" />
+    </Head>
+    <UBreadcrumb
+      :items="[
+        {
+          label: 'Home',
+          to: '/',
+        },
+        {
+          label: 'My Account',
+          to: '/account',
+        },
+        {
+          label: 'Reviews',
+        },
+      ]"
+      class="text-sm"
+    />
+
     <LoadingState v-if="pending" />
 
     <ErrorState v-else-if="error" :retry="refresh" />
