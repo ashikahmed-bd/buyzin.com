@@ -1,0 +1,26 @@
+# robots.txt for https://www.buyzin.com
+
+User-agent: *
+
+# Public pages
+Allow: /
+
+# Block sensitive/customer-specific areas
+Disallow: /auth
+Disallow: /login
+Disallow: /register
+Disallow: /account
+Disallow: /profile
+Disallow: /wishlist
+Disallow: /cart
+Disallow: /checkout
+Disallow: /order
+Disallow: /orders
+
+# Block internal system pages
+Disallow: /api/
+Disallow: /_nuxt/
+Disallow: /search?
+
+# Sitemap
+Sitemap: https://www.buyzin.com/sitemap.xml

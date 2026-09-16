@@ -1,0 +1,167 @@
+<script setup>
+const toast = useToast();
+const authStore = useAuthStore();
+const wishlistStore = useWishlistStore();
+
+const props = defineProps({
+  product: {
+    type: Object,
+    required: true,
+  },
+});
+
+const addToWishlist = async (product) => {
+  if (!authStore.token) {
+    return navigateTo("/auth/login");
+  }
+
+  await wishlistStore.addItem(product);
+};
+</script>
+
+<template>
+  <article class="group relative bg-white rounded overflow-hidden">
+    <div
+      class="absolute top-2 left-2 right-2 z-10 flex justify-end items-start"
+    >
+      <button @click="addToWishlist(product.id)" type="button">
+        <UIcon
+          v-if="wishlistStore.loading === product.id"
+          name="i-lucide-loader"
+          class="size-5 animate-spin text-primary"
+        />
+        <UIcon v-else name="i-lucide-heart" class="size-5 hover:text-primary" />
+      </button>
+    </div>
+
+    <a :href="`/product/${product.slug}/${product.code}`">
+      <div
+        class="relative shine__img__wrapper aspect-square bg-gray-50 overflow-hidden"
+      >
+        <NuxtImg
+          :src="product.cover_url"
+          :alt="product.meta_title"
+          class="w-full h-full object-contain shine__img group-hover:scale-105 transition-transform duration-300"
+          loading="lazy"
+        />
+      </div>
+    </a>
+
+    <div class="p-2.5">
+      <a :href="`/product/${product.slug}/${product.code}`">
+        <h3
+          class="text-sm font-semibold text-title line-clamp-2 transition hover:opacity-90"
+        >
+          {{ product.name }}
+        </h3>
+      </a>
+
+      <div class="flex items-center gap-2 py-2">
+        <div class="flex items-center">
+          <UIcon
+            v-for="i in 5"
+            :key="i"
+            :name="
+              i <= Math.round(product.rating ?? 0)
+                ? 'heroicons:star-solid'
+                : 'heroicons:star'
+            "
+            class="size-4"
+            :class="
+              i <= Math.round(product.rating ?? 0)
+                ? 'text-yellow-400'
+                : 'text-gray-300'
+            "
+          />
+        </div>
+
+        <span class="text-xs text-body"> ({{ product.rating }}) </span>
+      </div>
+
+      <div class="space-y-2.5">
+        <div v-if="product.pricing">
+          <div
+            class="flex items-baseline gap-1.5 font-sm sm:font-xl font-semibold"
+          >
+            <span class="tracking-tight text-body">
+              {{ $currency(product.pricing.min_price, product.currency) }}
+            </span>
+
+            <template
+              v-if="product.pricing.min_price !== product.pricing.max_price"
+            >
+              <span class="tracking-tight text-body">-</span>
+              <span class="tracking-tight text-body">
+                {{ $currency(product.pricing.max_price, product.currency) }}
+              </span>
+            </template>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <span class="inline-flex items-center text-xs font-medium text-body">
+            MOQ: {{ product.moq }} {{ product.unit }}
+          </span>
+
+          <span class="text-xs text-body">
+            {{ product.sold_count }}+ sold
+          </span>
+        </div>
+      </div>
+    </div>
+  </article>
+</template>
+
+<style scoped>
+.shine__img__wrapper {
+  position: relative;
+  overflow: hidden;
+  display: block;
+}
+
+.shine__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease-in-out;
+  display: block;
+}
+
+.shine__img__wrapper:hover .shine__img {
+  transform: scale(1.05);
+}
+
+/* Shine effect pseudo-element */
+:deep(.shine__img__wrapper)::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Hover animation */
+:deep(.shine__img__wrapper:hover)::before {
+  animation: shine 1s ease-in-out;
+}
+
+@keyframes shine {
+  0% {
+    left: -75%;
+  }
+
+  100% {
+    left: 125%;
+  }
+}
+</style>
