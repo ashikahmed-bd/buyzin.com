@@ -1,20 +1,28 @@
 <script setup>
 const vendorStore = useVendorStore();
 
-const { data: stores, pending, error, refresh } = useAsyncData("stores", async () => {
+const {
+  data: stores,
+  pending,
+  error,
+  refresh,
+} = useAsyncData("stores", async () => {
   return vendorStore.getStores();
 });
 </script>
 
 <template>
   <main class="max-w-7xl mx-auto px-4 py-6">
-    <SeoMeta title="Shop Verified Online Stores | Electronics, Fashion & More | Buyzin"
+    <SeoMeta
+      title="Shop Verified Online Stores | Electronics, Fashion & More | Buyzin"
       description="Browse verified online stores on Buyzin marketplace. Discover top-rated sellers in electronics, fashion, groceries, beauty and sports categories with secure shopping experience."
-      keywords="verified online stores, best ecommerce marketplace, shop electronics online, fashion stores online, grocery shopping online, beauty products shop, sports goods stores, trusted sellers Bangladesh, Buyzin" />
+      keywords="verified online stores, best ecommerce marketplace, shop electronics online, fashion stores online, grocery shopping online, beauty products shop, sports goods stores, trusted sellers Bangladesh, Buyzin"
+    />
 
     <template v-if="pending">
-
-      <div class="relative overflow-hidden rounded-3xl bg-gray-100 p-8 mb-8 animate-pulse">
+      <div
+        class="relative overflow-hidden rounded-3xl bg-gray-100 p-8 mb-8 animate-pulse"
+      >
         <div class="max-w-2xl space-y-4">
           <div class="h-10 w-2/3 bg-gray-300 rounded"></div>
           <div class="h-5 w-1/2 bg-gray-300 rounded"></div>
@@ -30,11 +38,19 @@ const { data: stores, pending, error, refresh } = useAsyncData("stores", async (
       </div>
 
       <div class="flex flex-wrap gap-2 mb-8 animate-pulse">
-        <div v-for="i in 6" :key="i" class="h-7 w-20 bg-gray-200 rounded-full"></div>
+        <div
+          v-for="i in 6"
+          :key="i"
+          class="h-7 w-20 bg-gray-200 rounded-full"
+        ></div>
       </div>
 
       <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
-        <div v-for="i in 10" :key="i" class="animate-pulse rounded-2xl border bg-white overflow-hidden">
+        <div
+          v-for="i in 10"
+          :key="i"
+          class="animate-pulse rounded-2xl border bg-white overflow-hidden"
+        >
           <div class="h-28 bg-gray-200"></div>
 
           <div class="p-4 space-y-3">
@@ -48,7 +64,6 @@ const { data: stores, pending, error, refresh } = useAsyncData("stores", async (
           </div>
         </div>
       </div>
-
     </template>
 
     <template v-else-if="error">
@@ -56,7 +71,7 @@ const { data: stores, pending, error, refresh } = useAsyncData("stores", async (
     </template>
 
     <template v-else-if="stores">
-      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary to-accent p-8 text-white mb-8">
+      <div class="relative overflow-hidden rounded-3xl p-8 text-white">
         <div class="max-w-2xl">
           <h1 class="text-3xl md:text-5xl font-bold">
             Discover Trusted Stores
@@ -67,7 +82,12 @@ const { data: stores, pending, error, refresh } = useAsyncData("stores", async (
           </p>
 
           <div class="mt-6">
-            <UInput size="xl" icon="i-lucide-search" placeholder="Search stores..." class="max-w-xl" />
+            <UInput
+              size="xl"
+              icon="i-lucide-search"
+              placeholder="Search stores..."
+              class="max-w-xl"
+            />
           </div>
         </div>
       </div>
@@ -104,13 +124,16 @@ const { data: stores, pending, error, refresh } = useAsyncData("stores", async (
       </div>
 
       <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
-        <StoreCardList v-for="store in stores.data" :key="store.id" :store="store" />
+        <StoreCardList
+          v-for="store in stores.data"
+          :key="store.id"
+          :store="store"
+        />
       </div>
     </template>
 
     <template v-else>
       <EmptyState />
     </template>
-
   </main>
 </template>

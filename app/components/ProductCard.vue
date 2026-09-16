@@ -34,7 +34,7 @@ const addToWishlist = async (product) => {
       </button>
     </div>
 
-    <a :href="`/product/${product.slug}/${product.code}`">
+    <a :href="product.url">
       <div
         class="relative shine__img__wrapper aspect-square bg-gray-50 overflow-hidden"
       >

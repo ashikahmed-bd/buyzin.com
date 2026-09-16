@@ -212,9 +212,9 @@ const addToWishlist = async (product) => {
                     <div class="flex items-center gap-1.5">
                       <span class="text-sm text-muted">Brand:</span>
                       <a
-                        :href="`/brands/${product?.brand?.slug}`"
+                        :href="product?.brand?.url"
                         target="_blank"
-                        class="text-sm font-medium text-body"
+                        class="text-sm font-semibold text-link"
                       >
                         {{ product?.brand?.name ?? "N/A" }}
                       </a>
@@ -222,11 +222,13 @@ const addToWishlist = async (product) => {
 
                     <div class="flex items-center gap-1.5">
                       <span class="text-sm text-muted">Category:</span>
-                      <span class="text-sm font-medium text-body">
-                        {{
-                          product?.category?.name ?? product?.category ?? "N/A"
-                        }}
-                      </span>
+                      <a
+                        :href="product?.category?.url"
+                        target="_blank"
+                        class="text-sm font-semibold text-link"
+                      >
+                        {{ product?.category?.name ?? "N/A" }}
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -417,52 +419,64 @@ const addToWishlist = async (product) => {
 
           <aside class="min-w-0">
             <div class="sticky top-20 space-y-4 bg-white p-4">
-              <section class="flex items-start gap-3.5">
-                <div
-                  class="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded bg-slate-100 text-slate-700"
+              <section class="space-y-3">
+                <div class="flex items-start gap-2.5">
+                  <div
+                    class="bg-light flex shrink-0 items-center justify-center"
+                  >
+                    <NuxtLink
+                      :src="product.store.logo_url"
+                      :alt="product.store.name"
+                      class="size-12 object-cover rounded"
+                    />
+                  </div>
+
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-1.5">
+                      <h2 class="truncate text-sm font-semibold text-title">
+                        {{ product?.store?.name }}
+                      </h2>
+
+                      <UIcon
+                        v-if="product?.store?.verified"
+                        name="i-lucide-badge-check"
+                        class="size-4 shrink-0 text-blue-600"
+                      />
+                    </div>
+
+                    <p class="mt-0.5 truncate text-xs text-body">
+                      Verified wholesale supplier
+                    </p>
+
+                    <div class="mt-1.5 flex items-center gap-1.5">
+                      <UIcon
+                        name="i-lucide-star"
+                        class="size-3.5 fill-amber-400 text-amber-400"
+                      />
+
+                      <span class="text-xs font-semibold text-title">
+                        {{ product?.store?.rating ?? "0.00" }}
+                      </span>
+
+                      <span class="text-xs text-body">
+                        ({{ product?.store?.reviews_count ?? 0 }} reviews)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <NuxtLink
+                  v-if="product?.store?.url"
+                  :to="product.store.url"
+                  class="group flex w-full items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold text-primary transition-all hover:border-primary hover:bg-primary/5"
                 >
-                  <img
-                    v-if="product?.store?.logo_url"
-                    :src="product.store.logo_url"
-                    :alt="product.store.name"
-                    class="size-full object-cover"
+                  <span>Visit Store</span>
+
+                  <UIcon
+                    name="i-lucide-arrow-up-right"
+                    class="size-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                   />
-
-                  <UIcon v-else name="i-lucide-store" class="size-5" />
-                </div>
-
-                <div class="min-w-0 flex-1">
-                  <div class="flex items-center gap-1.5">
-                    <h2 class="truncate text-sm font-bold text-slate-950">
-                      {{ product?.store?.name }}
-                    </h2>
-
-                    <UIcon
-                      v-if="product?.store?.verified"
-                      name="i-lucide-badge-check"
-                      class="size-4 shrink-0 text-blue-600"
-                    />
-                  </div>
-
-                  <p class="mt-0.5 text-xs text-slate-500">
-                    Verified wholesale supplier
-                  </p>
-
-                  <div class="mt-2 flex items-center gap-1.5">
-                    <UIcon
-                      name="i-lucide-star"
-                      class="size-3.5 fill-amber-400 text-amber-400"
-                    />
-
-                    <span class="text-xs font-semibold text-body">
-                      {{ product?.store?.rating ?? "0.00" }}
-                    </span>
-
-                    <span class="text-xs text-body">
-                      · {{ product?.store?.reviews_count ?? 0 }} reviews
-                    </span>
-                  </div>
-                </div>
+                </NuxtLink>
               </section>
 
               <!-- Shipping -->

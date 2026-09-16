@@ -100,7 +100,7 @@ const clear = () => {
 </script>
 
 <template>
-  <main class="container mx-auto px-4 py-6">
+  <main class="px-4 py-6">
     <div class="mb-4 flex items-center gap-2 text-sm text-body">
       <template v-for="(item, index) in data?.breadcrumbs" :key="index">
         <a

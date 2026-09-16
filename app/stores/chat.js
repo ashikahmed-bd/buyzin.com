@@ -28,7 +28,6 @@ export const useChatStore = defineStore("chat", {
 
     async store(payload) {
       const { $api } = useNuxtApp();
-      const toast = useToast();
       this.loading = true;
       try {
         const response = await $api("/api/conversations", {
@@ -36,16 +35,10 @@ export const useChatStore = defineStore("chat", {
           body: payload,
         });
         this.dialog = false;
-        toast.add({
-          title: response.message,
-          color: "success",
-        });
+        $toast.success(response.message);
         return response;
       } catch (error) {
-        toast.add({
-          title: error.response._data.message,
-          color: "error",
-        });
+        $toast.error(error.response._data.message);
         throw error;
       } finally {
         this.loading = false;

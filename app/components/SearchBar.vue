@@ -262,16 +262,7 @@ const viewAllResults = async () => {
                     <h2 class="truncate text-sm font-medium text-title">
                       {{ product.name }}
                     </h2>
-
-                    <div
-                      class="mt-1 flex items-center gap-2 text-xs text-muted"
-                    >
-                      <span> SKU: {{ product.sku }} </span>
-
-                      <span class="size-1 shrink-0 rounded-full bg-gray-300" />
-
-                      <span> MOQ {{ product.moq }} {{ product.unit }} </span>
-                    </div>
+                    <span> MOQ {{ product.moq }} {{ product.unit }} </span>
                   </div>
 
                   <div class="shrink-0 text-right">

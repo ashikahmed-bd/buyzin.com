@@ -40,13 +40,13 @@ defineProps({
           </h3>
 
           <span class="shrink-0 text-xs text-body">
-            {{ conversation.last_message_at }}
+            {{ conversation.message_at }}
           </span>
         </div>
 
         <div class="mt-1 flex items-center justify-between gap-2">
           <h4 class="truncate text-xs text-body">
-            {{ conversation.last_message ?? "No messages" }}
+            {{ conversation.message ?? "No messages" }}
           </h4>
 
           <span

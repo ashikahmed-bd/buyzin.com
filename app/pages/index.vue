@@ -1,5 +1,6 @@
 <script setup>
 const appStore = useAppStore();
+
 const {
   data: home,
   pending,
@@ -64,12 +65,8 @@ const {
             }"
           >
             <a
-              :href="
-                item.parent
-                  ? `/categories/${item.parent.slug}/${item.slug}`
-                  : `/categories/${item.slug}`
-              "
-              class="group relative block overflow-hidden rounded bg-white transition-all duration-300 hover:-translate-y-1 text-center"
+              :href="item.url"
+              class="group relative block rounded bg-white transition-all duration-300 hover:-translate-y-1 text-center"
             >
               <NuxtImg
                 :src="item.image_url"
@@ -200,15 +197,6 @@ const {
               :key="index"
               :product="product"
             />
-          </div>
-
-          <div class="flex items-center justify-center py-6">
-            <a
-              href="/shop"
-              class="px-4 py-2.5 text-sm font-medium text-white bg-primary rounded hover:bg-primary focus:outline-none transition"
-            >
-              Load more</a
-            >
           </div>
         </div>
       </section>

@@ -47,7 +47,7 @@ const handleError = () => {
         </p>
         <button
           type="button"
-          class="mt-7 inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/30"
+          class="mt-7 inline-flex items-center justify-center gap-2 rounded bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/30"
           @click="handleError"
         >
           <UIcon name="i-lucide-house" class="size-4" /> Go to Homepage
