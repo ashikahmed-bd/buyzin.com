@@ -654,8 +654,18 @@ const addToWishlist = async (product) => {
           <UCarousel
             v-slot="{ item }"
             loop
+            arrows
+            prev-icon="i-lucide-chevron-left"
+            next-icon="i-lucide-chevron-right"
+            :autoplay="{ delay: 2000 }"
+            wheel-gestures
             :items="data.related"
-            :ui="{ item: 'basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5' }"
+            :ui="{
+              item: 'basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5',
+              prev: 'sm:start-2',
+              next: 'sm:end-2',
+              container: 'ms-0',
+            }"
             class="gap-4"
           >
             <ProductCard :product="item" />

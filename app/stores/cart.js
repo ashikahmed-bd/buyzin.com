@@ -42,7 +42,6 @@ export const useCartStore = defineStore("cart", {
             quantity: quantity,
           },
         });
-        $toast.success(response.message);
         this.dialog = true;
         return response;
       } catch (error) {

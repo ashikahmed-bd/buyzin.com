@@ -40,13 +40,23 @@ export const useProductStore = defineStore("product", {
       }
     },
 
-    async getRelated(slug, code) {
+    async getRelated(slug, code, params = {}) {
       const { $api } = useNuxtApp();
+      this.loading = true;
       try {
-        const response = await $api(`/api/products/${slug}/${code}/related`);
-        return response.data;
+        const response = await $api(`/api/products/${slug}/${code}/related`, {
+          method: "GET",
+          query: {
+            page: params.page,
+          },
+        });
+
+        return response;
       } catch (error) {
+        console.error("Failed to fetch related products:", error);
         throw error;
+      } finally {
+        this.loading = false;
       }
     },
   },

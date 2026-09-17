@@ -1,373 +1,340 @@
+```vue
 <script setup>
-const settings = useSettings();
+const currentYear = new Date().getFullYear();
+
+const props = defineProps({
+  settings: {
+    type: Object,
+    default: () => ({}),
+  },
+});
+
+const email = ref("");
+const subscribing = ref(false);
+
+const socialLinks = [
+  {
+    key: "facebook",
+    icon: "i-lucide-facebook",
+  },
+  {
+    key: "instagram",
+    icon: "i-lucide-instagram",
+  },
+  {
+    key: "linkedin",
+    icon: "i-lucide-linkedin",
+  },
+  {
+    key: "youtube",
+    icon: "i-lucide-youtube",
+  },
+];
+
+const businessLinks = [
+  { label: "Become a Supplier", to: "/store/apply" },
+  { label: "Supplier Dashboard", to: "/dashboard" },
+  { label: "Request a Quote", to: "/request-a-quote" },
+  { label: "Wholesale Solutions", to: "/wholesale" },
+];
+
+const buyerLinks = [
+  { label: "Browse Products", to: "/products" },
+  { label: "Categories", to: "/categories" },
+  { label: "Brands", to: "/brands" },
+  { label: "Deals", to: "/deals" },
+];
+
+const informationLinks = [
+  { label: "About Buyzin", to: "/about" },
+  { label: "How It Works", to: "/how-it-works" },
+  { label: "Contact Us", to: "/contact" },
+  { label: "Privacy Policy", to: "/privacy-policy" },
+  { label: "Terms & Conditions", to: "/terms-and-conditions" },
+];
+
+const subscribe = async () => {
+  if (!email.value || subscribing.value) return;
+
+  subscribing.value = true;
+
+  try {
+    // await newsletterStore.subscribe(email.value);
+
+    email.value = "";
+  } catch (error) {
+    console.error(error);
+  } finally {
+    subscribing.value = false;
+  }
+};
 </script>
 
 <template>
-  <footer class="bg-white z-10">
-    <div class="bg-primary text-white py-8 md:py-10 lg:py-12">
+  <footer class="border-t border-gray-200 bg-white">
+    <!-- CTA -->
+    <section class="border-b border-white/10 bg-primary">
       <div class="container mx-auto px-4">
         <div
-          class="flex flex-wrap items-center justify-between gap-4 md:gap-16"
+          class="flex flex-col gap-6 py-10 md:flex-row md:items-center md:justify-between md:py-12"
         >
-          <div class="grow max-w-sm">
-            <h3 class="font-semibold text-xl md:text-2xl">
-              Join 2,000+ fashion lovers & get exclusive updates
-            </h3>
-            <p class="text-xs md:text-sm mt-1 opacity-90">
-              Subscribe with your email to receive new arrivals, brand drops,
-              and special discounts — straight to your inbox.
+          <div class="max-w-2xl">
+            <div
+              class="mb-3 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-medium text-white"
+            >
+              <UIcon name="i-lucide-sparkles" class="size-3.5" />
+              Built for modern businesses
+            </div>
+
+            <h2
+              class="text-2xl font-bold tracking-tight text-white md:text-3xl"
+            >
+              Source smarter. Grow faster.
+            </h2>
+
+            <p class="mt-2 max-w-xl text-sm leading-6 text-white/75">
+              Connect with verified suppliers, discover wholesale products,
+              compare offers, and source inventory for your business.
             </p>
           </div>
 
-          <div class="flex-1 max-w-sm">
-            <form class="flex items-center gap-2 bg-white rounded p-2">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                class="w-full px-3 py-2 rounded text-body text-sm focus:outline-none"
-              />
+          <div class="flex flex-col gap-2 sm:flex-row">
+            <NuxtLink
+              to="/products"
+              class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-white px-5 text-sm font-semibold text-primary shadow-sm transition hover:bg-gray-100"
+            >
+              <UIcon name="i-lucide-shopping-bag" class="size-4" />
+              Browse Products
+            </NuxtLink>
 
-              <button
-                type="submit"
-                class="bg-primary text-white font-semibold px-4 py-2 rounded whitespace-nowrap"
-              >
-                Subscribe
-              </button>
-            </form>
-
-            <p class="text-xs mt-1 opacity-70">
-              Get the latest offers, promotions & new arrivals
-            </p>
+            <NuxtLink
+              to="/store/apply"
+              class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-white/25 bg-white/5 px-5 text-sm font-semibold text-white transition hover:bg-white/10"
+            >
+              <UIcon name="i-lucide-store" class="size-4" />
+              Become a Supplier
+            </NuxtLink>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
+    <!-- Main -->
     <div class="container mx-auto px-4">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 py-12">
-        <div class="flex w-full flex-col items-start">
-          <a href="/" class="mb-3">
-            <NuxtImg
-              src="/logo.svg"
-              alt="logo"
-              class="h-12 object-cover w-auto"
-            />
-          </a>
-          <p class="text-body">
-            We are committed to providing 100% genuine and authentic products at
-            the best prices. Our mission is to make your shopping experience
-            easy, fast, and hassle-free. Trust in Buyzin for all your needs.
+      <div
+        class="grid grid-cols-1 gap-10 py-12 sm:grid-cols-2 lg:grid-cols-5 lg:gap-8 lg:py-14"
+      >
+        <!-- Brand -->
+        <div class="sm:col-span-2 lg:col-span-2">
+          <NuxtLink to="/" aria-label="Buyzin" class="inline-flex">
+            <NuxtImg src="/logo.svg" alt="Buyzin" class="h-9 w-auto" />
+          </NuxtLink>
+
+          <p class="mt-4 max-w-md text-sm leading-6 text-gray-500">
+            Buyzin is a B2B wholesale marketplace connecting businesses with
+            suppliers across Bangladesh. Discover products, source inventory,
+            communicate with suppliers, and grow your business from one
+            platform.
           </p>
 
-          <!-- Social Links -->
-          <div class="mt-4">
-            <h3 class="mb-2 text-base font-semibold text-gray-900">
-              Follow Us
-            </h3>
-            <div class="flex items-center gap-3">
-              <a
-                :href="settings?.social?.facebook"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 transition hover:bg-blue-100"
-              >
-                <UIcon
-                  name="i-simple-icons-facebook"
-                  class="size-5 text-blue-600"
-                />
-              </a>
-
-              <a
-                :href="settings?.social?.instagram"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 transition hover:bg-pink-100"
-              >
-                <UIcon
-                  name="i-simple-icons-instagram"
-                  class="size-5 text-pink-600"
-                />
-              </a>
-
-              <a
-                :href="settings?.social?.threads"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 transition hover:bg-gray-200"
-              >
-                <UIcon
-                  name="i-simple-icons-threads"
-                  class="size-5 text-black"
-                />
-              </a>
-
-              <a
-                :href="settings?.social?.youtube"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 transition hover:bg-red-100"
-              >
-                <UIcon
-                  name="i-simple-icons-youtube"
-                  class="size-5 text-red-600"
-                />
-              </a>
-
-              <a
-                :href="settings?.social?.pinterest"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 transition hover:bg-red-100"
-              >
-                <UIcon
-                  name="i-simple-icons-pinterest"
-                  class="size-5 text-red-600"
-                />
-              </a>
-
-              <a
-                :href="settings?.social?.linkedin"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 transition hover:bg-blue-100"
-              >
-                <UIcon
-                  name="i-simple-icons-linkedin"
-                  class="size-5 text-blue-700"
-                />
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div class="w-full">
-          <div class="grid grid-cols-2 md:grid-cols-2 gap-8">
-            <div class="w-full">
-              <h3 class="text-lg md:text-xl font-semibold text-title mb-4">
-                Information
-              </h3>
-              <ul class="space-y-2 text-body">
-                <li class="flex items-center group">
-                  <LazyUIcon
-                    name="i-lucide-chevrons-right"
-                    class="size-4 mr-1 group-hover:text-primary transition"
-                  />
-                  <a
-                    href="/privacy-policy"
-                    class="group-hover:text-primary transition-colors duration-200"
-                  >
-                    Privacy Policy
-                  </a>
-                </li>
-                <li class="flex items-center group">
-                  <LazyUIcon
-                    name="i-lucide-chevrons-right"
-                    class="size-4 mr-1 group-hover:text-primary transition"
-                  />
-                  <a
-                    href="/terms-and-conditions"
-                    class="group-hover:text-primary transition-colors duration-200"
-                  >
-                    Terms & Conditions
-                  </a>
-                </li>
-
-                <li class="flex items-center group">
-                  <LazyUIcon
-                    name="i-lucide-chevrons-right"
-                    class="size-4 mr-1 group-hover:text-primary transition"
-                  />
-                  <a
-                    href="/returns-refunds"
-                    class="group-hover:text-primary transition-colors duration-200"
-                  >
-                    Return & Refund
-                  </a>
-                </li>
-
-                <li class="flex items-center group">
-                  <LazyUIcon
-                    name="i-lucide-chevrons-right"
-                    class="size-4 mr-1 group-hover:text-primary transition"
-                  />
-                  <a
-                    href="/shipping-delivery"
-                    class="group-hover:text-primary transition-colors duration-200"
-                  >
-                    Shipping & Delivery
-                  </a>
-                </li>
-
-                <li class="flex items-center group">
-                  <LazyUIcon
-                    name="i-lucide-chevrons-right"
-                    class="size-4 mr-1 group-hover:text-primary transition"
-                  />
-                  <a
-                    href="/warranty-policy"
-                    class="group-hover:text-primary transition-colors duration-200"
-                  >
-                    Warranty Policy
-                  </a>
-                </li>
-
-                <li class="flex items-center group">
-                  <LazyUIcon
-                    name="i-lucide-chevrons-right"
-                    class="size-4 mr-1 group-hover:text-primary transition"
-                  />
-                  <a
-                    href="/cookie-policy"
-                    class="group-hover:text-primary transition-colors duration-200"
-                  >
-                    Cookie Policy
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div class="w-full">
-              <h3 class="text-lg md:text-xl font-semibold text-gray-800 mb-4">
-                Our Company
-              </h3>
-              <ul class="space-y-2 text-body">
-                <li class="flex items-center group">
-                  <LazyUIcon
-                    name="i-lucide-chevrons-right"
-                    class="size-4 mr-1 group-hover:text-primary transition"
-                  />
-                  <a
-                    href="/"
-                    class="hover:text-primary transition-colors duration-200"
-                  >
-                    FAQ
-                  </a>
-                </li>
-
-                <li class="flex items-center group">
-                  <LazyUIcon
-                    name="i-lucide-chevrons-right"
-                    class="size-4 mr-1 group-hover:text-primary transition"
-                  />
-                  <a
-                    href="/help"
-                    class="hover:text-primary transition-colors duration-200"
-                  >
-                    Help Center
-                  </a>
-                </li>
-
-                <li class="flex items-center group">
-                  <LazyUIcon
-                    name="i-lucide-chevrons-right"
-                    class="size-4 mr-1 group-hover:text-primary transition"
-                  />
-                  <a
-                    href="/about"
-                    class="hover:text-primary transition-colors duration-200"
-                  >
-                    Blog
-                  </a>
-                </li>
-
-                <li class="flex items-center group">
-                  <LazyUIcon
-                    name="i-lucide-chevrons-right"
-                    class="size-4 mr-1 group-hover:text-primary transition"
-                  />
-                  <a
-                    href="/"
-                    class="hover:text-primary transition-colors duration-200"
-                  >
-                    About Us
-                  </a>
-                </li>
-                <li class="flex items-center group">
-                  <LazyUIcon
-                    name="i-lucide-chevrons-right"
-                    class="size-4 mr-1 group-hover:text-primary transition"
-                  />
-                  <a
-                    href="/"
-                    class="hover:text-primary transition-colors duration-200"
-                  >
-                    Contact Us
-                  </a>
-                </li>
-
-                <li class="flex items-center group">
-                  <LazyUIcon
-                    name="i-lucide-chevrons-right"
-                    class="size-4 mr-1 group-hover:text-primary transition"
-                  />
-                  <a
-                    href="/store/apply"
-                    class="hover:text-primary transition-colors duration-200"
-                  >
-                    Become a Supplier
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex flex-col w-full">
-          <div class="block">
-            <h3
-              class="mb-4 text-base font-semibold md:text-xl md:font-bold text-gray-800"
+          <!-- Trust Cards -->
+          <div class="mt-6 grid max-w-lg grid-cols-1 gap-3 sm:grid-cols-2">
+            <div
+              class="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50/80 p-3"
             >
-              Help & Contact
+              <div
+                class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
+              >
+                <UIcon name="i-lucide-badge-check" class="size-4.5" />
+              </div>
+
+              <div>
+                <p class="text-xs font-semibold text-gray-900">
+                  Trusted Suppliers
+                </p>
+
+                <p class="mt-0.5 text-[11px] text-gray-500">
+                  Business-focused sourcing
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50/80 p-3"
+            >
+              <div
+                class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
+              >
+                <UIcon name="i-lucide-package-check" class="size-4.5" />
+              </div>
+
+              <div>
+                <p class="text-xs font-semibold text-gray-900">
+                  Wholesale Products
+                </p>
+
+                <p class="mt-0.5 text-[11px] text-gray-500">
+                  Built for bulk buying
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social -->
+          <div class="mt-7">
+            <p
+              class="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400"
+            >
+              Follow Buyzin
+            </p>
+
+            <div class="flex items-center gap-2">
+              <template v-for="social in socialLinks" :key="social.key">
+                <a
+                  v-if="settings?.social?.[social.key]"
+                  :href="settings.social[social.key]"
+                  :aria-label="`Buyzin on ${social.key}`"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex size-9 items-center justify-center rounded-lg border border-gray-200 text-gray-500 transition hover:border-primary hover:bg-primary/5 hover:text-primary"
+                >
+                  <UIcon :name="social.icon" class="size-4" />
+                </a>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Business -->
+        <div>
+          <h3 class="mb-4 text-sm font-semibold text-gray-900">For Business</h3>
+
+          <ul class="space-y-3">
+            <li v-for="item in businessLinks" :key="item.to">
+              <NuxtLink
+                :to="item.to"
+                class="text-sm text-gray-500 transition hover:text-primary"
+              >
+                {{ item.label }}
+              </NuxtLink>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Buyers -->
+        <div>
+          <h3 class="mb-4 text-sm font-semibold text-gray-900">For Buyers</h3>
+
+          <ul class="space-y-3">
+            <li v-for="item in buyerLinks" :key="item.to">
+              <NuxtLink
+                :to="item.to"
+                class="text-sm text-gray-500 transition hover:text-primary"
+              >
+                {{ item.label }}
+              </NuxtLink>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Information -->
+        <div>
+          <h3 class="mb-4 text-sm font-semibold text-gray-900">Information</h3>
+
+          <ul class="space-y-3">
+            <li v-for="item in informationLinks" :key="item.to">
+              <NuxtLink
+                :to="item.to"
+                class="text-sm text-gray-500 transition hover:text-primary"
+              >
+                {{ item.label }}
+              </NuxtLink>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Support + Newsletter -->
+      <div class="border-t border-gray-200 py-8">
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <!-- Support -->
+          <div>
+            <h3 class="mb-4 text-sm font-semibold text-gray-900">
+              Business Support
             </h3>
 
-            <div class="space-y-3">
-              <div class="flex items-start gap-3">
-                <LazyUIcon
-                  name="i-lucide-map-pin"
-                  class="size-6 text-body hover:text-primary"
-                />
+            <div class="space-y-4">
+              <div v-if="settings?.app?.address" class="flex items-start gap-3">
+                <div
+                  class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gray-100"
+                >
+                  <UIcon name="i-lucide-map-pin" class="size-4 text-gray-500" />
+                </div>
+
                 <address
                   v-html="settings.app.address"
-                  class="not-italic text-body hover:text-primary"
+                  class="not-italic text-sm leading-5 text-gray-500"
                 />
               </div>
 
-              <div class="flex items-start gap-3">
-                <LazyUIcon
-                  name="i-lucide-headset"
-                  class="size-6 text-body hover:text-primary"
-                />
-                <div class="flex flex-col">
+              <div
+                v-if="
+                  settings?.app?.contact?.sales_phone ||
+                  settings?.app?.contact?.support_phone
+                "
+                class="flex items-start gap-3"
+              >
+                <div
+                  class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gray-100"
+                >
+                  <UIcon name="i-lucide-phone" class="size-4 text-gray-500" />
+                </div>
+
+                <div class="flex flex-col gap-1 text-sm">
                   <a
+                    v-if="settings?.app?.contact?.sales_phone"
                     :href="`tel:${settings.app.contact.sales_phone}`"
-                    class="text-body hover:text-primary"
+                    class="text-gray-500 hover:text-primary"
                   >
-                    {{ settings.app.contact.sales_phone }}
+                    Sales: {{ settings.app.contact.sales_phone }}
                   </a>
+
                   <a
+                    v-if="settings?.app?.contact?.support_phone"
                     :href="`tel:${settings.app.contact.support_phone}`"
-                    class="text-body hover:text-primary"
+                    class="text-gray-500 hover:text-primary"
                   >
-                    {{ settings.app.contact.support_phone }}
+                    Support: {{ settings.app.contact.support_phone }}
                   </a>
                 </div>
               </div>
 
-              <div class="flex items-start gap-3">
-                <LazyUIcon
-                  name="i-lucide-send"
-                  class="size-6 text-body hover:text-primary"
-                />
-                <div class="flex flex-col">
+              <div
+                v-if="
+                  settings?.app?.contact?.sales_email ||
+                  settings?.app?.contact?.support_email
+                "
+                class="flex items-start gap-3"
+              >
+                <div
+                  class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gray-100"
+                >
+                  <UIcon name="i-lucide-mail" class="size-4 text-gray-500" />
+                </div>
+
+                <div class="flex flex-col gap-1 text-sm">
                   <a
+                    v-if="settings?.app?.contact?.sales_email"
                     :href="`mailto:${settings.app.contact.sales_email}`"
-                    class="text-body hover:text-primary"
+                    class="text-gray-500 hover:text-primary"
                   >
                     {{ settings.app.contact.sales_email }}
                   </a>
+
                   <a
+                    v-if="settings?.app?.contact?.support_email"
                     :href="`mailto:${settings.app.contact.support_email}`"
-                    class="text-body hover:text-primary"
+                    class="text-gray-500 hover:text-primary"
                   >
                     {{ settings.app.contact.support_email }}
                   </a>
@@ -375,18 +342,104 @@ const settings = useSettings();
               </div>
             </div>
           </div>
+
+          <!-- Newsletter -->
+          <div class="lg:col-span-2">
+            <div
+              class="rounded-2xl border border-gray-200 bg-gray-50 p-5 md:p-6"
+            >
+              <div
+                class="flex flex-col gap-5 md:flex-row md:items-center md:justify-between"
+              >
+                <div class="max-w-md">
+                  <div class="flex items-center gap-2">
+                    <div
+                      class="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary"
+                    >
+                      <UIcon name="i-lucide-mail-plus" class="size-4" />
+                    </div>
+
+                    <h3 class="text-sm font-semibold text-gray-900">
+                      Stay updated with Buyzin
+                    </h3>
+                  </div>
+
+                  <p class="mt-2 text-sm leading-5 text-gray-500">
+                    Get wholesale deals, new supplier updates, sourcing
+                    opportunities, and business insights in your inbox.
+                  </p>
+                </div>
+
+                <form
+                  class="flex w-full flex-col gap-2 sm:flex-row md:max-w-md"
+                  @submit.prevent="subscribe"
+                >
+                  <input
+                    id="footer-email"
+                    v-model="email"
+                    type="email"
+                    required
+                    autocomplete="email"
+                    placeholder="Business email"
+                    class="h-10 min-w-0 flex-1 rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/10"
+                  />
+
+                  <button
+                    type="submit"
+                    :disabled="subscribing"
+                    class="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg bg-primary px-5 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <UIcon
+                      :name="
+                        subscribing ? 'i-lucide-loader-circle' : 'i-lucide-send'
+                      "
+                      class="size-4"
+                      :class="{ 'animate-spin': subscribing }"
+                    />
+
+                    {{ subscribing ? "Joining..." : "Subscribe" }}
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="bg-gray-100 text-center py-4">
-      <p class="text-sm font-normal text-gray-600">
-        © {{ new Date().getFullYear() }}
-        <a href="/" class="text-primary">Buyzin</a> - All rights reserved | No.1
-        Largest B2B Wholesale Marketplace in Bangladesh.
-      </p>
+    <!-- Bottom -->
+    <div class="border-t border-gray-200 bg-gray-50/70">
+      <div
+        class="container mx-auto flex flex-col gap-3 px-4 py-4 text-center md:flex-row md:items-center md:justify-between md:text-left"
+      >
+        <p class="text-xs text-gray-500">
+          © {{ currentYear }}
+          <NuxtLink to="/" class="font-medium text-gray-700 hover:text-primary">
+            Buyzin
+          </NuxtLink>
+          . All rights reserved.
+        </p>
+
+        <div
+          class="flex items-center justify-center gap-5 text-xs text-gray-500"
+        >
+          <NuxtLink to="/privacy-policy" class="transition hover:text-primary">
+            Privacy
+          </NuxtLink>
+
+          <NuxtLink
+            to="/terms-and-conditions"
+            class="transition hover:text-primary"
+          >
+            Terms
+          </NuxtLink>
+
+          <NuxtLink to="/contact" class="transition hover:text-primary">
+            Contact
+          </NuxtLink>
+        </div>
+      </div>
     </div>
   </footer>
 </template>
-
-<style scoped></style>
+```
