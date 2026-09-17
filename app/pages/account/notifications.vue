@@ -3,6 +3,10 @@ const route = useRoute();
 
 const notificationStore = useNotificationStore();
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const page = computed({
   get: () => Number(route.query.page) || 1,
 

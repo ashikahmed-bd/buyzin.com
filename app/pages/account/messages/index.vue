@@ -2,6 +2,10 @@
 const chatStore = useChatStore();
 const messageStore = useMessageStore();
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const { conversation } = storeToRefs(chatStore);
 const { messages } = storeToRefs(messageStore);
 

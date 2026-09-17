@@ -1,6 +1,10 @@
 <script setup>
 const addressStore = useAddressStore();
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const {
   data: addresses,
   pending,

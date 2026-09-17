@@ -2,6 +2,10 @@
 const route = useRoute();
 const addressStore = useAddressStore();
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const form = reactive({
   name: "",
   phone: "",

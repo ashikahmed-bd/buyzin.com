@@ -2,6 +2,10 @@
 const planStore = usePlanStore();
 const shopStore = useShopStore();
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const {
   data: plans,
   pending,
@@ -15,20 +19,19 @@ const form = reactive({
   plan_id: "",
   billing_cycle: "monthly",
 
-  name: "Tech Valley BD",
-  tagline: "Quality Electronics at Best Price",
-  phone: "01712345678",
-  email: "info@techvalleybd.com",
-  whatsapp: "+8801712345678",
+  name: "",
+  tagline: "",
+  phone: "",
+  email: "",
+  whatsapp: "",
 
   country: "BD",
-  state: "Dhaka",
-  city: "Dhaka",
-  address: "123, Elephant Road, Dhaka",
-  postcode: "1205",
+  state: "",
+  city: "",
+  address: "",
+  postcode: "",
 
-  description:
-    "We are a trusted electronics seller providing quality products across Bangladesh.",
+  description: "",
 });
 
 const submit = async () => {

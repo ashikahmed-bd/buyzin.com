@@ -1,6 +1,10 @@
 <script setup>
 const orderStore = useOrderStore();
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const page = ref(1);
 
 const {

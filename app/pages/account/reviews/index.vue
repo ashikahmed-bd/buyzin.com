@@ -1,6 +1,10 @@
 <script setup>
 const reviewStore = useReviewStore();
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const {
   data: reviews,
   pending,

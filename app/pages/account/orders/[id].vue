@@ -2,6 +2,10 @@
 const route = useRoute();
 const orderStore = useOrderStore();
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const {
   data: order,
   pending,

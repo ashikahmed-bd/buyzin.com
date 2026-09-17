@@ -3,7 +3,10 @@ const wishlistStore = useWishlistStore();
 const cartStore = useCartStore();
 
 const toast = useToast();
-const sortBy = ref("recently");
+
+definePageMeta({
+  middleware: ["auth"],
+});
 
 const {
   data: wishlist,

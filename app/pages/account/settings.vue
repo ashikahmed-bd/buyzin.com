@@ -1,4 +1,8 @@
 <script setup>
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const form = reactive({
   name: "Buyzin User",
   email: "user@buyzin.com",
