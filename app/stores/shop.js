@@ -16,7 +16,7 @@ export const useShopStore = defineStore("shop", {
           body: payload,
         });
         $toast.success(response.message);
-        return response;
+        return navigateTo("/store/apply/success");
       } catch (error) {
         this.errors = error?.response?._data?.errors;
         $toast.error(error?.response?._data.message);

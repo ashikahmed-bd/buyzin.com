@@ -90,7 +90,7 @@ watch(
 
     <ErrorState v-else-if="error" :retry="refresh" />
 
-    <EmptyState v-else-if="!plans.data.length" />
+    <EmptyState v-else-if="!plans.data?.length" />
 
     <template v-else>
       <SeoMeta
@@ -264,113 +264,110 @@ watch(
                 </div>
               </div>
 
-              <UCarousel
-                v-slot="{ item }"
-                :items="plans.data"
-                :ui="{
-                  item: 'basis-full md:basis-1/3',
-                  viewport: 'overflow-visible',
-                }"
-              >
-                <button
-                  type="button"
-                  class="relative w-full rounded-xl border bg-white p-2.5 text-left transition"
-                  :class="
-                    form.plan_id === item.id
-                      ? 'border-primary'
-                      : 'border-border'
-                  "
-                  @click="form.plan_id = item.id"
-                >
-                  <div class="flex items-start gap-2">
-                    <div
-                      class="flex size-9 shrink-0 items-center justify-center rounded"
-                      :class="
-                        item.slug === 'professional'
-                          ? 'bg-amber-50'
-                          : item.slug === 'enterprise'
-                            ? 'bg-blue-50'
-                            : 'bg-green-50'
-                      "
-                    >
-                      <UIcon
-                        :name="item.icon"
-                        class="size-5"
-                        :class="
-                          item.slug === 'professional'
-                            ? 'text-amber-500'
-                            : item.slug === 'enterprise'
-                              ? 'text-blue-500'
-                              : 'text-green-600'
-                        "
-                      />
-                    </div>
-
-                    <div class="min-w-0">
-                      <h3 class="text-sm font-bold text-title">
-                        {{ item.name }}
-                      </h3>
-
-                      <p
-                        class="mt-0.5 line-clamp-2 text-sm leading-5 text-body"
-                      >
-                        {{ item.description }}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div class="py-2">
-                    <span class="text-lg font-bold text-title">
-                      {{ $currency(getPlanPrice(item)) }}
-                    </span>
-
-                    <span class="text-sm text-body">
-                      /
-                      {{ form.billing_cycle === "monthly" ? "month" : "year" }}
-                    </span>
-                  </div>
-
-                  <div
-                    class="flex items-center justify-between rounded bg-light px-2.5 py-2"
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <article v-for="plan in plans.data" :key="plan.id">
+                  <button
+                    type="button"
+                    class="relative w-full rounded-xl border bg-white p-2.5 text-left transition"
+                    :class="
+                      form.plan_id === plan.id
+                        ? 'border-primary'
+                        : 'border-border'
+                    "
+                    @click="form.plan_id = plan.id"
                   >
-                    <span class="text-sm text-body"> Commission </span>
+                    <div class="flex items-start gap-2">
+                      <div
+                        class="flex size-9 shrink-0 items-center justify-center rounded"
+                        :class="
+                          plan.slug === 'professional'
+                            ? 'bg-amber-50'
+                            : plan.slug === 'enterprise'
+                              ? 'bg-blue-50'
+                              : 'bg-green-50'
+                        "
+                      >
+                        <UIcon
+                          :name="plan.icon"
+                          class="size-5"
+                          :class="
+                            plan.slug === 'professional'
+                              ? 'text-amber-500'
+                              : plan.slug === 'enterprise'
+                                ? 'text-blue-500'
+                                : 'text-green-600'
+                          "
+                        />
+                      </div>
 
-                    <span class="text-sm font-semibold text-title">
-                      {{ item.commission }}%
-                    </span>
-                  </div>
+                      <div class="min-w-0">
+                        <h3 class="text-sm font-bold text-title">
+                          {{ plan.name }}
+                        </h3>
 
-                  <ul class="space-y-1.5 py-2.5">
-                    <li
-                      v-for="feature in item.features"
-                      :key="feature"
-                      class="flex items-start gap-1.5 text-sm text-body"
+                        <p
+                          class="mt-0.5 line-clamp-2 text-sm leading-5 text-body"
+                        >
+                          {{ plan.description }}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="py-2">
+                      <span class="text-lg font-bold text-title">
+                        {{ $currency(getPlanPrice(plan)) }}
+                      </span>
+
+                      <span class="text-sm text-body">
+                        /
+                        {{
+                          form.billing_cycle === "monthly" ? "month" : "year"
+                        }}
+                      </span>
+                    </div>
+
+                    <div
+                      class="flex items-center justify-between rounded bg-light px-2.5 py-2"
                     >
-                      <UIcon
-                        name="i-lucide-circle-check-big"
-                        class="mt-0.5 size-4 shrink-0 text-primary"
-                      />
+                      <span class="text-sm text-body"> Commission </span>
 
-                      <span>{{ feature }}</span>
-                    </li>
-                  </ul>
+                      <span class="text-sm font-semibold text-title">
+                        {{ plan.commission }}%
+                      </span>
+                    </div>
 
-                  <div class="py-4">
-                    <span
-                      class="flex h-9 items-center justify-center rounded-md border text-sm font-medium transition"
-                      :class="
-                        form.plan_id === item.id
-                          ? 'border-primary bg-primary text-white'
-                          : 'border-border text-title'
-                      "
-                    >
-                      {{
-                        form.plan_id === item.id ? "Selected" : "Select Plan"
-                      }}
-                    </span>
-                  </div>
-                </button>
-              </UCarousel>
+                    <ul class="space-y-1.5 py-2.5">
+                      <li
+                        v-for="feature in plan.features"
+                        :key="feature"
+                        class="flex items-start gap-1.5 text-sm text-body"
+                      >
+                        <UIcon
+                          name="i-lucide-circle-check-big"
+                          class="mt-0.5 size-4 shrink-0 text-primary"
+                        />
+
+                        <span>{{ feature }}</span>
+                      </li>
+                    </ul>
+
+                    <div class="py-4">
+                      <span
+                        class="flex h-9 items-center justify-center rounded-md border text-sm font-medium transition"
+                        :class="
+                          form.plan_id === plan.id
+                            ? 'border-primary bg-primary text-white'
+                            : 'border-border text-title'
+                        "
+                      >
+                        {{
+                          form.plan_id === plan.id ? "Selected" : "Select Plan"
+                        }}
+                      </span>
+                    </div>
+                  </button>
+                </article>
+              </div>
             </div>
 
             <div class="py-4">
@@ -498,7 +495,7 @@ watch(
 
                     <UIcon
                       v-if="shopStore.loading"
-                      name="i-lucide-loader-circle"
+                      name="i-lucide-loader"
                       class="size-4 animate-spin"
                     />
 

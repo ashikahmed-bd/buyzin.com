@@ -301,7 +301,7 @@ const settings = useSettings();
                     class="size-4 mr-1 group-hover:text-primary transition"
                   />
                   <a
-                    href="/apply-vendor"
+                    href="/store/apply"
                     class="hover:text-primary transition-colors duration-200"
                   >
                     Become a Supplier

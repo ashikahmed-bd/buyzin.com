@@ -72,7 +72,6 @@ const categoryOpen = ref(false);
 
           <a
             href="/store/apply"
-            target="_blank"
             class="relative flex items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
           >
             Become a Seller
