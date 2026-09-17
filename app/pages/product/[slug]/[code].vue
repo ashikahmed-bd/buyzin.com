@@ -6,12 +6,7 @@ const wishlistStore = useWishlistStore();
 const chatStore = useChatStore();
 const cartStore = useCartStore();
 
-const {
-  data: product,
-  pending,
-  error,
-  refresh,
-} = await useAsyncData(
+const { data, pending, error, refresh } = await useAsyncData(
   `product-${route.params.slug}-${route.params.code}`,
   () => productStore.getProduct(route.params.slug, route.params.code),
   {
@@ -84,70 +79,68 @@ const addToWishlist = async (product) => {
 </script>
 
 <template>
-  <main class="mx-auto max-w-7xl bg-white px-4">
+  <main class="mx-auto max-w-7xl bg-background px-4">
     <LoadingState v-if="pending" />
 
     <ErrorState v-else-if="error" :retry="refresh" />
 
     <template v-else>
       <SeoMeta
-        :title="product?.meta_title ?? product?.name"
-        :description="product?.meta_description ?? product?.summary"
-        :keywords="product?.meta_keywords ?? product?.summary"
-        :image="product?.cover_url"
+        :title="data?.data?.meta_title ?? data?.data?.name"
+        :description="data?.data?.meta_description ?? data?.data?.summary"
+        :keywords="data?.data?.meta_keywords ?? data?.data?.summary"
+        :image="data?.data?.cover_url"
       />
 
-      <div class="bg-white">
-        <div class="mx-auto py-2">
-          <div class="flex items-center justify-between gap-4">
-            <nav class="flex flex-wrap items-center gap-2 text-sm text-body">
-              <a href="/" class="flex items-center gap-2 text-body">
-                <span>Home</span>
-                <UIcon name="i-lucide-chevron-right" class="size-4" />
+      <div class="mx-auto py-2">
+        <div class="flex items-center justify-between gap-4">
+          <nav class="flex flex-wrap items-center gap-2 text-sm text-body">
+            <a href="/" class="flex items-center gap-2 text-body">
+              <span>Home</span>
+              <UIcon name="i-lucide-chevron-right" class="size-4" />
+            </a>
+            <template
+              v-for="(item, index) in data?.data?.breadcrumbs"
+              :key="index"
+            >
+              <a
+                v-if="index < data?.data.breadcrumbs.length - 1"
+                :to="item.slug"
+                class="whitespace-nowrap hover:text-primary"
+              >
+                {{ item.name }}
               </a>
-              <template
-                v-for="(item, index) in product?.breadcrumbs"
-                :key="index"
-              >
-                <a
-                  v-if="index < product.breadcrumbs.length - 1"
-                  :to="item.slug"
-                  class="whitespace-nowrap hover:text-primary"
-                >
-                  {{ item.name }}
-                </a>
 
-                <span v-else>
-                  {{ item.name }}
-                </span>
+              <span v-else>
+                {{ item.name }}
+              </span>
 
-                <UIcon
-                  v-if="index < product.breadcrumbs.length - 1"
-                  name="i-lucide-chevron-right"
-                  class="size-4"
-                />
-              </template>
-            </nav>
+              <UIcon
+                v-if="index < data?.data.breadcrumbs.length - 1"
+                name="i-lucide-chevron-right"
+                class="size-4"
+              />
+            </template>
+          </nav>
 
-            <div class="hidden items-center gap-3 sm:flex">
-              <button
-                type="button"
-                @click="shareLink(product)"
-                class="inline-flex items-center gap-2 text-sm font-medium text-body"
-              >
-                <UIcon name="i-lucide-share-2" class="size-4" />
-                Share
-              </button>
+          <div class="hidden items-center gap-3 sm:flex">
+            <button
+              type="button"
+              @click="shareLink(data?.data)"
+              class="inline-flex items-center gap-2 text-sm font-medium text-body"
+            >
+              <UIcon name="i-lucide-share-2" class="size-4" />
+              Share
+            </button>
 
-              <button
-                type="button"
-                @click="addToWishlist(product.id)"
-                class="inline-flex items-center gap-2 text-sm font-medium text-primary"
-              >
-                <UIcon name="i-lucide-heart" class="size-4" />
-                Wishlist
-              </button>
-            </div>
+            <button
+              type="button"
+              @click="addToWishlist(data?.data?.id)"
+              class="inline-flex items-center gap-2 text-sm font-medium text-primary"
+            >
+              <UIcon name="i-lucide-heart" class="size-4" />
+              Wishlist
+            </button>
           </div>
         </div>
       </div>
@@ -161,11 +154,12 @@ const addToWishlist = async (product) => {
               <div class="min-w-0">
                 <ProductGallery
                   :images="
-                    [product?.cover_url, ...(product?.gallery || [])].filter(
-                      Boolean,
-                    )
+                    [
+                      data?.data?.cover_url,
+                      ...(data?.data?.gallery || []),
+                    ].filter(Boolean)
                   "
-                  :video="product?.video_url"
+                  :video="data?.data?.video_url"
                 />
               </div>
 
@@ -174,7 +168,7 @@ const addToWishlist = async (product) => {
                   <h1
                     class="text-xl font-bold leading-tight tracking-tight text-title"
                   >
-                    {{ product?.name }}
+                    {{ data?.data?.name }}
                   </h1>
                   <div class="flex flex-wrap items-center gap-x-4">
                     <div class="flex items-center">
@@ -182,29 +176,29 @@ const addToWishlist = async (product) => {
                         v-for="i in 5"
                         :key="i"
                         :name="
-                          i <= Math.round(product?.rating ?? 0)
+                          i <= Math.round(data?.data?.rating ?? 0)
                             ? 'i-heroicons:star-solid'
                             : 'i-heroicons:star'
                         "
                         class="size-4"
                         :class="
-                          i <= Math.round(product?.rating ?? 0)
+                          i <= Math.round(data?.data?.rating ?? 0)
                             ? 'text-amber-400'
                             : 'text-slate-300'
                         "
                       />
 
                       <span class="ml-1.5 font-semibold text-slate-900">
-                        {{ Number(product?.rating ?? 0).toFixed(1) }}
+                        {{ Number(data?.data?.rating ?? 0).toFixed(1) }}
                       </span>
                     </div>
 
                     <span class="font-medium text-primary">
-                      ({{ product?.review_count ?? 0 }} reviews)
+                      ({{ data?.data?.review_count ?? 0 }} reviews)
                     </span>
 
                     <span class="font-medium text-body">
-                      {{ product?.sold_count ?? 0 }}+ Sold
+                      {{ data?.data?.sold_count ?? 0 }}+ Sold
                     </span>
                   </div>
 
@@ -212,22 +206,22 @@ const addToWishlist = async (product) => {
                     <div class="flex items-center gap-1.5">
                       <span class="text-sm text-muted">Brand:</span>
                       <a
-                        :href="product?.brand?.url"
+                        :href="data?.data?.brand?.url"
                         target="_blank"
                         class="text-sm font-semibold text-link"
                       >
-                        {{ product?.brand?.name ?? "N/A" }}
+                        {{ data?.data?.brand?.name ?? "N/A" }}
                       </a>
                     </div>
 
                     <div class="flex items-center gap-1.5">
                       <span class="text-sm text-muted">Category:</span>
                       <a
-                        :href="product?.category?.url"
+                        :href="data?.data?.category?.url"
                         target="_blank"
                         class="text-sm font-semibold text-link"
                       >
-                        {{ product?.category?.name ?? "N/A" }}
+                        {{ data?.data?.category?.name ?? "N/A" }}
                       </a>
                     </div>
                   </div>
@@ -250,15 +244,15 @@ const addToWishlist = async (product) => {
                       <p class="text-xl font-semibold text-body">
                         {{
                           $currency(
-                            product?.pricing?.min_price,
-                            product.currency,
+                            data?.data?.pricing?.min_price,
+                            data?.data.currency,
                           )
                         }}
                         -
                         {{
                           $currency(
-                            product?.pricing?.max_price,
-                            product.currency,
+                            data?.data?.pricing?.max_price,
+                            data?.data.currency,
                           )
                         }}
                       </p>
@@ -266,7 +260,7 @@ const addToWishlist = async (product) => {
                   </div>
 
                   <UCarousel
-                    :items="product?.pricing?.tiers ?? []"
+                    :items="data?.data?.pricing?.tiers ?? []"
                     :ui="{
                       item: 'basis-1/2 lg:basis-1/3',
                     }"
@@ -276,7 +270,7 @@ const addToWishlist = async (product) => {
                         class="group relative rounded-xl border border-border bg-white p-2.5 transition hover:-translate-y-0.5"
                       >
                         <span class="text-xl font-bold text-title">
-                          {{ $currency(tier.price, product.currency) }}
+                          {{ $currency(tier.price, data?.data?.currency) }}
                         </span>
 
                         <p class="font-semibold text-body">
@@ -292,7 +286,10 @@ const addToWishlist = async (product) => {
                             class="text-2xs text-body line-through truncate"
                           >
                             {{
-                              $currency(tier.compare_price, product.currency)
+                              $currency(
+                                tier.compare_price,
+                                data?.data?.currency,
+                              )
                             }}
                           </span>
 
@@ -303,7 +300,7 @@ const addToWishlist = async (product) => {
                             {{
                               $currency(
                                 Number(tier.compare_price) - Number(tier.price),
-                                product.currency,
+                                data?.data?.currency,
                               )
                             }}
                             OFF
@@ -316,7 +313,7 @@ const addToWishlist = async (product) => {
 
                 <!-- Attributes -->
                 <div
-                  v-for="attribute in product?.attributes ?? []"
+                  v-for="attribute in data?.data?.attributes ?? []"
                   :key="attribute.id"
                 >
                   <div class="flex items-center justify-between gap-3">
@@ -360,7 +357,7 @@ const addToWishlist = async (product) => {
                 </div>
 
                 <div class="py-2">
-                  <MDC :value="product?.summary" class="prose max-w-none" />
+                  <MDC :value="data?.data?.summary" class="prose max-w-none" />
                 </div>
               </div>
             </div>
@@ -383,11 +380,14 @@ const addToWishlist = async (product) => {
                 ]"
               >
                 <template #description>
-                  <MDC :value="product?.description" class="prose max-w-none" />
+                  <MDC
+                    :value="data?.data?.description"
+                    class="prose max-w-none"
+                  />
                 </template>
                 <template #specifications>
                   <table
-                    v-for="section in product?.specifications"
+                    v-for="section in data?.data?.specifications"
                     :key="section.title"
                     class="mb-6 border w-full"
                   >
@@ -425,12 +425,12 @@ const addToWishlist = async (product) => {
                     class="bg-light flex shrink-0 items-center justify-center"
                   >
                     <NuxtLink
-                      :to="product.store.url"
+                      :to="data?.data.store.url"
                       class="block size-12 shrink-0 overflow-hidden rounded-lg"
                     >
                       <NuxtImg
-                        :src="product.store.logo_url"
-                        :alt="product.store.name"
+                        :src="data?.data.store.logo_url"
+                        :alt="data?.data.store.name"
                         width="48"
                         height="48"
                         class="size-12 object-cover"
@@ -441,11 +441,11 @@ const addToWishlist = async (product) => {
                   <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-1.5">
                       <h2 class="truncate text-sm font-semibold text-title">
-                        {{ product?.store?.name }}
+                        {{ data?.data?.store?.name }}
                       </h2>
 
                       <UIcon
-                        v-if="product?.store?.verified"
+                        v-if="data?.data?.store?.verified"
                         name="i-lucide-badge-check"
                         class="size-4 shrink-0 text-blue-600"
                       />
@@ -453,7 +453,7 @@ const addToWishlist = async (product) => {
 
                     <div>
                       <span
-                        v-if="product?.store?.verified"
+                        v-if="data?.data?.store?.verified"
                         class="inline-flex items-center gap-1 text-xs text-green-600"
                       >
                         <UIcon name="i-lucide-badge-check" class="size-4" />
@@ -472,19 +472,19 @@ const addToWishlist = async (product) => {
                       />
 
                       <span class="text-xs font-semibold text-title">
-                        {{ product?.store?.rating ?? "0.00" }}
+                        {{ data?.data?.store?.rating ?? "0.00" }}
                       </span>
 
                       <span class="text-xs text-body">
-                        ({{ product?.store?.reviews_count ?? 0 }} reviews)
+                        ({{ data?.data?.store?.reviews_count ?? 0 }} reviews)
                       </span>
                     </div>
                   </div>
                 </div>
 
                 <NuxtLink
-                  v-if="product?.store?.url"
-                  :to="product.store.url"
+                  v-if="data?.data?.store?.url"
+                  :to="data?.data.store.url"
                   class="group flex w-full items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold text-primary transition-all hover:border-primary hover:bg-primary/5"
                 >
                   <span>Visit Store</span>
@@ -497,7 +497,7 @@ const addToWishlist = async (product) => {
               </section>
 
               <!-- Shipping -->
-              <section v-if="product?.shipping?.available" class="space-y-4">
+              <section v-if="data?.data?.shipping?.available" class="space-y-4">
                 <div class="flex items-start gap-2">
                   <div
                     class="flex size-7 shrink-0 items-center justify-center rounded bg-blue-50 text-blue-600"
@@ -508,7 +508,7 @@ const addToWishlist = async (product) => {
                   <div class="min-w-0">
                     <h4 class="text-xs font-medium text-muted">Shipping</h4>
                     <p class="mt-0.5 text-sm font-normal text-body">
-                      {{ product?.shipping?.title }}
+                      {{ data?.data?.shipping?.title }}
                     </p>
                   </div>
                 </div>
@@ -524,7 +524,7 @@ const addToWishlist = async (product) => {
                     <h4 class="text-xs font-medium text-muted">Ships from</h4>
 
                     <p class="mt-0.5 text-sm font-normal text-body">
-                      {{ product?.shipping?.ships_from ?? "Not specified" }}
+                      {{ data?.data?.shipping?.ships_from ?? "Not specified" }}
                     </p>
                   </div>
                 </div>
@@ -542,7 +542,7 @@ const addToWishlist = async (product) => {
                     </h4>
 
                     <p class="mt-0.5 text-sm font-normal text-body">
-                      {{ product?.shipping?.processing_days ?? 0 }} days
+                      {{ data?.data?.shipping?.processing_days ?? 0 }} days
                     </p>
                   </div>
                 </div>
@@ -558,14 +558,14 @@ const addToWishlist = async (product) => {
                     <h4 class="text-xs font-medium text-muted">Delivery</h4>
 
                     <p class="mt-0.5 text-sm font-normal text-body">
-                      <template v-if="product?.shipping?.delivery">
-                        {{ product.shipping.delivery.min_days }}–{{
-                          product.shipping.delivery.max_days
+                      <template v-if="data?.data?.shipping?.delivery">
+                        {{ data?.data.shipping.delivery.min_days }}–{{
+                          data?.data.shipping.delivery.max_days
                         }}
                         days
 
                         <span
-                          v-if="product.shipping.delivery.negotiable"
+                          v-if="data?.data.shipping.delivery.negotiable"
                           class="text-primary"
                         >
                           Negotiable with supplier
@@ -589,7 +589,9 @@ const addToWishlist = async (product) => {
                       Payment Terms
                     </h4>
                     <p class="mt-0.5 text-sm font-normal text-body">
-                      {{ product?.shipping?.payment_terms ?? "Not specified" }}
+                      {{
+                        data?.data?.shipping?.payment_terms ?? "Not specified"
+                      }}
                     </p>
                   </div>
                 </div>
@@ -599,7 +601,7 @@ const addToWishlist = async (product) => {
                 <button
                   type="button"
                   class="flex w-full items-center justify-center gap-2 rounded bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
-                  :disabled="product?.has_variants"
+                  :disabled="data?.data?.has_variants"
                   @click="cartDialog = !cartDialog"
                 >
                   <UIcon name="i-lucide-shopping-cart" class="size-5" />
@@ -619,20 +621,59 @@ const addToWishlist = async (product) => {
           </aside>
         </div>
       </div>
+
+      <section class="py-8">
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div class="min-w-0">
+            <h2 class="text-2xl font-bold text-heading">
+              More from this store
+            </h2>
+
+            <p class="mt-1 text-sm text-body">
+              Explore more products from this store and discover their latest
+              collection.
+            </p>
+          </div>
+
+          <NuxtLink
+            v-if="data?.data?.store?.url"
+            :to="data?.data.store.url"
+            class="flex-none text-sm font-medium text-primary hover:underline"
+          >
+            See all
+          </NuxtLink>
+        </div>
+
+        <EmptyState
+          v-if="!data?.related?.length"
+          title="No More Products"
+          description="No other products available from this store."
+        />
+
+        <template v-else>
+          <UCarousel
+            v-slot="{ item }"
+            loop
+            :items="data.related"
+            :ui="{ item: 'basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5' }"
+            class="gap-4"
+          >
+            <ProductCard :product="item" />
+          </UCarousel>
+        </template>
+      </section>
+
+      <RelatedProducts :product="data.data" />
     </template>
 
-    <RelatedStoreProducts :product="product" />
-
-    <RelatedProducts :product="product" />
-
-    <DialogCart v-model:open="cartDialog" :product="product" />
+    <DialogCart v-model:open="cartDialog" :product="data.data" />
 
     <DialogCartSuccess
       :show="cartStore.dialog"
       @close="cartStore.dialog = false"
     />
 
-    <ChatDrawer :product="product" />
+    <ChatDrawer :product="data.data" />
   </main>
 </template>
 

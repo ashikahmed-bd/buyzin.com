@@ -85,10 +85,10 @@ const submit = async () => {
 
     <template v-else>
       <SeoMeta
-        :title="store.meta_title"
-        :description="store.meta_description"
-        :keywords="store.meta_keywords"
-        :image="store.logo_url"
+        :title="store?.meta_title"
+        :description="store?.meta_description"
+        :keywords="store?.meta_keywords"
+        :image="store?.logo_url"
       />
 
       <UBreadcrumb
@@ -223,8 +223,8 @@ const submit = async () => {
         </div>
 
         <nav class="flex items-center gap-4 overflow-x-auto">
-          <NuxtLink
-            to="?tab=home"
+          <a
+            href="?tab=home"
             :class="[
               'flex shrink-0 items-center gap-2 border-b border-transparent py-2 text-sm',
               isActive('home') ? 'border-primary text-primary' : 'text-body',
@@ -232,10 +232,10 @@ const submit = async () => {
           >
             <UIcon name="i-lucide-house" class="size-4" />
             Home
-          </NuxtLink>
+          </a>
 
-          <NuxtLink
-            to="?tab=about"
+          <a
+            href="?tab=about"
             :class="[
               'flex shrink-0 items-center gap-2 py-2 text-sm',
               isActive('about')
@@ -245,10 +245,10 @@ const submit = async () => {
           >
             <UIcon name="i-lucide-store" class="size-4" />
             About
-          </NuxtLink>
+          </a>
 
-          <NuxtLink
-            to="?tab=reviews"
+          <a
+            href="?tab=reviews"
             :class="[
               'flex shrink-0 items-center gap-2 py-2 text-sm',
               isActive('reviews')
@@ -258,10 +258,10 @@ const submit = async () => {
           >
             <UIcon name="i-lucide-star" class="size-4" />
             Reviews
-          </NuxtLink>
+          </a>
 
-          <NuxtLink
-            to="?tab=policy"
+          <a
+            href="?tab=policy"
             :class="[
               'flex shrink-0 items-center gap-2 py-2 text-sm',
               isActive('policy')
@@ -271,10 +271,10 @@ const submit = async () => {
           >
             <UIcon name="i-lucide-file-text" class="size-4" />
             Policy
-          </NuxtLink>
+          </a>
 
-          <NuxtLink
-            to="?tab=contact"
+          <a
+            href="?tab=contact"
             :class="[
               'flex shrink-0 items-center gap-2 py-2 text-sm',
               isActive('contact')
@@ -284,7 +284,7 @@ const submit = async () => {
           >
             <UIcon name="i-lucide-message-circle" class="size-4" />
             Contact
-          </NuxtLink>
+          </a>
         </nav>
 
         <div>

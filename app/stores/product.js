@@ -23,7 +23,7 @@ export const useProductStore = defineStore("product", {
       const { $api } = useNuxtApp();
       try {
         const response = await $api(`/api/products/${slug}/${code}`);
-        return response.data;
+        return response;
       } catch (error) {
         this.errors = error?.response?._data;
         return error?.response?._data;

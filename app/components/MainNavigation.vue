@@ -43,14 +43,6 @@ const categoryOpen = ref(false);
               :item="category"
             />
           </ul>
-
-          <a
-            href="/categories"
-            class="flex items-center justify-between border-t border-gray-100 px-4 py-3 text-xs font-semibold text-primary transition hover:bg-gray-50"
-          >
-            <span>View All Categories</span>
-            <UIcon name="i-lucide-arrow-right" class="size-4" />
-          </a>
         </div>
       </div>
 

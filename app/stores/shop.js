@@ -66,6 +66,26 @@ export const useShopStore = defineStore("shop", {
       }
     },
 
+    async getReviews(slug, params = {}) {
+      const { $api } = useNuxtApp();
+      this.loading = true;
+      try {
+        const response = await $api(`/api/stores/${slug}/reviews`, {
+          method: "GET",
+          query: {
+            page: params.page,
+            sort: params.sort,
+          },
+        });
+        return response;
+      } catch (error) {
+        this.errors = error?.response?._data?.errors;
+        return error?.response?._data;
+      } finally {
+        this.loading = false;
+      }
+    },
+
     async contact(slug, payload) {
       const { $api } = useNuxtApp();
       this.loading = true;
