@@ -13,34 +13,35 @@ const {
   pending,
   error,
   refresh,
-} = await useAsyncData(`related-products-${props.product.code}`, () =>
+} = await useAsyncData(`related-${props.product.code}`, () =>
   productStore.getRelated(props.product.slug, props.product.code),
 );
 </script>
 
 <template>
-  <section class="py-8 md:16">
-    <div class="flex flex-wrap items-center justify-between mb-4">
-      <div class="block">
-        <h2 class="text-2xl font-bold text-heading">Related products</h2>
-        <span class="text-body text-sm mt-1">
-          Discover our latest arrivals with freshly updated stock in every
-          category.</span
-        >
-      </div>
-      <NuxtLink to="/shop" class="text-primary hover:underline text-sm"
-        >See all</NuxtLink
-      >
+  <section class="py-8">
+    <div class="py-4">
+      <h2 class="text-2xl font-bold text-heading">Related products</h2>
+
+      <span class="mt-1 block text-sm text-body">
+        Discover more products you may like from our latest collection.
+      </span>
     </div>
 
-    <UCarousel
-      v-slot="{ item }"
-      loop
-      :items="products"
-      :ui="{ item: 'basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5' }"
-      class="gap-4"
+    <LoadingState v-if="pending" />
+
+    <ErrorState v-else-if="error" :retry="refresh" />
+
+    <EmptyState
+      v-if="!products.length"
+      title="No Related Products"
+      description="We couldn't find any related products at the moment."
+    />
+
+    <div
+      class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
     >
-      <ProductCard :product="item" />
-    </UCarousel>
+      <ProductCard v-for="item in products" :key="item.id" :product="item" />
+    </div>
   </section>
 </template>

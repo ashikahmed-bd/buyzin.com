@@ -65,5 +65,24 @@ export const useShopStore = defineStore("shop", {
         throw error;
       }
     },
+
+    async contact(slug, payload) {
+      const { $api } = useNuxtApp();
+      this.loading = true;
+      try {
+        const response = await $api(`/api/stores/${slug}/contact`, {
+          method: "POST",
+          body: payload,
+        });
+        $toast.success(response.message);
+        return response;
+      } catch (error) {
+        this.errors = error?.response?._data?.errors;
+        $toast.error(error?.response?._data.message);
+        return error?.response?._data;
+      } finally {
+        this.loading = false;
+      }
+    },
   },
 });

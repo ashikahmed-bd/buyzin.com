@@ -1,0 +1,14 @@
+<script setup>
+const props = defineProps({
+  store: {
+    type: Object,
+    required: true,
+  },
+});
+</script>
+
+<template>
+  <div class="w-full max-w-5xl">
+    <MDC :value="props.store?.policy" class="prose max-w-none" />
+  </div>
+</template>

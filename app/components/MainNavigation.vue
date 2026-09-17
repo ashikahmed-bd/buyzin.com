@@ -89,11 +89,11 @@ const categoryOpen = ref(false);
         </a>
 
         <a
-          href="tel:+8809649492233"
+          href="mailto:support@buyzin.com"
           class="flex items-center gap-2 text-sm font-medium text-gray-800 transition hover:text-primary"
         >
-          <UIcon name="i-lucide-headset" class="size-4" />
-          <span>096 4949 2233</span>
+          <UIcon name="i-lucide-send" class="size-4" />
+          <span>support@buyzin.com</span>
         </a>
       </div>
     </div>

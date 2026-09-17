@@ -104,7 +104,7 @@ watch(
           class="grid grid-cols-1 gap-4 lg:grid-cols-[18rem_minmax(0,1fr)_16rem]"
         >
           <aside class="min-w-0">
-            <div class="sticky top-4 overflow-hidden bg-white rounded-xl">
+            <div class="sticky top-4 overflow-hidden rounded-xl bg-white">
               <div class="p-4">
                 <h2 class="text-lg font-bold leading-tight text-title">
                   Start Your<br />
@@ -151,65 +151,12 @@ watch(
                 </ul>
               </div>
 
-              <div class="px-3 pt-3">
-                <div class="relative flex h-48 items-end justify-center">
-                  <div class="relative z-10 w-36">
-                    <div
-                      class="mx-auto w-28 rounded-t-md bg-white px-2 py-2 text-center shadow-sm"
-                    >
-                      <p class="text-sm font-bold leading-4 text-title">
-                        Your Store
-                      </p>
-                      <p class="text-sm font-bold leading-4 text-title">
-                        Your Success
-                      </p>
-                    </div>
-
-                    <div
-                      class="flex h-7 overflow-hidden rounded-t-md border border-orange-300 bg-white"
-                    >
-                      <span class="flex-1 bg-orange-500" />
-                      <span class="flex-1 bg-white" />
-                      <span class="flex-1 bg-orange-500" />
-                      <span class="flex-1 bg-white" />
-                      <span class="flex-1 bg-orange-500" />
-                      <span class="flex-1 bg-white" />
-                      <span class="flex-1 bg-orange-500" />
-                    </div>
-
-                    <!-- Store -->
-                    <div
-                      class="flex h-24 items-center justify-center border border-gray-200 bg-white shadow-sm"
-                    >
-                      <UIcon
-                        name="i-lucide-store"
-                        class="size-14 text-gray-300"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Plants -->
-                  <UIcon
-                    name="i-lucide-trees"
-                    class="absolute bottom-0 left-1 size-10 text-green-600"
-                  />
-
-                  <UIcon
-                    name="i-lucide-package"
-                    class="absolute bottom-0 right-1 size-10 text-amber-600"
-                  />
-                </div>
-              </div>
-
-              <div class="border-t border-blue-100 px-4 py-4">
-                <p class="text-center text-sm leading-5 text-body">
-                  “Empowering local businesses for a bigger tomorrow.”
-                </p>
-
-                <p class="mt-2 text-center text-sm text-body">
-                  — Buyzin B2B Marketplce
-                </p>
-              </div>
+              <NuxtImg
+                src="/store-apply.png"
+                alt="Start your business"
+                format="webp"
+                class="block h-auto w-full object-cover"
+              />
             </div>
           </aside>
 

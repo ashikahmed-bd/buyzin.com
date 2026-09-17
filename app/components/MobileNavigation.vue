@@ -7,7 +7,7 @@ const props = defineProps({
 
   categories: {
     type: Object,
-    default: {},
+    default: () => ({}),
   },
 });
 
@@ -29,11 +29,12 @@ const close = () => {
   >
     <div
       v-if="props.open"
-      class="bg-white absolute left-0 top-full z-50 border border-border w-full rounded-b-xl"
+      class="absolute left-0 top-full z-50 w-full overflow-hidden rounded-b-xl border border-border bg-white"
       @click.stop
     >
-      <aside @click.stop>
-        <nav class="px-4 py-4">
+      <aside class="flex max-h-[calc(100vh-80px)] flex-col" @click.stop>
+        <!-- Categories -->
+        <nav class="min-h-0 flex-1 overflow-y-auto px-4 py-4">
           <NavigationItem
             v-for="category in props.categories.data"
             :key="category.id"
@@ -41,7 +42,8 @@ const close = () => {
           />
         </nav>
 
-        <div class="border-t border-border border-dashed p-4">
+        <!-- Bottom Actions -->
+        <div class="shrink-0 border-t border-dashed border-border bg-white p-4">
           <div class="grid grid-cols-2 gap-3">
             <NuxtLink
               to="/auth/login"
@@ -50,6 +52,7 @@ const close = () => {
             >
               Sign in
             </NuxtLink>
+
             <NuxtLink
               to="/auth/register"
               class="inline-flex items-center justify-center rounded bg-primary px-4 py-3 text-sm font-medium text-white transition hover:bg-primary-hover"
@@ -63,5 +66,3 @@ const close = () => {
     </div>
   </transition>
 </template>
-
-<style scoped></style>

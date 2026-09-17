@@ -48,9 +48,11 @@ export const useAuthStore = defineStore("auth", {
           method: "POST",
           body: payload,
         });
-        return response;
+        $toast.success(response.message);
+        return navigateTo("/auth/login");
       } catch (error) {
-        this.errors = error?.response?._data;
+        this.errors = error?.response?._data.errors;
+        $toast.error(error?.response?._data.message);
         return error?.response?._data;
       } finally {
         this.loading = false;

@@ -306,69 +306,6 @@ const clear = () => {
         </div>
 
         <section class="py-6">
-          <div class="grid grid-cols-1 rounded sm:grid-cols-2 lg:grid-cols-4">
-            <div class="flex items-center gap-3">
-              <div
-                class="flex size-10 shrink-0 items-center justify-center rounded-full bg-white"
-              >
-                <UIcon
-                  name="i-lucide-badge-check"
-                  class="size-5 text-primary"
-                />
-              </div>
-              <div>
-                <p class="text-sm font-semibold text-body">Verified Brands</p>
-                <p class="text-sm text-gray-500">Authentic & reliable</p>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-3">
-              <div
-                class="flex size-10 shrink-0 items-center justify-center rounded-full bg-white"
-              >
-                <UIcon name="i-lucide-tag" class="size-5 text-primary" />
-              </div>
-              <div>
-                <p class="text-sm font-semibold text-body">
-                  Competitive Wholesale Pricing
-                </p>
-                <p class="text-sm text-gray-500">
-                  Better profits for your business
-                </p>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-3">
-              <div
-                class="flex size-10 shrink-0 items-center justify-center rounded-full bg-white"
-              >
-                <UIcon name="i-lucide-package" class="size-5 text-primary" />
-              </div>
-              <div>
-                <p class="text-sm font-semibold text-body">
-                  Wide Product Range
-                </p>
-                <p class="text-sm text-gray-500">Everything in one place</p>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-3 p-5">
-              <div
-                class="flex size-10 shrink-0 items-center justify-center rounded-full bg-white"
-              >
-                <UIcon name="i-lucide-headphones" class="size-5 text-primary" />
-              </div>
-              <div>
-                <p class="text-sm font-semibold text-body">
-                  Dedicated B2B Support
-                </p>
-                <p class="text-sm text-gray-500">We're here to help</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="py-6">
           <div
             class="flex flex-col gap-5 rounded bg-primary/5 px-6 py-6 sm:flex-row sm:items-center sm:justify-between"
           >
@@ -389,13 +326,13 @@ const clear = () => {
               </div>
             </div>
 
-            <NuxtLink
-              to="/become-supplier"
+            <a
+              href="/store/apply"
               class="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-md bg-primary px-5 text-sm font-medium text-white transition hover:bg-primary/90"
             >
               Become a Supplier
               <UIcon name="i-lucide-arrow-right" class="size-4" />
-            </NuxtLink>
+            </a>
           </div>
         </section>
       </section>

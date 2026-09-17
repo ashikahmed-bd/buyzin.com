@@ -9,6 +9,7 @@ definePageMeta({
 const form = reactive({
   name: "",
   phone: "",
+  email: "",
   password: "",
 });
 
@@ -18,20 +19,12 @@ const submit = async () => {
 </script>
 
 <template>
-  <Head>
-    <Title>Register - Create Your Account</Title>
-
-    <Meta
-      name="description"
-      content="Create your account to join the platform and access premium features in seconds."
-    />
-    <Meta
-      name="keywords"
-      content="register, sign up, create account, user registration"
-    />
-  </Head>
-
   <main class="max-w-5xl mx-auto px-4 py-8">
+    <SeoMeta
+      title="Register - Buyzin B2B Marketplace"
+      description="Join Buyzin B2B Marketplace to discover wholesale products, connect with suppliers, and grow your business."
+      keywords="Buyzin, B2B marketplace, wholesale products, suppliers, B2B Bangladesh, business marketplace, wholesale marketplace"
+    />
     <div
       class="w-full max-w-5xl mx-auto bg-white rounded-lg grid grid-cols-1 md:grid-cols-2"
     >
@@ -65,6 +58,14 @@ const submit = async () => {
             placeholder="Enter your name"
             :required="true"
             :error="errors.name"
+          />
+
+          <BaseInput
+            v-model="form.email"
+            label="Email"
+            placeholder="Enter your email"
+            :required="true"
+            :error="errors.email"
           />
 
           <BaseInput

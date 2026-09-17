@@ -425,10 +425,17 @@ const addToWishlist = async (product) => {
                     class="bg-light flex shrink-0 items-center justify-center"
                   >
                     <NuxtLink
-                      :src="product.store.logo_url"
-                      :alt="product.store.name"
-                      class="size-12 object-cover rounded"
-                    />
+                      :to="product.store.url"
+                      class="block size-12 shrink-0 overflow-hidden rounded-lg"
+                    >
+                      <NuxtImg
+                        :src="product.store.logo_url"
+                        :alt="product.store.name"
+                        width="48"
+                        height="48"
+                        class="size-12 object-cover"
+                      />
+                    </NuxtLink>
                   </div>
 
                   <div class="min-w-0 flex-1">
@@ -444,11 +451,21 @@ const addToWishlist = async (product) => {
                       />
                     </div>
 
-                    <p class="mt-0.5 truncate text-xs text-body">
-                      Verified wholesale supplier
-                    </p>
+                    <div>
+                      <span
+                        v-if="product?.store?.verified"
+                        class="inline-flex items-center gap-1 text-xs text-green-600"
+                      >
+                        <UIcon name="i-lucide-badge-check" class="size-4" />
+                        Verified wholesale supplier
+                      </span>
 
-                    <div class="mt-1.5 flex items-center gap-1.5">
+                      <span v-else class="text-xs text-body">
+                        Wholesale supplier
+                      </span>
+                    </div>
+
+                    <div class="flex items-center gap-1.5">
                       <UIcon
                         name="i-lucide-star"
                         class="size-3.5 fill-amber-400 text-amber-400"
@@ -603,6 +620,8 @@ const addToWishlist = async (product) => {
         </div>
       </div>
     </template>
+
+    <RelatedStoreProducts :product="product" />
 
     <RelatedProducts :product="product" />
 
