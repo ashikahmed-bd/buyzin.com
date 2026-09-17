@@ -71,7 +71,7 @@ const categoryOpen = ref(false);
           </a>
 
           <a
-            href="https://app.buyzin.com/register"
+            href="/store/apply"
             target="_blank"
             class="relative flex items-center whitespace-nowrap text-sm font-medium text-gray-800 transition hover:text-primary"
           >

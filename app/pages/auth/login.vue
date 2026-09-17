@@ -3,7 +3,7 @@ const authStore = useAuthStore();
 const { errors } = storeToRefs(authStore);
 
 const form = reactive({
-  email: "nafishatelecom@gmail.com",
+  email: "info@ashikahmed.net",
   password: "password",
   remember: true,
 });

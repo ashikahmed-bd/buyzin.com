@@ -22,8 +22,14 @@ const updateValue = (e) => {
       {{ label }} <span v-if="required" class="text-red-500">*</span>
     </label>
 
-    <textarea :rows="rows" :placeholder="placeholder" :value="modelValue" :disabled="disabled" @input="updateValue"
-      class="w-full px-4 py-2 rounded border focus:border-primary focus:outline-none focus:outline-primary disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"></textarea>
+    <textarea
+      :rows="rows"
+      :placeholder="placeholder"
+      :value="modelValue"
+      :disabled="disabled"
+      @input="updateValue"
+      class="bg-white w-full px-4 py-2 rounded-sm border-2 focus:border-primary focus:outline-none focus:outline-primary disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
+    ></textarea>
 
     <small v-if="error" class="text-red-500">{{ error[0] }}</small>
   </div>

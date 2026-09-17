@@ -18,7 +18,7 @@ const updateValue = (e) => {
 
 <template>
   <div class="relative block mb-3">
-    <label v-if="label" class="block mb-2 capitalize">
+    <label v-if="label" class="block text-sm font-medium text-title capitalize">
       {{ label }} <span v-if="required" class="text-danger">*</span>
       <span v-else class="text-xs font-normal text-muted"> (Optional) </span>
     </label>
@@ -29,9 +29,9 @@ const updateValue = (e) => {
       :value="modelValue"
       :disabled="disabled"
       @input="updateValue"
-      class="w-full px-4 py-2 rounded border focus:border-primary focus:outline-none focus:outline-primary disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
+      class="bg-white w-full px-4 py-2 rounded-sm border-2 border-border outline-none transition focus:border-primary focus:outline-none focus:outline-primary disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
     />
 
-    <small v-if="error" class="text-red-500">{{ error[0] }}</small>
+    <small v-if="error" class="text-danger">{{ error[0] }}</small>
   </div>
 </template>

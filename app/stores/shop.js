@@ -7,6 +7,25 @@ export const useShopStore = defineStore("shop", {
   getters: {},
 
   actions: {
+    async apply(payload) {
+      const { $api } = useNuxtApp();
+      this.loading = true;
+      try {
+        const response = await $api(`/api/stores/apply`, {
+          method: "POST",
+          body: payload,
+        });
+        $toast.success(response.message);
+        return response;
+      } catch (error) {
+        this.errors = error?.response?._data?.errors;
+        $toast.error(error?.response?._data.message);
+        return error?.response?._data;
+      } finally {
+        this.loading = false;
+      }
+    },
+
     async getStores() {
       const { $api } = useNuxtApp();
       try {
@@ -14,7 +33,7 @@ export const useShopStore = defineStore("shop", {
         return response;
       } catch (error) {
         this.errors = error?.response?._data?.errors;
-        throw error;
+        return error?.response?._data;
       }
     },
 
