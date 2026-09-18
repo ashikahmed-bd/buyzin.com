@@ -1,6 +1,5 @@
 <script setup>
-import { header } from "#build/ui";
-
+const authStore = useAuthStore();
 const chatStore = useChatStore();
 const messageStore = useMessageStore();
 
@@ -71,10 +70,18 @@ const subscribeToConversation = () => {
 onMounted(subscribeToConversation);
 
 const dialog = ref(false);
+
+const unreadCount = computed(() => {
+  const participant = conversation?.participants?.find(
+    (item) => item.user?.id === authStore.user?.id,
+  );
+
+  return participant?.unread_count ?? 0;
+});
 </script>
 
 <template>
-  <div class="fixed right-4 bottom-4 z-50">
+  <div class="fixed right-2 bottom-2 z-50">
     <button
       type="button"
       aria-label="Open messages"
@@ -82,24 +89,23 @@ const dialog = ref(false);
       @click="dialog = !dialog"
     >
       <span
-        class="absolute right-0.5 top-0.5 size-3.5 rounded-full border-2 border-white bg-emerald-500 dark:border-slate-950"
+        v-if="unreadCount > 0"
+        class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full border-2 border-white bg-red-500 px-1 text-xs font-bold leading-none text-white dark:border-slate-950"
       >
-        <span
-          class="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-75"
-        />
+        {{ unreadCount > 9 ? "9+" : unreadCount }}
       </span>
 
       <UIcon
+        v-if="!dialog"
         name="i-lucide-messages-square"
         class="size-6 transition-transform duration-200 group-hover:scale-110"
       />
 
-      <span
-        v-if="unreadCount > 0"
-        class="absolute -right-1 -top-1 flex min-w-5 h-5 items-center justify-center rounded-full border-2 border-white bg-red-500 px-1 text-xs font-bold leading-none text-white"
-      >
-        {{ unreadCount > 99 ? "99+" : unreadCount }}
-      </span>
+      <UIcon
+        v-else
+        name="i-lucide-x"
+        class="size-6 transition-transform duration-200 group-hover:scale-110"
+      />
     </button>
   </div>
 
@@ -113,31 +119,6 @@ const dialog = ref(false);
       <div
         class="absolute right-4 bottom-14 w-[calc(100vw-2rem)] max-w-3xl overflow-hidden rounded-xl border border-border bg-white"
       >
-        <header
-          class="flex items-center justify-between border-b border-border px-4 py-3"
-        >
-          <div class="flex items-center gap-3">
-            <div
-              class="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary"
-            >
-              <UIcon name="i-lucide-messages-square" class="size-5" />
-            </div>
-
-            <div>
-              <h3 class="text-sm font-semibold text-title">Messages</h3>
-              <p class="text-xs text-body">Chat with sellers</p>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            class="flex size-8 items-center justify-center rounded-full text-body transition hover:bg-gray-100 hover:text-primary"
-            @click="dialog = false"
-          >
-            <UIcon name="i-lucide-x" class="size-5" />
-          </button>
-        </header>
-
         <div
           class="flex h-[calc(100dvh-200px)] overflow-hidden rounded-xl bg-white"
         >
