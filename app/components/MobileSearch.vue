@@ -1,60 +1,67 @@
 <script setup>
+const dialog = ref(false)
+
 const form = reactive({
   search: "",
 });
 
-const products = [
+const {
+  data: products,
+  pending,
+  error,
+  refresh,
+} = await useAsyncData(
+  "search-products",
+  () => searchStore.search(form.search.trim()),
   {
-    id: 1,
-    name: "Premium Cotton T-Shirt",
-    sku: "TSH-001",
-    price: 450,
-    moq: 10,
-    unit: "Piece",
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=200",
+    immediate: false,
   },
-  {
-    id: 2,
-    name: "Wireless Bluetooth Earbuds",
-    sku: "EAR-002",
-    price: 850,
-    moq: 5,
-    unit: "Piece",
-    image: "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=200",
-  },
-  {
-    id: 3,
-    name: "Leather Casual Backpack",
-    sku: "BAG-003",
-    price: 1200,
-    moq: 5,
-    unit: "Piece",
-    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200",
-  },
-];
+);
 
-const showResults = ref(false);
-
-const filteredProducts = computed(() => {
-  const keyword = form.search.trim().toLowerCase();
+const search = async () => {
+  const keyword = form.search.trim();
 
   if (!keyword) {
-    return products;
+    searchStore.dialog = false;
+    return;
   }
 
-  return products.filter((product) =>
-    `${product.name} ${product.sku}`.toLowerCase().includes(keyword),
-  );
-});
+  searchStore.dialog = true;
 
-const search = () => {
-  showResults.value = true;
+  await refresh();
 };
 
-const selectProduct = (product) => {
-  showResults.value = false;
-  navigateTo(`/products/${product.id}`);
+const searchDebounced = useDebounceFn(async () => {
+  const keyword = form.search.trim();
+
+  if (!keyword) {
+    return;
+  }
+
+  searchStore.dialog = true;
+
+  await refresh();
+}, 500);
+
+const onSearchInput = () => {
+  searchStore.dialog = true;
+
+  searchDebounced();
 };
+
+
+
+const openProduct = async (product) => {
+  if (!product?.slug || !product?.id) {
+    return;
+  }
+
+  dialog = false;
+
+  await navigateTo(`/product/${product.slug}/${product.code}`);
+};
+
+
 </script>
 
 <template>
@@ -67,7 +74,8 @@ const selectProduct = (product) => {
 
       <input
         v-model="form.search"
-        @focus="showResults = true"
+       @focus="dialog = true"
+          @input="onSearchInput"
         type="search"
         autocomplete="off"
         placeholder="Search products..."

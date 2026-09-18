@@ -34,7 +34,8 @@ export const useAuthStore = defineStore("auth", {
         return navigateTo("/account");
       } catch (error) {
         this.errors = error?.response?._data;
-        return error?.response?._data;
+        $toast.error(error?.response?._data?.message);
+        throw error;
       } finally {
         this.loading = false;
       }
@@ -53,7 +54,7 @@ export const useAuthStore = defineStore("auth", {
       } catch (error) {
         this.errors = error?.response?._data.errors;
         $toast.error(error?.response?._data.message);
-        return error?.response?._data;
+        throw error;
       } finally {
         this.loading = false;
       }
@@ -63,16 +64,37 @@ export const useAuthStore = defineStore("auth", {
       const { $api } = useNuxtApp();
       this.loading = true;
       try {
-        const response = await $api("/api/auth/forgot", formData);
-        if (response.status === 200) {
-          toast.success(response.data.message);
-          setTimeout(() => {
-            navigateTo("/auth/login");
-          }, 2000);
-        }
+        const response = await $api("/api/auth/forgot-password", {
+          method: "POST",
+          body: formData,
+        });
+        $toast.success(response.message);
+        return response;
       } catch (error) {
         this.errors = error?.response?._data;
-        return error?.response?._data;
+        $toast.error(error?.response?._data?.message);
+        throw error;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async reset(payload) {
+      const { $api } = useNuxtApp();
+      this.loading = true;
+      try {
+        const response = await $api("/api/auth/reset-password", {
+          method: "POST",
+          body: payload,
+        });
+        $toast.success(response.message);
+        return navigateTo('/auth/login');
+      } catch (error) {
+        this.errors = error?.response?._data;
+        $toast.error(error?.response?._data?.message);
+        throw error;
+      } finally {
+        this.loading = false;
       }
     },
 

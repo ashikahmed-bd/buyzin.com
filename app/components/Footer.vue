@@ -1,445 +1,301 @@
-```vue
 <script setup>
-const currentYear = new Date().getFullYear();
-
-const props = defineProps({
-  settings: {
-    type: Object,
-    default: () => ({}),
-  },
-});
-
-const email = ref("");
-const subscribing = ref(false);
-
-const socialLinks = [
-  {
-    key: "facebook",
-    icon: "i-lucide-facebook",
-  },
-  {
-    key: "instagram",
-    icon: "i-lucide-instagram",
-  },
-  {
-    key: "linkedin",
-    icon: "i-lucide-linkedin",
-  },
-  {
-    key: "youtube",
-    icon: "i-lucide-youtube",
-  },
-];
-
-const businessLinks = [
-  { label: "Become a Supplier", to: "/store/apply" },
-  { label: "Supplier Dashboard", to: "/dashboard" },
-  { label: "Request a Quote", to: "/request-a-quote" },
-  { label: "Wholesale Solutions", to: "/wholesale" },
-];
-
 const buyerLinks = [
   { label: "Browse Products", to: "/products" },
-  { label: "Categories", to: "/categories" },
-  { label: "Brands", to: "/brands" },
-  { label: "Deals", to: "/deals" },
+  { label: "Request a Quote", to: "/request-a-quote" },
+  { label: "Find Suppliers", to: "/suppliers" },
+  { label: "Buying Guide", to: "/buying-guide" },
+  { label: "Trade Assurance", to: "/trade-assurance" },
+  { label: "Help Center", to: "/help-center" },
 ];
 
-const informationLinks = [
-  { label: "About Buyzin", to: "/about" },
-  { label: "How It Works", to: "/how-it-works" },
-  { label: "Contact Us", to: "/contact" },
-  { label: "Privacy Policy", to: "/privacy-policy" },
-  { label: "Terms & Conditions", to: "/terms-and-conditions" },
+const supplierLinks = [
+  { label: "Create a Store", to: "/seller/create-store" },
+  { label: "Supplier Membership", to: "/seller/membership" },
+  { label: "Selling Guide", to: "/selling-guide" },
+  { label: "Success Stories", to: "/success-stories" },
+  { label: "Partner Program", to: "/partner-program" },
+  { label: "Supplier Support", to: "/supplier-support" },
 ];
 
-const subscribe = async () => {
-  if (!email.value || subscribing.value) return;
+const companyLinks = [
+  { label: "About Us", to: "/about" },
+  { label: "Careers", to: "/careers" },
+  { label: "News & Blog", to: "/blog" },
+  { label: "Terms of Service", to: "/terms" },
+  { label: "Privacy Policy", to: "/privacy" },
+  { label: "Cookie Policy", to: "/cookies" },
+];
 
-  subscribing.value = true;
-
-  try {
-    // await newsletterStore.subscribe(email.value);
-
-    email.value = "";
-  } catch (error) {
-    console.error(error);
-  } finally {
-    subscribing.value = false;
-  }
-};
+const socialLinks = [
+  { label: "Facebook", icon: "i-lucide-facebook", href: "#" },
+  { label: "LinkedIn", icon: "i-lucide-linkedin", href: "#" },
+  { label: "YouTube", icon: "i-lucide-youtube", href: "#" },
+  { label: "Instagram", icon: "i-lucide-instagram", href: "#" },
+  { label: "X", icon: "i-lucide-twitter", href: "#" },
+];
 </script>
 
 <template>
-  <footer class="border-t border-gray-200 bg-white">
-    <!-- CTA -->
-    <section class="border-b border-white/10 bg-primary">
-      <div class="container mx-auto px-4">
+  <footer class="bg-white">
+    <section class="container mx-auto px-4 py-12">
+      <div class="relative rounded-xl bg-primary px-6 py-10">
         <div
-          class="flex flex-col gap-6 py-10 md:flex-row md:items-center md:justify-between md:py-12"
+          class="relative grid gap-4 lg:grid-cols-[1fr_1.05fr] lg:items-center"
         >
-          <div class="max-w-2xl">
+          <div>
             <div
-              class="mb-3 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-medium text-white"
+              class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-white"
             >
               <UIcon name="i-lucide-sparkles" class="size-3.5" />
-              Built for modern businesses
+              Stay Ahead
             </div>
 
             <h2
-              class="text-2xl font-bold tracking-tight text-white md:text-3xl"
+              class="text-2xl font-bold tracking-tight text-white sm:text-3xl"
             >
-              Source smarter. Grow faster.
+              Grow Your Business With Buyzin
             </h2>
 
-            <p class="mt-2 max-w-xl text-sm leading-6 text-white/75">
-              Connect with verified suppliers, discover wholesale products,
-              compare offers, and source inventory for your business.
+            <p class="max-w-xl text-sm leading-6 text-white/75 sm:text-base">
+              Get new products, supplier offers, market insights and exclusive
+              B2B opportunities directly in your inbox.
             </p>
           </div>
 
-          <div class="flex flex-col gap-2 sm:flex-row">
-            <NuxtLink
-              to="/products"
-              class="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-white px-5 text-sm font-semibold text-primary shadow-sm transition hover:bg-gray-100"
-            >
-              <UIcon name="i-lucide-shopping-bag" class="size-4" />
-              Browse Products
-            </NuxtLink>
+          <div>
+            <form class="flex flex-col gap-3 sm:flex-row">
+              <div class="relative flex-1">
+                <UIcon
+                  name="i-lucide-mail"
+                  class="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-slate-400"
+                />
 
-            <NuxtLink
-              to="/store/apply"
-              class="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-white/25 bg-white/5 px-5 text-sm font-semibold text-white transition hover:bg-white/10"
-            >
-              <UIcon name="i-lucide-store" class="size-4" />
-              Become a Supplier
-            </NuxtLink>
+                <input
+                  type="email"
+                  placeholder="Enter your email address"
+                  class="h-12 w-full rounded-xl border-0 bg-white pl-12 pr-4 text-sm text-slate-900 outline-none ring-0 placeholder:text-slate-400 focus:ring-2 focus:ring-white/30"
+                />
+              </div>
+
+              <button
+                type="submit"
+                class="h-12 rounded-xl bg-white px-7 text-sm font-semibold text-primary transition hover:bg-slate-100"
+              >
+                Subscribe
+              </button>
+            </form>
+
+            <p class="mt-3 flex items-center gap-1.5 text-xs text-white/60">
+              <UIcon name="i-lucide-lock" class="size-3.5" />
+              No spam. Unsubscribe anytime.
+            </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Main -->
-    <div class="container mx-auto px-4">
+    <section class="container mx-auto px-4 py-8">
       <div
-        class="grid grid-cols-1 gap-10 py-12 sm:grid-cols-2 lg:grid-cols-5 lg:gap-8 lg:py-14"
+        class="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-[1.4fr_0.8fr_0.8fr_0.8fr_1fr]"
       >
-        <!-- Brand -->
-        <div class="sm:col-span-2 lg:col-span-2">
-          <NuxtLink to="/" aria-label="Buyzin" class="inline-flex">
-            <NuxtImg src="/logo.svg" alt="Buyzin" class="h-9 w-auto" />
+        <!-- Logo / About -->
+        <div class="col-span-2 lg:col-span-1">
+          <NuxtLink to="/" class="inline-flex">
+            <NuxtImg src="/logo.svg" alt="Buyzin" class="h-16 w-auto" />
           </NuxtLink>
 
-          <p class="mt-4 max-w-md text-sm leading-6 text-gray-500">
-            Buyzin is a B2B wholesale marketplace connecting businesses with
-            suppliers across Bangladesh. Discover products, source inventory,
-            communicate with suppliers, and grow your business from one
-            platform.
+          <p class="mt-5 max-w-sm text-sm leading-7 text-slate-500">
+            Your trusted B2B marketplace for global trade. Discover quality
+            products, connect with verified suppliers and grow your business
+            without borders.
           </p>
 
-          <!-- Trust Cards -->
-          <div class="mt-6 grid max-w-lg grid-cols-1 gap-3 sm:grid-cols-2">
-            <div
-              class="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50/80 p-3"
-            >
-              <div
-                class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
-              >
-                <UIcon name="i-lucide-badge-check" class="size-4.5" />
-              </div>
-
-              <div>
-                <p class="text-xs font-semibold text-gray-900">
-                  Trusted Suppliers
-                </p>
-
-                <p class="mt-0.5 text-[11px] text-gray-500">
-                  Business-focused sourcing
-                </p>
-              </div>
-            </div>
-
-            <div
-              class="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50/80 p-3"
-            >
-              <div
-                class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
-              >
-                <UIcon name="i-lucide-package-check" class="size-4.5" />
-              </div>
-
-              <div>
-                <p class="text-xs font-semibold text-gray-900">
-                  Wholesale Products
-                </p>
-
-                <p class="mt-0.5 text-[11px] text-gray-500">
-                  Built for bulk buying
-                </p>
-              </div>
-            </div>
-          </div>
-
           <!-- Social -->
-          <div class="mt-7">
-            <p
-              class="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400"
+          <div class="mt-6 flex items-center gap-2">
+            <a
+              v-for="social in socialLinks"
+              :key="social.label"
+              :href="social.href"
+              :aria-label="social.label"
+              class="flex size-10 items-center justify-center rounded-full border border-border bg-white text-body transition hover:border-primary hover:bg-primary hover:text-white"
             >
-              Follow Buyzin
-            </p>
-
-            <div class="flex items-center gap-2">
-              <template v-for="social in socialLinks" :key="social.key">
-                <a
-                  v-if="settings?.social?.[social.key]"
-                  :href="settings.social[social.key]"
-                  :aria-label="`Buyzin on ${social.key}`"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="flex size-9 items-center justify-center rounded-lg border border-gray-200 text-gray-500 transition hover:border-primary hover:bg-primary/5 hover:text-primary"
-                >
-                  <UIcon :name="social.icon" class="size-4" />
-                </a>
-              </template>
-            </div>
+              <UIcon :name="social.icon" class="size-4.5" />
+            </a>
           </div>
-        </div>
-
-        <!-- Business -->
-        <div>
-          <h3 class="mb-4 text-sm font-semibold text-gray-900">For Business</h3>
-
-          <ul class="space-y-3">
-            <li v-for="item in businessLinks" :key="item.to">
-              <NuxtLink
-                :to="item.to"
-                class="text-sm text-gray-500 transition hover:text-primary"
-              >
-                {{ item.label }}
-              </NuxtLink>
-            </li>
-          </ul>
         </div>
 
         <!-- Buyers -->
         <div>
-          <h3 class="mb-4 text-sm font-semibold text-gray-900">For Buyers</h3>
+          <h3 class="text-sm font-bold uppercase tracking-wide text-slate-900">
+            For Buyers
+          </h3>
 
-          <ul class="space-y-3">
-            <li v-for="item in buyerLinks" :key="item.to">
-              <NuxtLink
-                :to="item.to"
-                class="text-sm text-gray-500 transition hover:text-primary"
-              >
-                {{ item.label }}
-              </NuxtLink>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Information -->
-        <div>
-          <h3 class="mb-4 text-sm font-semibold text-gray-900">Information</h3>
-
-          <ul class="space-y-3">
-            <li v-for="item in informationLinks" :key="item.to">
-              <NuxtLink
-                :to="item.to"
-                class="text-sm text-gray-500 transition hover:text-primary"
-              >
-                {{ item.label }}
-              </NuxtLink>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Support + Newsletter -->
-      <div class="border-t border-gray-200 py-8">
-        <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          <!-- Support -->
-          <div>
-            <h3 class="mb-4 text-sm font-semibold text-gray-900">
-              Business Support
-            </h3>
-
-            <div class="space-y-4">
-              <div v-if="settings?.app?.address" class="flex items-start gap-3">
-                <div
-                  class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gray-100"
-                >
-                  <UIcon name="i-lucide-map-pin" class="size-4 text-gray-500" />
-                </div>
-
-                <address
-                  v-html="settings.app.address"
-                  class="not-italic text-sm leading-5 text-gray-500"
-                />
-              </div>
-
-              <div
-                v-if="
-                  settings?.app?.contact?.sales_phone ||
-                  settings?.app?.contact?.support_phone
-                "
-                class="flex items-start gap-3"
-              >
-                <div
-                  class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gray-100"
-                >
-                  <UIcon name="i-lucide-phone" class="size-4 text-gray-500" />
-                </div>
-
-                <div class="flex flex-col gap-1 text-sm">
-                  <a
-                    v-if="settings?.app?.contact?.sales_phone"
-                    :href="`tel:${settings.app.contact.sales_phone}`"
-                    class="text-gray-500 hover:text-primary"
-                  >
-                    Sales: {{ settings.app.contact.sales_phone }}
-                  </a>
-
-                  <a
-                    v-if="settings?.app?.contact?.support_phone"
-                    :href="`tel:${settings.app.contact.support_phone}`"
-                    class="text-gray-500 hover:text-primary"
-                  >
-                    Support: {{ settings.app.contact.support_phone }}
-                  </a>
-                </div>
-              </div>
-
-              <div
-                v-if="
-                  settings?.app?.contact?.sales_email ||
-                  settings?.app?.contact?.support_email
-                "
-                class="flex items-start gap-3"
-              >
-                <div
-                  class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gray-100"
-                >
-                  <UIcon name="i-lucide-mail" class="size-4 text-gray-500" />
-                </div>
-
-                <div class="flex flex-col gap-1 text-sm">
-                  <a
-                    v-if="settings?.app?.contact?.sales_email"
-                    :href="`mailto:${settings.app.contact.sales_email}`"
-                    class="text-gray-500 hover:text-primary"
-                  >
-                    {{ settings.app.contact.sales_email }}
-                  </a>
-
-                  <a
-                    v-if="settings?.app?.contact?.support_email"
-                    :href="`mailto:${settings.app.contact.support_email}`"
-                    class="text-gray-500 hover:text-primary"
-                  >
-                    {{ settings.app.contact.support_email }}
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Newsletter -->
-          <div class="lg:col-span-2">
-            <div
-              class="rounded-2xl border border-gray-200 bg-gray-50 p-5 md:p-6"
+          <nav class="mt-5 flex flex-col gap-3">
+            <NuxtLink
+              v-for="item in buyerLinks"
+              :key="item.label"
+              :to="item.to"
+              class="group flex items-center text-sm text-slate-500 transition hover:text-primary"
             >
-              <div
-                class="flex flex-col gap-5 md:flex-row md:items-center md:justify-between"
+              <span>{{ item.label }}</span>
+
+              <UIcon
+                name="i-lucide-arrow-up-right"
+                class="ml-1 size-3.5 opacity-0 transition group-hover:opacity-100"
+              />
+            </NuxtLink>
+          </nav>
+        </div>
+
+        <!-- Suppliers -->
+        <div>
+          <h3 class="text-sm font-bold uppercase tracking-wide text-slate-900">
+            For Suppliers
+          </h3>
+
+          <nav class="mt-5 flex flex-col gap-3">
+            <NuxtLink
+              v-for="item in supplierLinks"
+              :key="item.label"
+              :to="item.to"
+              class="group flex items-center text-sm text-slate-500 transition hover:text-primary"
+            >
+              <span>{{ item.label }}</span>
+
+              <UIcon
+                name="i-lucide-arrow-up-right"
+                class="ml-1 size-3.5 opacity-0 transition group-hover:opacity-100"
+              />
+            </NuxtLink>
+          </nav>
+        </div>
+
+        <!-- Company -->
+        <div>
+          <h3 class="text-sm font-bold uppercase tracking-wide text-slate-900">
+            Company
+          </h3>
+
+          <nav class="mt-5 flex flex-col gap-3">
+            <NuxtLink
+              v-for="item in companyLinks"
+              :key="item.label"
+              :to="item.to"
+              class="group flex items-center text-sm text-slate-500 transition hover:text-primary"
+            >
+              <span>{{ item.label }}</span>
+
+              <UIcon
+                name="i-lucide-arrow-up-right"
+                class="ml-1 size-3.5 opacity-0 transition group-hover:opacity-100"
+              />
+            </NuxtLink>
+          </nav>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <h3 class="text-sm font-bold uppercase tracking-wide text-slate-900">
+            Get in Touch
+          </h3>
+
+          <div class="mt-5 space-y-4">
+            <a
+              href="mailto:support@buyzin.com"
+              class="group flex gap-3 text-sm text-slate-500 transition hover:text-primary"
+            >
+              <span
+                class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 transition group-hover:bg-primary/10 group-hover:text-primary"
               >
-                <div class="max-w-md">
-                  <div class="flex items-center gap-2">
-                    <div
-                      class="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary"
-                    >
-                      <UIcon name="i-lucide-mail-plus" class="size-4" />
-                    </div>
+                <UIcon name="i-lucide-mail" class="size-4" />
+              </span>
 
-                    <h3 class="text-sm font-semibold text-gray-900">
-                      Stay updated with Buyzin
-                    </h3>
-                  </div>
+              <span class="pt-1.5 break-all"> support@buyzin.com </span>
+            </a>
 
-                  <p class="mt-2 text-sm leading-5 text-gray-500">
-                    Get wholesale deals, new supplier updates, sourcing
-                    opportunities, and business insights in your inbox.
-                  </p>
-                </div>
+            <a
+              href="tel:+8801234567890"
+              class="group flex gap-3 text-sm text-slate-500 transition hover:text-primary"
+            >
+              <span
+                class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 transition group-hover:bg-primary/10 group-hover:text-primary"
+              >
+                <UIcon name="i-lucide-phone" class="size-4" />
+              </span>
 
-                <form
-                  class="flex w-full flex-col gap-2 sm:flex-row md:max-w-md"
-                  @submit.prevent="subscribe"
-                >
-                  <input
-                    id="footer-email"
-                    v-model="email"
-                    type="email"
-                    required
-                    autocomplete="email"
-                    placeholder="Business email"
-                    class="h-10 min-w-0 flex-1 rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/10"
-                  />
+              <span class="pt-1.5"> +880 1234 567890 </span>
+            </a>
 
-                  <button
-                    type="submit"
-                    :disabled="subscribing"
-                    class="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg bg-primary px-5 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    <UIcon
-                      :name="
-                        subscribing ? 'i-lucide-loader-circle' : 'i-lucide-send'
-                      "
-                      class="size-4"
-                      :class="{ 'animate-spin': subscribing }"
-                    />
+            <div class="flex gap-3 text-sm text-slate-500">
+              <span
+                class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600"
+              >
+                <UIcon name="i-lucide-map-pin" class="size-4" />
+              </span>
 
-                    {{ subscribing ? "Joining..." : "Subscribe" }}
-                  </button>
-                </form>
-              </div>
+              <span class="pt-1.5"> Dhaka, Bangladesh </span>
+            </div>
+
+            <div class="flex gap-3 text-sm text-slate-500">
+              <span
+                class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600"
+              >
+                <UIcon name="i-lucide-clock-3" class="size-4" />
+              </span>
+
+              <span class="pt-1.5 leading-5">
+                Monday - Friday
+                <br />
+                9:00 AM - 6:00 PM (UTC+6)
+              </span>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Bottom -->
-    <div class="border-t border-gray-200 bg-gray-50/70">
-      <div
-        class="container mx-auto flex flex-col gap-3 px-4 py-4 text-center md:flex-row md:items-center md:justify-between md:text-left"
-      >
-        <p class="text-xs text-gray-500">
-          © {{ currentYear }}
-          <NuxtLink to="/" class="font-medium text-gray-700 hover:text-primary">
-            Buyzin
-          </NuxtLink>
-          . All rights reserved.
-        </p>
+    <section
+      class="container mx-auto px-4 py-2.5 border-t border-border border-dashed"
+    >
+      <div class="flex items-center flex-wrap gap-4 lg:justify-between">
+        <div>
+          <p class="text-sm text-slate-500">
+            © 2026
+            <span class="font-semibold text-slate-700">Buyzin</span>. All rights
+            reserved.
+          </p>
+        </div>
 
-        <div
-          class="flex items-center justify-center gap-5 text-xs text-gray-500"
-        >
-          <NuxtLink to="/privacy-policy" class="transition hover:text-primary">
-            Privacy
-          </NuxtLink>
-
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
           <NuxtLink
-            to="/terms-and-conditions"
-            class="transition hover:text-primary"
+            to="/terms"
+            class="text-sm text-slate-500 transition hover:text-primary"
           >
             Terms
           </NuxtLink>
 
-          <NuxtLink to="/contact" class="transition hover:text-primary">
-            Contact
+          <NuxtLink
+            to="/privacy"
+            class="text-sm text-slate-500 transition hover:text-primary"
+          >
+            Privacy
+          </NuxtLink>
+
+          <NuxtLink
+            to="/cookies"
+            class="text-sm text-slate-500 transition hover:text-primary"
+          >
+            Cookies
+          </NuxtLink>
+
+          <NuxtLink
+            to="/sitemap.xml"
+            class="text-sm text-slate-500 transition hover:text-primary"
+          >
+            Sitemap
           </NuxtLink>
         </div>
       </div>
-    </div>
+    </section>
   </footer>
 </template>
-```

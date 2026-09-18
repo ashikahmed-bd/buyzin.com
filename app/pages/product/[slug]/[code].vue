@@ -598,10 +598,18 @@ const addToWishlist = async (product) => {
               </section>
 
               <section class="space-y-3">
-                <button
+                <button v-if="data?.data?.is_negotiable"
                   type="button"
                   class="flex w-full items-center justify-center gap-2 rounded bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
-                  :disabled="data?.data?.has_variants"
+                  @click="cartDialog = !cartDialog"
+                >
+                  <UIcon name="i-lucide-shopping-cart" class="size-5" />
+                  Send inquiry
+                </button>
+
+                <button v-else
+                  type="button"
+                  class="flex w-full items-center justify-center gap-2 rounded bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
                   @click="cartDialog = !cartDialog"
                 >
                   <UIcon name="i-lucide-shopping-cart" class="size-5" />

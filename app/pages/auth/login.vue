@@ -73,7 +73,7 @@ const submit = async () => {
               <span class="text-sm text-body">Remember Me</span>
             </label>
             <RouterLink
-              to="/auth/forgot"
+              to="/auth/forgot-password"
               class="text-sm text-primary hover:underline"
               >Forget Password?</RouterLink
             >
