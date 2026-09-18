@@ -65,10 +65,10 @@ const benefits = [
 </script>
 
 <template>
-  <footer class="w-full">
-    <section class="bg-white px-4 py-8 sm:px-6 lg:px-8">
+  <footer class="bg-dark w-full py-4 mt-6">
+    <section class="container mx-auto px-4 py-8 ">
       <div
-        class="relative container mx-auto overflow-hidden rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50 via-slate-50 to-blue-50 px-5 py-7"
+        class="relative bg-white/10 overflow-hidden rounded-2xl px-4 py-6"
       >
         
         <div
@@ -89,19 +89,18 @@ const benefits = [
               </p>
 
               <h2
-                class="mt-1 text-xl font-bold tracking-tight text-title sm:text-2xl"
+                class="mt-1 text-xl font-bold tracking-tight text-slate-300 sm:text-2xl"
               >
                 Subscribe to our Newsletter
               </h2>
 
-              <p class="mt-2 max-w-xl text-sm leading-6 text-body sm:text-base">
+              <p class="mt-2 max-w-xl text-sm leading-6 text-slate-300">
                 Get the latest B2B deals, supplier updates, industry insights
                 and exclusive offers directly to your inbox.
               </p>
             </div>
           </div>
 
-          <!-- Newsletter form -->
           <div>
             <form
               class="flex flex-col gap-2 rounded-xl border border-border bg-white p-1.5 sm:flex-row"
@@ -129,12 +128,9 @@ const benefits = [
               </UButton>
             </form>
 
-            <div
-              class="mt-2 flex items-center gap-2 px-1 text-sm text-slate-500"
-            >
-              <UIcon name="i-lucide-lock-keyhole" class="size-4" />
-
-              <span> No spam. Unsubscribe anytime. </span>
+            <div class="mt-2 flex items-center gap-2 px-1">
+              <UIcon name="i-lucide-lock-keyhole" class="size-4 text-slate-300" />
+              <span class="text-sm text-slate-300"> No spam. Unsubscribe anytime. </span>
             </div>
           </div>
         </div>
@@ -142,7 +138,7 @@ const benefits = [
     </section>
 
     <section
-      class="relative overflow-hidden bg-dark px-4 pt-12 text-white sm:px-6 lg:px-8"
+      class="relative overflow-hidden  px-4 pt-12 text-white sm:px-6 lg:px-8"
     >
       <div
         class="pointer-events-none absolute -right-40 top-20 size-96 rounded-full bg-blue-600/5 blur-3xl"

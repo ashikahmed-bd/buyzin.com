@@ -188,15 +188,15 @@ const changePassword = async () => {
                       label="Gender"
                       :items="[
                         {
-                          name: 'Female',
+                          label: 'Female',
                           id: 'female',
                         },
                         {
-                          name: 'Male',
+                          label: 'Male',
                           id: 'male',
                         },
                         {
-                          name: 'Other',
+                          label: 'Other',
                           id: 'other',
                         },
                       ]"

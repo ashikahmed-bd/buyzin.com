@@ -380,16 +380,18 @@ const addToWishlist = async (product) => {
                 ]"
               >
                 <template #description>
-                  <MDC
-                    :value="data?.data?.description"
-                    class="prose max-w-none"
-                  />
+                  <div class="bg-white px-4 py-6 rounded-xl">
+                    <MDC
+                      :value="data?.data?.description"
+                      class="prose max-w-none"
+                    />
+                  </div>
                 </template>
                 <template #specifications>
                   <table
                     v-for="section in data?.data?.specifications"
                     :key="section.title"
-                    class="mb-6 border w-full"
+                    class="bg-white border border-border rounded-xl w-full mb-4"
                   >
                     <thead>
                       <tr>
@@ -418,7 +420,7 @@ const addToWishlist = async (product) => {
           </main>
 
           <aside class="min-w-0">
-            <div class="sticky top-20 space-y-4 bg-white p-4">
+            <div class="sticky top-32 space-y-4 bg-white rounded-xl p-4">
               <section class="space-y-3">
                 <div class="flex items-start gap-2.5">
                   <div
@@ -598,7 +600,8 @@ const addToWishlist = async (product) => {
               </section>
 
               <section class="space-y-3">
-                <button v-if="data?.data?.is_negotiable"
+                <button
+                  v-if="data?.data?.is_negotiable"
                   type="button"
                   class="flex w-full items-center justify-center gap-2 rounded bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
                   @click="cartDialog = !cartDialog"
@@ -607,7 +610,8 @@ const addToWishlist = async (product) => {
                   Send inquiry
                 </button>
 
-                <button v-else
+                <button
+                  v-else
                   type="button"
                   class="flex w-full items-center justify-center gap-2 rounded bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
                   @click="cartDialog = !cartDialog"

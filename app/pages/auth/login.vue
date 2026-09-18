@@ -44,12 +44,12 @@ const submit = async () => {
       </div>
       <div class="px-8 py-10">
         <h2 class="text-2xl font-bold mb-2">Sign In</h2>
-        <p class="text-gray-500 mb-6">Welcome back, you've been missed!</p>
+        <p class="text-body mb-6">Welcome back, you've been missed!</p>
         <form @submit.prevent="submit">
           <BaseInput
             v-model="form.email"
-            label="Email or Phone"
-            placeholder="Enter your email or phone"
+            label="Email"
+            placeholder="Enter your email"
             :required="true"
             :error="errors?.email"
           />

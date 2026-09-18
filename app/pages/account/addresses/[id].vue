@@ -152,7 +152,7 @@ const cancel = () => {
                 <BaseInput
                   label="Division"
                   v-model="form.state"
-                  placeholder="Select division"
+                  placeholder="Enter division"
                   :required="true"
                   error=""
                 />
@@ -160,7 +160,7 @@ const cancel = () => {
                 <BaseInput
                   label="District"
                   v-model="form.city"
-                  placeholder="Select district"
+                  placeholder="Enter district"
                   :required="true"
                   error=""
                 />
@@ -168,7 +168,7 @@ const cancel = () => {
                 <BaseInput
                   label="Upazila / Thana"
                   v-model="form.area"
-                  placeholder="Select upazila"
+                  placeholder="Enter upazila"
                   :required="true"
                   error=""
                 />
