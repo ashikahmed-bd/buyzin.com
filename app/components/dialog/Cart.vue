@@ -164,30 +164,19 @@ const sendInquiry = () => {
             @click.stop
           >
             <header
-              class="flex shrink-0 items-center justify-between gap-4 border-b border-gray-100 px-5 py-4"
+              class="flex shrink-0 items-center justify-between gap-4 border-b border-border px-5 py-4"
             >
-              <div class="flex min-w-0 items-center gap-4">
-                <div
-                  class="flex size-14 shrink-0 items-center justify-center rounded"
+              <div class="min-w-0">
+                <h2
+                  class="truncate text-sm font-semibold text-title sm:text-base"
                 >
-                  <NuxtImg
-                    :src="product.cover_url"
-                    :alt="product.name"
-                    class="size-full object-contain p-1"
-                  />
-                </div>
-                <div class="min-w-0">
-                  <h2
-                    class="truncate text-sm font-semibold text-title sm:text-base"
-                  >
-                    {{ product.name }}
-                  </h2>
-                </div>
+                  {{ product.name }}
+                </h2>
               </div>
               <button
                 type="button"
                 aria-label="Close dialog"
-                class="flex size-9 shrink-0 items-center justify-center rounded border border-gray-200 text-gray-500 transition hover:bg-gray-50 hover:text-gray-900"
+                class="flex size-9 shrink-0 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:bg-gray-50 hover:text-gray-900"
                 @click="close"
               >
                 <UIcon name="i-lucide-x" class="size-4" />

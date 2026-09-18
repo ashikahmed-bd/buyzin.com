@@ -1,4 +1,6 @@
 <script setup>
+import FloatingChat from './components/chat/FloatingChat.vue';
+
 useSchemaOrg([
   defineWebSite({
     name: "Buyzin",
@@ -56,5 +58,6 @@ useSchemaOrg([
     <UApp>
       <NuxtPage />
     </UApp>
+    <ChatFloatingChat/>
   </NuxtLayout>
 </template>
