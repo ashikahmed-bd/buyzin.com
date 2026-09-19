@@ -20,7 +20,9 @@ const addToWishlist = async (product) => {
 </script>
 
 <template>
-  <article class="group relative bg-white rounded overflow-hidden">
+  <article
+    class="group relative bg-white rounded border border-border overflow-hidden"
+  >
     <div
       class="absolute top-2 left-2 right-2 z-10 flex justify-end items-start"
     >

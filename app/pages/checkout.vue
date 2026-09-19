@@ -13,7 +13,11 @@ const {
   return await cartStore.getItems();
 });
 
-const { data: addresses } = await useAsyncData("addresses", async () => {
+const {
+  data: addresses,
+  pending: addressesPending,
+  refresh: refreshAddresses,
+} = await useAsyncData("addresses", async () => {
   return await addressStore.all();
 });
 
@@ -195,6 +199,20 @@ const submit = async () => {
                     </p>
                   </div>
                 </div>
+
+                <button
+                  type="button"
+                  :disabled="addressesPending"
+                  @click="refreshAddresses"
+                  class="inline-flex items-center gap-2 text-sm font-medium text-primary transition-all hover:opacity-90"
+                >
+                  <Icon
+                    name="lucide:refresh-cw"
+                    class="size-4"
+                    :class="{ 'animate-spin': addressesPending }"
+                  />
+                  <span class="text-sm">Refresh</span>
+                </button>
               </div>
 
               <div class="space-y-3">
@@ -257,26 +275,28 @@ const submit = async () => {
                             {{ address.phone }}
                           </p>
 
-                          <button
-                            type="button"
+                          <NuxtLink
+                            :to="`/account/addresses/${address.id}`"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             class="absolute right-0 top-0 text-sm font-medium text-primary"
-                            @click.prevent="editAddress(address)"
                           >
                             Edit
-                          </button>
+                          </NuxtLink>
                         </div>
                       </div>
                     </div>
                   </div>
                 </label>
 
-                <button
-                  type="button"
+                <NuxtLink
+                  to="/account/addresses/create"
+                  target="_blank"
                   class="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-slate-300 py-3 text-sm font-medium text-primary transition hover:border-primary"
                 >
                   <UIcon name="i-lucide-plus" class="h-4 w-4" />
                   Add New Address
-                </button>
+                </NuxtLink>
               </div>
             </section>
           </div>

@@ -19,7 +19,7 @@ const {
 
     <template v-else>
       <SeoMeta
-        title="Buyzin B2B | No.1 Largest B2B Wholesale & Bulk Buying Marketplace in Bangladesh"
+        title="Buyzin | No.1 Largest B2B Wholesale & Bulk Buying Marketplace in Bangladesh"
         description="Source products at competitive wholesale prices with Buyzin B2B. Connect with suppliers, discover products for your business, place bulk orders, and simplify wholesale purchasing across Bangladesh."
         keywords="Buyzin B2B, B2B Bangladesh, wholesale Bangladesh, wholesale marketplace, bulk buying, bulk order, wholesale suppliers, suppliers in Bangladesh, retailer marketplace, reseller marketplace, distributor, business products, wholesale price"
       />

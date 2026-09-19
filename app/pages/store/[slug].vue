@@ -189,7 +189,7 @@ const submit = async () => {
                   class="flex items-center justify-center gap-2 rounded bg-primary px-3 py-2 text-sm font-medium text-white"
                 >
                   <UIcon name="i-lucide-messages-square" class="size-5" />
-                  Message
+                  <span class="font-normal">Message</span>
                 </button>
 
                 <a
@@ -199,7 +199,7 @@ const submit = async () => {
                   class="flex items-center justify-center gap-2 rounded border border-white/30 bg-white px-3 py-2 text-sm font-medium text-body"
                 >
                   <UIcon name="i-lucide-message-circle" class="size-5" />
-                  WhatsApp
+                  <span class="font-normal">WhatsApp</span>
                 </a>
 
                 <button
@@ -208,7 +208,7 @@ const submit = async () => {
                   class="flex items-center justify-center gap-2 rounded border border-white/30 bg-white px-3 py-2 text-sm font-medium text-body"
                 >
                   <UIcon name="i-lucide-share-2" class="size-5" />
-                  Share
+                  <span class="hidden sm:inline">Share</span>
                 </button>
               </div>
 
@@ -255,7 +255,9 @@ const submit = async () => {
         </div>
 
         <div class="bg-white px-4 rounded-xl space-y-4">
-          <nav class="flex items-center gap-4 font-semibold overflow-x-auto">
+          <nav
+            class="flex items-center gap-4 font-semibold overflow-x-auto py-2.5"
+          >
             <NuxtLink
               to="?tab=home"
               :class="[
