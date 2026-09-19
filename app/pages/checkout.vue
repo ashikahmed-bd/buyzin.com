@@ -41,6 +41,15 @@ const calculateShipping = async (address) => {
   await refresh();
 };
 
+const business = reactive({
+  name: "",
+  contact_person: "",
+  phone: "",
+  email: "",
+  business_type: "",
+  bin: "",
+});
+
 const submit = async () => {
   if (!form.address_id) {
     return;
@@ -51,7 +60,7 @@ const submit = async () => {
 </script>
 
 <template>
-  <main class="mx-auto max-w-7xl">
+  <main class="container mx-auto">
     <Head>
       <Title>
         Checkout | Buyzin - Secure Payment & Fast Delivery in Bangladesh
@@ -75,7 +84,7 @@ const submit = async () => {
     <template v-else>
       <div class="px-4 py-6">
         <div class="mb-6">
-          <h1 class="mt-1 text-xl font-semibold tracking-tight text-slate-900">
+          <h1 class="mt-1 text-xl font-semibold tracking-tight text-title">
             Complete your order
           </h1>
 
@@ -106,48 +115,64 @@ const submit = async () => {
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  class="text-sm font-medium text-blue-600 transition hover:text-blue-700"
+                <NuxtLink
+                  to="/account/profile"
+                  class="text-sm font-medium text-primary transition"
                 >
                   Edit Profile
-                </button>
+                </NuxtLink>
               </div>
 
               <div
-                class="grid grid-cols-1 gap-x-6 gap-y-5 rounded-lg bg-slate-50 p-4 sm:grid-cols-2 md:grid-cols-3"
+                class="grid grid-cols-1 gap-4 rounded-lg bg-slate-50 p-4 sm:grid-cols-2 md:grid-cols-3"
               >
-                <div>
-                  <p class="text-sm text-slate-500">Business Name</p>
-                  <p class="mt-1 font-semibold text-body">ABC Traders Ltd.</p>
-                </div>
+                <BaseInput
+                  v-model="business.name"
+                  label="Business Name"
+                  placeholder="Enter business name"
+                  :required="true"
+                  error=""
+                />
 
-                <div>
-                  <p class="text-sm text-slate-500">Contact Person</p>
-                  <p class="mt-1 font-semibold text-body">Md. Rahim Uddin</p>
-                </div>
+                <BaseInput
+                  v-model="business.contact_person"
+                  label="Contact Person"
+                  placeholder="Enter contact person"
+                  :required="true"
+                  error=""
+                />
 
-                <div>
-                  <p class="text-sm text-slate-500">Phone</p>
-                  <p class="mt-1 font-semibold text-body">+880 1712 345678</p>
-                </div>
+                <BaseInput
+                  v-model="business.phone"
+                  label="Phone"
+                  placeholder="Enter phone number"
+                  :required="true"
+                  error=""
+                />
 
-                <div>
-                  <p class="text-sm text-slate-500">Email</p>
-                  <p class="mt-1 font-semibold text-body">
-                    info@abctraders.com
-                  </p>
-                </div>
+                <BaseInput
+                  v-model="business.email"
+                  label="Email"
+                  type="email"
+                  placeholder="Enter email address"
+                  :required="true"
+                  error=""
+                />
 
-                <div>
-                  <p class="text-sm text-slate-500">Business Type</p>
-                  <p class="mt-1 font-semibold text-body">Retailer</p>
-                </div>
+                <BaseInput
+                  v-model="business.business_type"
+                  label="Business Type"
+                  placeholder="Enter business type"
+                  :required="true"
+                  error=""
+                />
 
-                <div>
-                  <p class="text-sm text-slate-500">Tax ID (BIN)</p>
-                  <p class="mt-1 font-semibold text-body">123456789012</p>
-                </div>
+                <BaseInput
+                  v-model="business.bin"
+                  label="Tax ID (BIN)"
+                  placeholder="Enter BIN"
+                  error=""
+                />
               </div>
             </section>
 
@@ -178,9 +203,9 @@ const submit = async () => {
                   :key="address.id"
                   :class="[
                     'block cursor-pointer rounded-xl border-2 p-4 transition',
-                    selectedAddress === address.id
-                      ? 'border-blue-500 bg-blue-50/30'
-                      : 'border-slate-200 hover:border-blue-300',
+                    form.address_id === address.id
+                      ? 'border-primary bg-blue-50/30'
+                      : 'border-slate-200 hover:border-primary',
                   ]"
                 >
                   <div class="flex gap-3">
@@ -234,7 +259,7 @@ const submit = async () => {
 
                           <button
                             type="button"
-                            class="absolute right-0 top-0 text-sm font-medium text-blue-600 hover:text-blue-700"
+                            class="absolute right-0 top-0 text-sm font-medium text-primary"
                             @click.prevent="editAddress(address)"
                           >
                             Edit
@@ -247,7 +272,7 @@ const submit = async () => {
 
                 <button
                   type="button"
-                  class="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-slate-300 py-3 text-sm font-medium text-blue-600 transition hover:border-blue-300 hover:bg-blue-50/40"
+                  class="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-slate-300 py-3 text-sm font-medium text-primary transition hover:border-primary"
                 >
                   <UIcon name="i-lucide-plus" class="h-4 w-4" />
                   Add New Address
@@ -278,7 +303,7 @@ const submit = async () => {
                     <button
                       type="button"
                       @click="goToCart"
-                      class="rounded px-2 py-1 text-sm font-medium text-blue-600 transition hover:bg-blue-50 hover:text-blue-700"
+                      class="rounded px-2 py-1 text-sm font-medium text-primary transition"
                     >
                       Edit Cart
                     </button>
@@ -303,7 +328,7 @@ const submit = async () => {
 
                     <div class="min-w-0 flex-1">
                       <h3
-                        class="truncate text-sm font-semibold leading-5 text-title"
+                        class="truncate text-sm font-semibold leading-5 text-body"
                       >
                         {{ item.product?.name }}
                       </h3>
@@ -311,7 +336,7 @@ const submit = async () => {
                       <div class="mt-1 flex flex-wrap items-center gap-x-2">
                         <p class="text-xs text-slate-500">
                           SKU:
-                          <strong class="font-medium text-title">{{
+                          <strong class="font-medium text-body">{{
                             item.product?.sku
                           }}</strong>
                         </p>
@@ -324,13 +349,13 @@ const submit = async () => {
                             >
                               {{ option.attribute }}:
 
-                              <strong class="font-medium text-title">
+                              <strong class="font-medium text-body">
                                 {{ option.option }}
                               </strong>
 
                               <span
                                 v-if="index < item.variant.options.length - 1"
-                                class="mx-1 text-slate-300"
+                                class="mx-1 text-body"
                               >
                                 ·
                               </span>
@@ -340,13 +365,13 @@ const submit = async () => {
                       </div>
 
                       <div class="mt-2 flex items-center justify-between gap-2">
-                        <span class="text-xs font-medium text-slate-600">
+                        <span class="text-xs font-medium text-body">
                           {{ $currency(item.unit_price) }}
                           ×
                           {{ item.quantity }}
                         </span>
 
-                        <span class="text-sm font-semibold text-title">
+                        <span class="text-sm font-semibold text-body">
                           {{ $currency(item.total) }}
                         </span>
                       </div>
@@ -357,33 +382,31 @@ const submit = async () => {
                 <div class="space-y-4 px-4 py-6">
                   <div class="space-y-2">
                     <div class="flex items-center justify-between">
-                      <span class="text-sm text-slate-500"> Subtotal </span>
+                      <span class="text-sm text-body"> Subtotal </span>
 
-                      <span class="text-sm font-medium text-slate-800">
+                      <span class="text-sm font-medium text-body">
                         {{ $currency(cart.subtotal, cart.currency) }}
                       </span>
                     </div>
 
                     <div class="flex items-center justify-between">
-                      <span class="text-sm text-slate-500">
-                        Shipping Charge
-                      </span>
+                      <span class="text-sm text-body"> Shipping Charge </span>
 
-                      <span class="text-sm font-medium text-slate-800">
+                      <span class="text-sm font-medium text-body">
                         {{ $currency(cart.shipping, cart.currency) }}
                       </span>
                     </div>
 
                     <div class="flex items-center justify-between">
-                      <span class="text-sm text-slate-500"> VAT </span>
+                      <span class="text-sm text-body"> VAT </span>
 
-                      <span class="text-sm font-medium text-slate-800">
+                      <span class="text-sm font-medium text-body">
                         {{ $currency(cart.tax, cart.currency) }}
                       </span>
                     </div>
 
                     <div class="flex items-center justify-between">
-                      <span class="text-sm text-slate-500"> Discount </span>
+                      <span class="text-sm text-body"> Discount </span>
 
                       <span
                         class="text-sm font-medium"
@@ -477,25 +500,6 @@ const submit = async () => {
                       </div>
                     </label>
 
-                    <label
-                      class="flex cursor-pointer items-stretch gap-3 rounded-xl border p-3 transition"
-                    >
-                      <input
-                        v-model="form.method"
-                        type="radio"
-                        name="payment"
-                        value="credit"
-                        class="size-4"
-                      />
-                      <div class="min-w-0">
-                        <p class="text-sm font-semibold text-title">
-                          Credit Terms
-                        </p>
-                        <p class="mt-1 text-xs leading-5 text-slate-500">
-                          Pay later for verified business partners.
-                        </p>
-                      </div>
-                    </label>
                     <button
                       type="button"
                       :disabled="checkoutStore.loading"

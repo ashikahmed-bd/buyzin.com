@@ -271,7 +271,7 @@ const cancel = () => {
       <aside
         class="h-fit rounded-lg border border-violet-100 bg-violet-50/50 p-4"
       >
-        <h2 class="text-sm font-semibold text-violet-600">Address Tips</h2>
+        <h2 class="text-sm font-semibold text-primary">Address Tips</h2>
 
         <div class="mt-4 space-y-4">
           <div class="flex gap-3">

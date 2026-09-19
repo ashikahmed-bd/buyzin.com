@@ -28,7 +28,7 @@ const {
 <template>
   <section class="w-full">
     <div
-      class="flex flex-col gap-4 border-b border-border py-5 sm:flex-row sm:items-center sm:justify-between"
+      class="flex flex-wrap gap-4 items-center justify-between"
     >
       <div class="min-w-0">
         <h2 class="text-lg font-semibold tracking-tight text-title">

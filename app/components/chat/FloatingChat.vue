@@ -3,10 +3,6 @@ const authStore = useAuthStore();
 const chatStore = useChatStore();
 const messageStore = useMessageStore();
 
-definePageMeta({
-  middleware: ["auth"],
-});
-
 const { conversation } = storeToRefs(chatStore);
 const { messages } = storeToRefs(messageStore);
 
@@ -81,7 +77,7 @@ const unreadCount = computed(() => {
 </script>
 
 <template>
-  <div class="fixed right-2 bottom-2 z-50">
+  <div class="fixed right-4 bottom-4 z-50">
     <button
       type="button"
       aria-label="Open messages"

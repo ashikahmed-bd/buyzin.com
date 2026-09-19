@@ -8,7 +8,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="w-full bg-white px-4 py-2.5 rounded-xl">
+  <div class="w-full bg-white rounded-xl">
     <MDC :value="props.store?.policy" class="prose max-w-none" />
   </div>
 </template>

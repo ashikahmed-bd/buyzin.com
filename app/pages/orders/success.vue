@@ -38,11 +38,12 @@
       </div>
 
       <div class="flex justify-center mb-4">
-        <button
+        <NuxtLink
+          to="/"
           class="bg-primary text-white px-6 py-2.5 rounded-full font-semibold transition"
         >
           Go to Home
-        </button>
+        </NuxtLink>
       </div>
 
       <div class="text-center text-body text-xs">

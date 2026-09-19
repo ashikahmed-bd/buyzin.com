@@ -46,12 +46,12 @@ const shareLink = async (store) => {
   }
 };
 
-const tab = computed(() => route.query.tab || "home");
+const tab = computed(() => route.query.tab ?? "home");
 
 const isActive = (tab) => route.query.tab === tab;
 
 const form = reactive({
-  store_id: store.value.id,
+  store_id: store.value.data?.id,
   type: "store",
   subject: "",
   message: "",
@@ -85,218 +85,261 @@ const submit = async () => {
 
     <template v-else>
       <SeoMeta
-        :title="store?.meta_title"
-        :description="store?.meta_description"
-        :keywords="store?.meta_keywords"
-        :image="store?.logo_url"
+        :title="store?.data?.meta_title"
+        :description="store?.data?.meta_description"
+        :keywords="store?.data?.meta_keywords"
+        :image="store?.data?.logo_url"
       />
 
       <UBreadcrumb
         :items="[
           { label: 'Home', to: '/' },
           { label: 'Store', to: '/store' },
-          { label: store?.name },
+          { label: store?.data?.name },
         ]"
         class="py-2"
       />
+      <section class="space-y-4">
+        <div class="relative overflow-hidden rounded-xl">
+          <NuxtImg
+            :src="store?.data?.banner_url"
+            :alt="store?.data?.name"
+            class="absolute inset-0 z-0 size-full object-cover"
+          />
 
-      <section
-        class="relative h-48 overflow-hidden bg-gray-100 sm:h-64 lg:h-80"
-      >
-        <NuxtImg
-          v-if="store?.banner_url"
-          :src="store.banner_url"
-          :alt="store.name"
-          class="size-full object-cover rounded-xl"
-        />
-        <div
-          v-else
-          class="flex size-full items-center justify-center text-gray-300"
-        >
-          <UIcon name="i-lucide-store" class="size-12" />
-        </div>
-        <button
-          type="button"
-          @click="shareLink(store)"
-          class="absolute right-4 top-4 inline-flex size-9 items-center justify-center rounded-full bg-white/90 text-gray-700 transition hover:bg-white hover:text-primary"
-        >
-          <UIcon name="i-lucide-share-2" class="size-4" />
-        </button>
-      </section>
+          <div
+            class="absolute inset-0 z-0 bg-gradient-to-r from-black/50 via-black/25 to-black/5"
+          ></div>
 
-      <section class="py-4 space-y-4">
-        <div
-          class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
-        >
-          <div class="flex min-w-0 items-center gap-3">
-            <div
-              class="size-16 shrink-0 overflow-hidden rounded-xl bg-gray-100 sm:size-20"
-            >
-              <NuxtImg
-                v-if="store?.logo_url"
-                :src="store.logo_url"
-                :alt="store.name"
-                class="size-full object-cover"
-              />
-
-              <div
-                v-else
-                class="flex size-full items-center justify-center text-body"
-              >
-                <UIcon name="i-lucide-store" class="size-7" />
-              </div>
-            </div>
-
-            <div class="min-w-0">
-              <div class="flex items-center gap-2">
-                <h1 class="truncate text-base font-semibold text-body">
-                  {{ store?.name }}
-                </h1>
-
-                <span
-                  v-if="store?.verified"
-                  class="flex shrink-0 items-center gap-1 text-sm text-primary"
+          <div class="relative z-10 flex items-center px-4 py-8">
+            <div class="w-full max-w-3xl">
+              <div class="flex items-start gap-3 sm:gap-4">
+                <div
+                  class="size-16 shrink-0 overflow-hidden rounded-full bg-white p-0.5"
                 >
-                  <UIcon name="i-lucide-badge-check" class="size-4" />
-                  Verified
-                </span>
-              </div>
-
-              <div class="flex flex-wrap items-center gap-2 text-sm text-body">
-                <span class="flex items-center gap-1">
-                  <UIcon
-                    name="heroicons:star-solid"
-                    class="size-4 text-yellow-400"
+                  <NuxtImg
+                    v-if="store?.data?.logo_url"
+                    :src="store.data?.logo_url"
+                    :alt="store.data?.name"
+                    class="size-full rounded-full object-cover"
                   />
-                  <span class="font-medium text-body">
-                    {{ Number(store?.rating?.average || 0).toFixed(1) }}
-                  </span>
-                  ({{ store?.rating?.reviews_count ?? 0 }})
-                </span>
 
-                <span class="text-body"
-                  >Member since
-                  <strong>{{ $date(store?.created_at) }}</strong></span
-                >
+                  <div
+                    v-else
+                    class="flex size-full items-center justify-center text-body"
+                  >
+                    <UIcon name="i-lucide-store" class="size-7" />
+                  </div>
+                </div>
+
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <h1 class="text-lg font-bold leading-6 text-white">
+                      {{ store?.data?.name }}
+                    </h1>
+
+                    <span
+                      v-if="store?.verified"
+                      class="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700"
+                    >
+                      <UIcon name="lucide:badge-check" class="size-3.5" />
+                      Verified
+                    </span>
+                  </div>
+
+                  <p class="mt-1 text-sm text-white/85">
+                    {{ store?.data?.tagline }}
+                  </p>
+
+                  <div
+                    class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-white/85"
+                  >
+                    <span>
+                      Since
+                      <strong class="text-white">
+                        {{ $date(store?.data?.created_at) }}
+                      </strong>
+                    </span>
+
+                    <span
+                      v-if="store?.data?.location"
+                      class="inline-flex items-center gap-1.5"
+                    >
+                      <UIcon name="lucide:map-pin" class="size-4" />
+
+                      <address class="truncate not-italic">
+                        {{
+                          [
+                            store.data?.location?.state,
+                            store.data?.location?.country,
+                          ]
+                            .filter(Boolean)
+                            .join(", ")
+                        }}
+                      </address>
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              <div
-                v-if="store?.location"
-                class="flex items-center gap-1 text-sm text-body"
-              >
-                <UIcon name="i-lucide-map-pin" class="size-4 shrink-0" />
-                <address class="truncate">
-                  {{
-                    [
-                      store.location.address,
-                      store.location.city,
-                      store.location.state,
-                      store.location.country,
-                    ]
-                      .filter(Boolean)
-                      .join(", ")
-                  }}
-                </address>
+              <div class="mt-6 flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  @click="chatStore.dialog = true"
+                  class="flex items-center justify-center gap-2 rounded bg-primary px-3 py-2 text-sm font-medium text-white"
+                >
+                  <UIcon name="i-lucide-messages-square" class="size-5" />
+                  Message
+                </button>
+
+                <a
+                  :href="store?.data?.whatsapp_url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-center justify-center gap-2 rounded border border-white/30 bg-white px-3 py-2 text-sm font-medium text-body"
+                >
+                  <UIcon name="i-lucide-message-circle" class="size-5" />
+                  WhatsApp
+                </a>
+
+                <button
+                  type="button"
+                  @click="shareLink(store?.data)"
+                  class="flex items-center justify-center gap-2 rounded border border-white/30 bg-white px-3 py-2 text-sm font-medium text-body"
+                >
+                  <UIcon name="i-lucide-share-2" class="size-5" />
+                  Share
+                </button>
+              </div>
+
+              <div class="mt-6 flex flex-wrap items-center gap-x-10 gap-y-4">
+                <div>
+                  <p class="inline-flex items-center">
+                    <UIcon
+                      v-for="star in 5"
+                      :key="star"
+                      name="i-heroicons:star-solid"
+                      :class="[
+                        'size-4',
+                        star <= store?.data?.rating?.average
+                          ? 'fill-amber-400 text-amber-400'
+                          : 'text-slate-300',
+                      ]"
+                    />
+
+                    <span class="ml-2 font-semibold text-white">
+                      {{ Number(store?.data?.rating?.average).toFixed(1) }}
+                    </span>
+                  </p>
+                  <p class="text-sm text-white/75">
+                    ({{ store?.data?.rating?.reviews_count }} reviews)
+                  </p>
+                </div>
+
+                <div>
+                  <p class="text-base font-bold text-white">
+                    {{ store?.positive_reviews ?? 0 }}
+                  </p>
+                  <p class="text-sm text-white/75">Positive Reviews</p>
+                </div>
+
+                <div>
+                  <p class="text-base font-bold text-white">
+                    {{ store?.response_time ?? "-- --" }}
+                  </p>
+                  <p class="text-sm text-white/75">Response Time</p>
+                </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="flex w-full gap-2 lg:w-auto">
-            <button
-              type="button"
-              @click="chatStore.dialog = true"
-              class="flex flex-1 items-center justify-center gap-2 rounded bg-primary px-4 py-2 text-sm font-medium text-white"
+        <div class="bg-white px-4 rounded-xl space-y-4">
+          <nav class="flex items-center gap-4 font-semibold overflow-x-auto">
+            <NuxtLink
+              to="?tab=home"
+              :class="[
+                'flex shrink-0 items-center gap-2 border-b border-transparent py-2 text-sm',
+                isActive('home') ? 'border-primary text-primary' : 'text-body',
+              ]"
             >
-              <UIcon name="i-lucide-message-square" class="size-4" />
-              Message
-            </button>
+              <UIcon name="i-lucide-house" class="size-4" />
+              Home
+            </NuxtLink>
 
-            <a
-              :href="store.whatsapp_url"
-              target="_blank"
-              class="flex flex-1 items-center justify-center gap-2 rounded border border-border px-4 py-2 text-sm font-medium text-body"
+            <NuxtLink
+              to="?tab=about"
+              :class="[
+                'flex shrink-0 items-center gap-2 py-2 text-sm',
+                isActive('about')
+                  ? 'border-b-2 border-primary text-primary'
+                  : 'text-body',
+              ]"
+            >
+              <UIcon name="i-lucide-store" class="size-4" />
+              About
+            </NuxtLink>
+
+            <NuxtLink
+              to="?tab=reviews"
+              :class="[
+                'flex shrink-0 items-center gap-2 py-2 text-sm',
+                isActive('reviews')
+                  ? 'border-b-2 border-primary text-primary'
+                  : 'text-body',
+              ]"
+            >
+              <UIcon name="i-lucide-star" class="size-4" />
+              Reviews
+            </NuxtLink>
+
+            <NuxtLink
+              to="?tab=policy"
+              :class="[
+                'flex shrink-0 items-center gap-2 py-2 text-sm',
+                isActive('policy')
+                  ? 'border-b-2 border-primary text-primary'
+                  : 'text-body',
+              ]"
+            >
+              <UIcon name="i-lucide-file-text" class="size-4" />
+              Policy
+            </NuxtLink>
+
+            <NuxtLink
+              to="?tab=contact"
+              :class="[
+                'flex shrink-0 items-center gap-2 py-2 text-sm',
+                isActive('contact')
+                  ? 'border-b-2 border-primary text-primary'
+                  : 'text-body',
+              ]"
             >
               <UIcon name="i-lucide-message-circle" class="size-4" />
-              WhatsApp
-            </a>
+              Contact
+            </NuxtLink>
+          </nav>
+
+          <div class="py-2">
+            <LazyStoreHome v-if="tab === 'home'" />
+
+            <LazyStoreAbout v-else-if="tab === 'about'" :store="store?.data" />
+
+            <LazyStoreReviews
+              v-else-if="tab === 'reviews'"
+              :store="store?.data"
+            />
+
+            <LazyStorePolicy
+              v-else-if="tab === 'policy'"
+              :store="store?.data"
+            />
+
+            <LazyStoreContact
+              v-else-if="tab === 'contact'"
+              :store="store?.data"
+            />
           </div>
-        </div>
-
-        <nav class="flex items-center gap-4 overflow-x-auto">
-          <a
-            href="?tab=home"
-            :class="[
-              'flex shrink-0 items-center gap-2 border-b border-transparent py-2 text-sm',
-              isActive('home') ? 'border-primary text-primary' : 'text-body',
-            ]"
-          >
-            <UIcon name="i-lucide-house" class="size-4" />
-            Home
-          </a>
-
-          <a
-            href="?tab=about"
-            :class="[
-              'flex shrink-0 items-center gap-2 py-2 text-sm',
-              isActive('about')
-                ? 'border-b-2 border-primary text-primary'
-                : 'text-body',
-            ]"
-          >
-            <UIcon name="i-lucide-store" class="size-4" />
-            About
-          </a>
-
-          <a
-            href="?tab=reviews"
-            :class="[
-              'flex shrink-0 items-center gap-2 py-2 text-sm',
-              isActive('reviews')
-                ? 'border-b-2 border-primary text-primary'
-                : 'text-body',
-            ]"
-          >
-            <UIcon name="i-lucide-star" class="size-4" />
-            Reviews
-          </a>
-
-          <a
-            href="?tab=policy"
-            :class="[
-              'flex shrink-0 items-center gap-2 py-2 text-sm',
-              isActive('policy')
-                ? 'border-b-2 border-primary text-primary'
-                : 'text-body',
-            ]"
-          >
-            <UIcon name="i-lucide-file-text" class="size-4" />
-            Policy
-          </a>
-
-          <a
-            href="?tab=contact"
-            :class="[
-              'flex shrink-0 items-center gap-2 py-2 text-sm',
-              isActive('contact')
-                ? 'border-b-2 border-primary text-primary'
-                : 'text-body',
-            ]"
-          >
-            <UIcon name="i-lucide-message-circle" class="size-4" />
-            Contact
-          </a>
-        </nav>
-
-        <div>
-          <LazyStoreHome v-if="tab === 'home'" />
-
-          <LazyStoreAbout v-else-if="tab === 'about'" :store="store" />
-
-          <LazyStoreReviews v-else-if="tab === 'reviews'" :store="store" />
-
-          <LazyStorePolicy v-else-if="tab === 'policy'" :store="store" />
-
-          <LazyStoreContact v-else-if="tab === 'contact'" :store="store" />
         </div>
       </section>
     </template>
